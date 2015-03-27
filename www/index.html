@@ -5,7 +5,12 @@
 		<link rel="stylesheet" href="./css/style.css" type="text/css" />
 		<link rel="stylesheet" href="./css/font.css" type="text/css" />
 		
+		<link rel="stylesheet" href="./lib/codemirror/lib/codemirror.css" type="text/css" />
+		<link rel="stylesheet" href="./lib/codemirror/theme/monokai.css" type="text/css" />
+
 		<script type="text/javascript" src="./bower_components/angular/angular.js"></script>
+		<script type="text/javascript" src="./lib/codemirror/lib/codemirror.js"></script>
+		<script type="text/javascript" src="./lib/codemirror/mode/javascript/javascript.js"></script>
 		<script type="text/javascript" src="./js/devkit.js"></script>
 		
 	</head>
@@ -14,7 +19,7 @@
 		<header>
 			
 			<div id="chrome-stoplight">
-				<div id="chrome-stoplight-close"></div>
+				<div id="chrome-stoplight-close" ng-click="window.close()"></div>
 				<div id="chrome-stoplight-minimize"></div>
 				<div id="chrome-stoplight-zoom"></div>
 			</div>
@@ -22,10 +27,17 @@
 			<div id="chrome-title">{{project.name}}</div>
 			
 			<div id="play">
-				
+				<div id="play-button"></div>
 			</div>
 			
-			<div id="loading"></div>
+			<div id="progressbar">
+				<div id="progressbar-inner"></div>
+			</div>
+			
+			<div id="user">
+				<div class="name">Emile</div>
+				<img src="https://avatars1.githubusercontent.com/u/319873?v=3&s=460" />
+			</div>
 			
 		</header>
 		
@@ -34,25 +46,36 @@
 			<sidebar ng-controller="sidebarCtrl">
 			
 				<script type="text/ng-template" id="filetreeTmpl">
-					<li class="type-{{item.type}}" ng-repeat="item in items">
-						<span class="label">
-							<span class="expand"></span>
+						<span class="label" ng-click="selected = true" ng-class="{ 'selected': selected }">
+							<span class="expand" ng-click="expanded = !expanded || false;" stop-event></span>
 							<span class="icon"></span>
 							<span class="name">{{item.name}}</span>
 						</span>
-					    <ul ng-if="item.childs">
-					        <li ng-repeat="item in item.childs" ng-include="'filetreeTmpl'"></li>
+					    <ul ng-if="item.children" ng-show="expanded">
+					        <li ng-repeat="item in item.children" ng-include="'filetreeTmpl'" class="type-{{item.type}}" ng-class="{ 'expanded': expanded }" ng-init="selected = false; expanded = false;"></li>
 					    </ul>
 					</li>
 				</script>
 			
 				<ul id="filetree">
-					<li ng-repeat="item in items" ng-include="'filetreeTmpl'"></li>
+					<li ng-repeat="item in items" ng-include="'filetreeTmpl'" class="type-{{item.type}}" ng-class="{ 'expanded': expanded }"></li>
 				</ul>
 				
 				<div id="sidebar-helper"></div>
 				
 			</sidebar>
+			
+			<editor>
+				
+				<editorview>
+					<div id="codemirror"></div>
+				</editorview>
+				
+			</editor>
+			
+			<helper>
+				
+			</helper>
 			
 		</content>
 		

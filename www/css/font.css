@@ -46,3 +46,11 @@
     font-weight: 200;
     font-style: italic;
 }
+
+/* Inconsolata */
+@font-face {
+    font-family: 'Inconsolata';
+    src: url(../font/Inconsolata.ttf);
+    font-weight: normal;
+    font-style: normal;
+}

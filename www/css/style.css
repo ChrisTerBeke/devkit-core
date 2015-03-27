@@ -2,18 +2,19 @@
 	margin: 0;
 	padding: 0;
 	border: none;
-	
-	font-family: "Roboto";
-	font-weight: 300;
 }
 
 html {
 	height: 100%;
-	background: #0C0C0C;
+	background: #262821;
 }
 
 body {
 	height: 100%;
+	-webkit-user-select: none;
+	
+	font-family: "Roboto";
+	font-weight: 200;
 }
 
 header {
@@ -23,6 +24,7 @@ header {
 	right: 0;
 	height: 40px;
 	background: rgba(255,255,255,0.05);
+	-webkit-app-region: drag;
 }
 
 	#chrome-stoplight {
@@ -80,37 +82,68 @@ header {
 		text-align: center;
 		color: white;
 	}
-	#loading {
+	#user {
+		position: absolute;
+		right: 10px;
+		top: 7px;
+		bottom: 10px;
+	}
+		#user .name {
+			vertical-align: middle;
+			display: inline-block;
+			font-size: 14px;
+			color: rgba(255,255,255,0.5);
+			margin: 0 6px;
+		}
+		#user img {
+			vertical-align: middle;
+			display: inline-block;
+			width: 24px;
+			height: 24px;
+			border: 1px solid rgba(0,0,0,0.15);
+			border-radius: 50%;
+		}
+	#progressbar {
 		position: absolute;
 		bottom: 0;
 		left: 0;
+		right: 0;
 		height: 1px;
-		width: 40%;
-		background: linear-gradient(to right, rgba(0,123,255,1) 0%, rgba(0,123,255,1) 94%, rgba(0,123,255,0) 100%);
+		background: rgba(255,255,255,0.05);
 	}
+		#progressbar-inner {
+			width: 40%;
+			height: 100%;
+			background: linear-gradient(to right, #a6e22e 0%, #a6e22e 94%, rgba(166, 226, 46, 0) 100%);
+		}
 	#play {
 		position: absolute;
 		left: 220px;
 		top: 8px;
-		border: 2px solid white;
-		width: 24px;
-		height: 24px;
-		border-radius: 50%;
-		box-sizing: border-box;
+		padding-left: 8px;
+		border-left: 1px solid rgba(0,0,0,0.1);
 	}
-	#play:before {
-		content: "";
-		position: absolute;
-		left: 7px;
-		top: 4px;
-		display: block;
-		border-left: 8px solid white;
-		border-top: 6px solid transparent;
-		border-bottom: 6px solid transparent;
-	}
-	#play:hover:before {
-		border-right: 8px solid red;
-	}
+		#play-button {
+			position: relative;
+			border: 2px solid white;
+			width: 24px;
+			height: 24px;
+			border-radius: 50%;
+			box-sizing: border-box;
+		}
+		#play-button:before {
+			content: "";
+			position: absolute;
+			left: 7px;
+			top: 4px;
+			display: block;
+			border-left: 8px solid white;
+			border-top: 6px solid transparent;
+			border-bottom: 6px solid transparent;
+		}
+		#play-button:hover:before {
+			transform: scale(1.1);
+		}
 	
 content {
 	position: absolute;
@@ -120,25 +153,35 @@ content {
 	bottom: 0;
 }
 
-	sidebar {
+	sidebar,
+	helper {
 		position: absolute;
 		left: 0;
 		top: 0;
 		bottom: 0;
-		min-width: 220px;
+		width: 220px;
 		background: rgba(255,255,255,0.05);
-		border-right: 1px solid rgba(255,255,255,0.05);
+		border-color: rgba(255,255,255,0.05);
+		border-style: solid;
+		border-width: 0;
 		box-sizing: border-box;
-		padding: 5px 10px;
+	}
+	sidebar {
+		border-right-width: 1px;
 	}
 		#filetree {
 			list-style: none;
 		}
 			#filetree li {
-				line-height: 20px;
+				line-height: 24px;
 			}
 				#filetree li .label {
+					display: block;
 					font-size: 0;
+					padding-left: 10px;
+				}
+				#filetree li .label.selected {
+					background: rgba(255,255,255,0.05);
 				}
 					#filetree li .label .expand {
 						border-left: 6px solid #5A5A5A;
@@ -150,12 +193,12 @@ content {
 						
 						visibility: hidden;
 						
-						transition: transform 0.5s;
+						transition: transform 0.25s;
 					}
-					#filetree li:hover .label .expand {
+					#filetree li.expanded > .label .expand {
 						transform: rotate(90deg);
 					}
-					#filetree li.type-folder .label .expand {
+					#filetree li.type-folder > .label .expand {
 						visibility: visible;
 					}
 					#filetree li .label .name {
@@ -182,6 +225,12 @@ content {
 					#filetree li.type-file .label .icon {
 						-webkit-mask-image: url(../img/ext/file.svg);
 					}
+				#filetree li ul {
+					list-style: none;
+				}
+					#filetree li ul li .label {
+						padding-left: 16px;
+					}
 		#sidebar-helper {
 			position: absolute;
 			bottom: 0;
@@ -190,8 +239,28 @@ content {
 			height: 30px;
 			background: rgba(255,255,255,0.05);
 		}
+		
+	editor {
+		position: absolute;
+		top: 0;
+		left: 220px;
+		right: 220px;
+		bottom: 0;
+	}
+	
+	helper {
+		left: auto;
+		right: 0;
+		border-left-width: 1px;
+	}
 	
 	
-	
-	
+.CodeMirror {
+	font-size: 14px;
+	font-family: "Inconsolata", monospace !important;
+}	
+	.CodeMirror-gutters {
+		border-right: 1px solid rgba(255,255,255,0.05) !important;
+		background: red;
+	}
 	
