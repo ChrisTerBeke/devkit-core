@@ -1,0 +1,24 @@
+{
+  "name": "devkit",
+  "version": "1.0.0",
+  "description": "Homey Development Kit",
+  "private": true,
+  "dependencies": {
+    "node-watch": "*",
+    "request": "*",
+    "semver": "*",
+    "socket.io-client": "*",
+    "tmp": "*"
+  },
+  "main": "www/index.html",
+  "window": {
+	"title": "Homey Development Kit",
+    "show": true,
+    "toolbar": false,
+    "frame": false,
+    "width": 960,
+    "height": 700,
+    "min_width": 800,
+    "min_height": 600
+  }
+}

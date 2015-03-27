@@ -1,0 +1,17 @@
+{
+  "name": "homey-devkit",
+  "version": "1.0.0",
+  "authors": [
+    "Athom Holding BV"
+  ],
+  "directory": "www/components",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

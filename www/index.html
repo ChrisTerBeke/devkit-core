@@ -1,0 +1,60 @@
+<!doctype html>
+<html ng-app="devkit" ng-controller="appCtrl">
+	<head>
+		
+		<link rel="stylesheet" href="./css/style.css" type="text/css" />
+		<link rel="stylesheet" href="./css/font.css" type="text/css" />
+		
+		<script type="text/javascript" src="./bower_components/angular/angular.js"></script>
+		<script type="text/javascript" src="./js/devkit.js"></script>
+		
+	</head>
+	<body class="os-osx">
+		
+		<header>
+			
+			<div id="chrome-stoplight">
+				<div id="chrome-stoplight-close"></div>
+				<div id="chrome-stoplight-minimize"></div>
+				<div id="chrome-stoplight-zoom"></div>
+			</div>
+			
+			<div id="chrome-title">{{project.name}}</div>
+			
+			<div id="play">
+				
+			</div>
+			
+			<div id="loading"></div>
+			
+		</header>
+		
+		<content>
+			
+			<sidebar ng-controller="sidebarCtrl">
+			
+				<script type="text/ng-template" id="filetreeTmpl">
+					<li class="type-{{item.type}}" ng-repeat="item in items">
+						<span class="label">
+							<span class="expand"></span>
+							<span class="icon"></span>
+							<span class="name">{{item.name}}</span>
+						</span>
+					    <ul ng-if="item.childs">
+					        <li ng-repeat="item in item.childs" ng-include="'filetreeTmpl'"></li>
+					    </ul>
+					</li>
+				</script>
+			
+				<ul id="filetree">
+					<li ng-repeat="item in items" ng-include="'filetreeTmpl'"></li>
+				</ul>
+				
+				<div id="sidebar-helper"></div>
+				
+			</sidebar>
+			
+		</content>
+		
+	</body>
+</html>

@@ -1,0 +1,197 @@
+* {
+	margin: 0;
+	padding: 0;
+	border: none;
+	
+	font-family: "Roboto";
+	font-weight: 300;
+}
+
+html {
+	height: 100%;
+	background: #0C0C0C;
+}
+
+body {
+	height: 100%;
+}
+
+header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 40px;
+	background: rgba(255,255,255,0.05);
+}
+
+	#chrome-stoplight {
+		position: absolute;
+		z-index: 2;
+		right: 2px;
+		top: 10px;
+		bottom: 10px;
+	}
+	body.os-osx #chrome-stoplight {
+		right: auto;
+		left: 2px;
+		padding: 3px;
+	}
+		#chrome-stoplight > div {
+			float: right;
+			width: 12px;
+			height: 12px;
+			background-size: cover;
+			margin-right: 8px;
+		}
+		body.os-osx #chrome-stoplight > div {
+			margin-left: 8px;
+			margin-right: 0;
+			float: left;
+		}
+		#chrome-stoplight-close {
+			background-image: url(../img/chrome-stoplight-close.png);
+		}
+		#chrome-stoplight:hover #chrome-stoplight-close {
+			background-image: url(../img/chrome-stoplight-close-hover.png);
+		}
+		#chrome-stoplight-minimize {
+			background-image: url(../img/chrome-stoplight-minimize.png);
+		}
+		#chrome-stoplight:hover #chrome-stoplight-minimize {
+			background-image: url(../img/chrome-stoplight-minimize-hover.png);
+		}
+		#chrome-stoplight-zoom {
+			background-image: url(../img/chrome-stoplight-zoom.png);
+		}
+		#chrome-stoplight:hover #chrome-stoplight-zoom {
+			background-image: url(../img/chrome-stoplight-zoom-hover.png);
+		}
+	#chrome-title {
+		position: absolute;
+		z-index: 1;
+		left: 0;
+		right: 0;
+		top: 10px;
+		bottom: 10px;
+		line-height: 20px;
+		font-size: 16px;
+		font-weight: 200;
+		text-align: center;
+		color: white;
+	}
+	#loading {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 1px;
+		width: 40%;
+		background: linear-gradient(to right, rgba(0,123,255,1) 0%, rgba(0,123,255,1) 94%, rgba(0,123,255,0) 100%);
+	}
+	#play {
+		position: absolute;
+		left: 220px;
+		top: 8px;
+		border: 2px solid white;
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		box-sizing: border-box;
+	}
+	#play:before {
+		content: "";
+		position: absolute;
+		left: 7px;
+		top: 4px;
+		display: block;
+		border-left: 8px solid white;
+		border-top: 6px solid transparent;
+		border-bottom: 6px solid transparent;
+	}
+	#play:hover:before {
+		border-right: 8px solid red;
+	}
+	
+content {
+	position: absolute;
+	top: 40px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+	sidebar {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		min-width: 220px;
+		background: rgba(255,255,255,0.05);
+		border-right: 1px solid rgba(255,255,255,0.05);
+		box-sizing: border-box;
+		padding: 5px 10px;
+	}
+		#filetree {
+			list-style: none;
+		}
+			#filetree li {
+				line-height: 20px;
+			}
+				#filetree li .label {
+					font-size: 0;
+				}
+					#filetree li .label .expand {
+						border-left: 6px solid #5A5A5A;
+						border-top: 4px solid transparent;
+						border-bottom: 4px solid transparent;
+						display: inline-block;
+						vertical-align: middle;
+						margin-right: 6px;
+						
+						visibility: hidden;
+						
+						transition: transform 0.5s;
+					}
+					#filetree li:hover .label .expand {
+						transform: rotate(90deg);
+					}
+					#filetree li.type-folder .label .expand {
+						visibility: visible;
+					}
+					#filetree li .label .name {
+						color: white;
+						font-weight: 300;
+						font-size: 13px;
+						display: inline-block;
+						vertical-align: middle;
+					}
+					#filetree li .label .icon {
+						-webkit-mask-position: center center;
+						-webkit-mask-repeat: no-repeat;
+						-webkit-mask-size: contain;
+						background: white;
+						width: 12px;
+						height: 12px;
+						display: inline-block;
+						vertical-align: middle;
+						margin-right: 6px;
+					}
+					#filetree li.type-folder .label .icon {
+						-webkit-mask-image: url(../img/ext/folder.svg);
+					}
+					#filetree li.type-file .label .icon {
+						-webkit-mask-image: url(../img/ext/file.svg);
+					}
+		#sidebar-helper {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			left: 0;
+			height: 30px;
+			background: rgba(255,255,255,0.05);
+		}
+	
+	
+	
+	
+	
