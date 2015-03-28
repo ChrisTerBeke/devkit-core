@@ -171,6 +171,10 @@ content {
 	}
 		#filetree {
 			list-style: none;
+			padding-left: 7px;
+		}
+		#filetree ul {
+			padding-left: 15px;
 		}
 			#filetree li {
 				line-height: 24px;
@@ -178,7 +182,9 @@ content {
 				#filetree li .label {
 					display: block;
 					font-size: 0;
-					padding-left: 10px;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
 				}
 				#filetree li .label.selected {
 					background: rgba(255,255,255,0.05);
@@ -204,7 +210,7 @@ content {
 					#filetree li .label .name {
 						color: white;
 						font-weight: 300;
-						font-size: 13px;
+						font-size: 12px;
 						display: inline-block;
 						vertical-align: middle;
 					}
@@ -229,7 +235,7 @@ content {
 					list-style: none;
 				}
 					#filetree li ul li .label {
-						padding-left: 16px;
+						
 					}
 		#sidebar-helper {
 			position: absolute;
@@ -244,23 +250,103 @@ content {
 		position: absolute;
 		top: 0;
 		left: 220px;
-		right: 220px;
+		right: 0;
 		bottom: 0;
 	}
+		
+		tabs {
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			height: 25px;
+			border-bottom: 1px solid rgba(255,255,255,0.05);
+			box-sizing: border-box;
+		}
+			tabs tab {
+				float: left;
+				width: 120px;
+				height: 25px;
+				border-right: 1px solid rgba(255,255,255,0.05);
+				text-align: center;
+				line-height: 25px;
+				box-sizing: border-box;
+				font-size: 12px;
+				color: #aaa;
+				border-bottom: 1px solid transparent;
+			}
+			tabs tab.active {
+				color: white;
+				border-bottom-color: #262821;
+			}
+				tabs tab * {
+					display: inline-block;
+					vertical-align: middle;
+				}
+				tabs tab .close {
+					border-radius: 50%;
+					float: left;
+					background: rgba(255,255,255,0.2);
+					width: 12px;
+					height: 12px;
+					margin: 6.5px;
+					color: white;
+					text-align: center;
+					line-height: 13px;
+					font-size: 6px;
+				}
+			
+		editorview {
+			position: absolute;
+			left: 0;
+			top: 25px;
+			bottom: 0;
+			right: 220px;
+			display: none;
+		}
+		editorview.active {
+			display: block;
+		}
 	
-	helper {
-		left: auto;
-		right: 0;
-		border-left-width: 1px;
-	}
+		helper {
+			position: absolute;
+			top: 25px;
+			left: auto;
+			right: 0;
+			bottom: 0;
+			width: 220px;
+			border-left-width: 1px;
+		}
+			helper block {
+				display: block;
+				margin: 4px;
+			}
+				helper block title {
+					display: block;
+					padding: 4px 8px;
+					height: 18px;
+					line-height: 18px;
+					background: rgba(0,0,0,0.5);
+					font-size: 12px;
+					color: white;
+				}
+				helper block blockcontent {
+					display: block;
+					padding: 8px;
+					border: 1px solid rgba(0,0,0,0.5);
+					border-top: none;
+				}
 	
 	
 .CodeMirror {
-	font-size: 14px;
-	font-family: "Inconsolata", monospace !important;
+	font-size: 11px;
+	font-family: "Menlo", monospace !important;
+	height: 100% !important;
 }	
 	.CodeMirror-gutters {
 		border-right: 1px solid rgba(255,255,255,0.05) !important;
-		background: red;
+	}
+	.CodeMirror-linenumber {
+		opacity: 0.1;
 	}
 	

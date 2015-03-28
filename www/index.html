@@ -1,16 +1,27 @@
 <!doctype html>
-<html ng-app="devkit" ng-controller="appCtrl">
+<html ng-app="devkit" ng-controller="devkitCtrl">
 	<head>
+		
+		<meta charset="UTF-8">
 		
 		<link rel="stylesheet" href="./css/style.css" type="text/css" />
 		<link rel="stylesheet" href="./css/font.css" type="text/css" />
 		
-		<link rel="stylesheet" href="./lib/codemirror/lib/codemirror.css" type="text/css" />
-		<link rel="stylesheet" href="./lib/codemirror/theme/monokai.css" type="text/css" />
 
 		<script type="text/javascript" src="./bower_components/angular/angular.js"></script>
+		<!--
 		<script type="text/javascript" src="./lib/codemirror/lib/codemirror.js"></script>
 		<script type="text/javascript" src="./lib/codemirror/mode/javascript/javascript.js"></script>
+		-->
+		
+		
+		<link rel="stylesheet" type="text/css" href="bower_components/codemirror/lib/codemirror.css">
+		<link rel="stylesheet" href="./bower_components/codemirror/theme/monokai.css" type="text/css" />
+		
+		<script type="text/javascript" src="./bower_components/codemirror/lib/codemirror.js"></script>
+		<script type="text/javascript" src="./bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
+		<script type="text/javascript" src="./bower_components/codemirror/mode/javascript/javascript.js"></script>
+		
 		<script type="text/javascript" src="./js/devkit.js"></script>
 		
 	</head>
@@ -24,7 +35,7 @@
 				<div id="chrome-stoplight-zoom"></div>
 			</div>
 			
-			<div id="chrome-title">{{project.name}}</div>
+			<div id="chrome-title">{{project.metadata.name}}</div>
 			
 			<div id="play">
 				<div id="play-button"></div>
@@ -46,36 +57,78 @@
 			<sidebar ng-controller="sidebarCtrl">
 			
 				<script type="text/ng-template" id="filetreeTmpl">
-						<span class="label" ng-click="selected = true" ng-class="{ 'selected': selected }">
+						<span
+							ng-click="selected = true"
+							ng-dblclick="open( item.path )"
+							ng-class="{ 'selected___TODO': selected }"
+							class="label"
+						>
 							<span class="expand" ng-click="expanded = !expanded || false;" stop-event></span>
 							<span class="icon"></span>
 							<span class="name">{{item.name}}</span>
 						</span>
 					    <ul ng-if="item.children" ng-show="expanded">
-					        <li ng-repeat="item in item.children" ng-include="'filetreeTmpl'" class="type-{{item.type}}" ng-class="{ 'expanded': expanded }" ng-init="selected = false; expanded = false;"></li>
+					        <li
+					        	ng-repeat="item in item.children"
+					        	ng-include="'filetreeTmpl'"
+					        	ng-class="{ 'expanded': expanded }"
+					        	ng-init="selected = false; expanded = false;"
+					        	class="type-{{item.type}}"
+					        ></li>
 					    </ul>
 					</li>
 				</script>
 			
 				<ul id="filetree">
-					<li ng-repeat="item in items" ng-include="'filetreeTmpl'" class="type-{{item.type}}" ng-class="{ 'expanded': expanded }"></li>
+					<li
+						ng-repeat="item in filetree"
+						ng-include="'filetreeTmpl'"
+						ng-class="{ 'expanded': expanded }"
+						ng-init="expanded=true"
+						class="type-{{item.type}}"
+					></li>
 				</ul>
 				
 				<div id="sidebar-helper"></div>
 				
 			</sidebar>
 			
-			<editor>
+			<editor ng-controller="editorCtrl">
+			
+				<tabs>
+					<tab
+						ng-repeat="file in files"
+						ng-init="active = false;"
+						ng-click="$parent.active = file.path;"
+						ng-class="{ 'active': $parent.active == file.path }"
+					>
+						<span class="close" ng-click="close(file.path)">✕</span>
+						<span class="icon">{{file.icon}}</span>
+						<span class="name">{{file.name}}</span>
+					</tab>
+				</tabs>
 				
-				<editorview>
-					<div id="codemirror"></div>
-				</editorview>
+				<editorviews>
+				
+					<editorview
+						ng-repeat="file in files"
+						ng-include="view(file.path)"
+						ng-class="{ 'active': $parent.active == file.path }"
+					>
+					</editorview>
+				
+				</editorviews>
+			
+				<helper>
+					<block>
+						<title>Test block</title>
+						<blockcontent>
+							block content
+						</blockcontent>
+					</block>
+				</helper>
 				
 			</editor>
-			
-			<helper>
-				
-			</helper>
 			
 		</content>
 		

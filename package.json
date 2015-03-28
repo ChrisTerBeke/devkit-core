@@ -4,7 +4,7 @@
   "description": "Homey Development Kit",
   "private": true,
   "dependencies": {
-    "node-watch": "*",
+    "fs-watch-tree": "^0.2.5",
     "request": "*",
     "semver": "*",
     "socket.io-client": "*",
@@ -12,10 +12,10 @@
   },
   "main": "www/index.html",
   "window": {
-	"title": "Homey Development Kit",
+    "title": "Homey Development Kit",
     "show": true,
-    "toolbar": false,
-    "frame": false,
+    "toolbar": true,
+    "frame": true,
     "width": 960,
     "height": 700,
     "min_width": 800,
