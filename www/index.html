@@ -1,31 +1,36 @@
 <!doctype html>
-<html ng-app="devkit" ng-controller="devkitCtrl">
+<html
+	ng-app="devkit"
+	ng-controller="devkitCtrl"
+>
 	<head>
 		
 		<meta charset="UTF-8">
 		
-		<link rel="stylesheet" href="./css/style.css" type="text/css" />
-		<link rel="stylesheet" href="./css/font.css" type="text/css" />
-		
-
+		<!-- angular -->
 		<script type="text/javascript" src="./bower_components/angular/angular.js"></script>
-		<!--
-		<script type="text/javascript" src="./lib/codemirror/lib/codemirror.js"></script>
-		<script type="text/javascript" src="./lib/codemirror/mode/javascript/javascript.js"></script>
-		-->
-		
-		
-		<link rel="stylesheet" type="text/css" href="bower_components/codemirror/lib/codemirror.css">
-		<link rel="stylesheet" href="./bower_components/codemirror/theme/monokai.css" type="text/css" />
-		
+
+		<!-- angular-codemirror -->
+		<link rel="stylesheet" type="text/css" href="bower_components/codemirror/lib/codemirror.css" />
+		<link rel="stylesheet" type="text/css" href="./bower_components/codemirror/theme/monokai.css" />
 		<script type="text/javascript" src="./bower_components/codemirror/lib/codemirror.js"></script>
 		<script type="text/javascript" src="./bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
 		<script type="text/javascript" src="./bower_components/codemirror/mode/javascript/javascript.js"></script>
 		
+		<!-- angular-hotkeys -->
+		<script type="text/javascript" src="./bower_components/angular-hotkeys/build/hotkeys.js"></script>
+		
+		<!-- angular-tags-input -->
+		<link rel="stylesheet" type="text/css" href="./bower_components/ng-tags-input/ng-tags-input.css" />
+		<script type="text/javascript" src="./bower_components/ng-tags-input/ng-tags-input.js"></script>
+		
+		<!-- devkit -->
+		<link rel="stylesheet" href="./css/style.css" type="text/css" />
+		<link rel="stylesheet" href="./css/font.css" type="text/css" />
 		<script type="text/javascript" src="./js/devkit.js"></script>
 		
 	</head>
-	<body class="os-osx">
+	<body class="os-{{platform}}">
 		
 		<header>
 			
@@ -35,14 +40,14 @@
 				<div id="chrome-stoplight-zoom"></div>
 			</div>
 			
-			<div id="chrome-title">{{project.metadata.name}}</div>
+			<div id="chrome-title">{{project.metadata.name.en}}</div>
 			
 			<div id="play">
 				<div id="play-button"></div>
 			</div>
 			
 			<div id="progressbar">
-				<div id="progressbar-inner"></div>
+				<div id="progressbar-inner" style="width: {{progressbar*100}}%;"></div>
 			</div>
 			
 			<div id="user">
@@ -100,9 +105,12 @@
 						ng-repeat="file in files"
 						ng-init="active = false;"
 						ng-click="$parent.active = file.path;"
-						ng-class="{ 'active': $parent.active == file.path }"
+						ng-class="{ 'active': $parent.active == file.path, 'changed': file._changed }"
 					>
-						<span class="close" ng-click="close(file.path)">✕</span>
+						<span class="close" ng-click="close(file.path)">
+							<span class="changed"></span>
+							<span class="cross">✕</span>
+						</span>
 						<span class="icon">{{file.icon}}</span>
 						<span class="name">{{file.name}}</span>
 					</tab>
@@ -124,6 +132,7 @@
 						<title>Test block</title>
 						<blockcontent>
 							block content
+							{{project.metadata.description.en}}
 						</blockcontent>
 					</block>
 				</helper>

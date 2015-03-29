@@ -13,5 +13,9 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5",
+    "ng-tags-input": "2.3.0"
+  }
 }

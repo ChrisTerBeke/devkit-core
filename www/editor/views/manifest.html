@@ -1,1 +1,71 @@
-manifest
+<form>
+
+	<fieldset>
+		<legend>General</legend>
+		
+		<row>
+			<label>Name</label>
+			<input type="text" ng-model="project.metadata.name.en" />
+		</row>
+		
+		<row>
+			<label>Description</label>
+			<textarea ng-model="project.metadata.description.en"></textarea>
+		</row>
+		
+		<row>
+			<label>Version</label>
+			<input ng-model="project.metadata.version" placeholder="1.0.0" />
+		</row>
+		
+	</fieldset>
+	
+	<fieldset>
+		<legend>Author</legend>
+		
+		<row>
+			<label>Name</label>
+			<input type="text" ng-model="project.metadata.author.name" placeholder="John Doe" />
+		</row>
+		
+		<row>
+			<label>Author's e-mail</label>
+			<input type="text" ng-model="project.metadata.author.email" placeholder="a.uthor@gmail.com" />
+		</row>
+		
+	</fieldset>
+	
+	<fieldset>
+		<legend>Permissions</legend>
+		
+		<row>
+			<tags-input ng-model="project.metadata.permissions">
+				<auto-complete source="autocompletePermissionTags($query)"></auto-complete>
+			</tags-input>
+		</row>
+		
+	</fieldset>
+	
+	<fieldset>
+		<legend>Speech input</legend>
+		
+		<div class="row">
+			
+			<ul class="triggers">
+				<li ng-repeat="trigger in project.metadata.interfaces.speech.triggers">
+					<row>
+						<label>Trigger ID</label>
+						<input type="text" ng-model="trigger.id" />
+					</row>
+					<row>
+						<label>Synonyms</label>
+						<tags-input ng-model="trigger.synonyms.en"></tags-input>
+					</row>
+				</li>
+			</ul>
+			
+		</div>
+		
+	</fieldset>
+
+</form>
