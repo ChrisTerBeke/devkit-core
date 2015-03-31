@@ -20,6 +20,20 @@ app.controller("editorCtrl", function($scope, $rootScope) {
     $rootScope.$on('editor.close', function(){
 		$scope.close();
     });
+    
+    $rootScope.$on('devkit.close', function(){
+	    
+		window.localStorage.files_open = '';
+		
+		var files_open = [];
+		
+		for( var file_path in $scope.files ) {
+			files_open.push( file_path );
+		}
+		
+		window.localStorage.files_open = files_open.join(',');
+		
+    });
 	    
     $scope.open = function( file_path ){
 	    
@@ -37,11 +51,14 @@ app.controller("editorCtrl", function($scope, $rootScope) {
 			    _changed	: false,
 			    _view		: info.view,
 			    _widgets	: info.widgets
-		    } 
+		    }
+		    
 	    }
 	    
 	    $scope.active = file_path;
-    }
+	    $scope.$apply();
+	    
+	}
     
     // close an item
     $scope.close = function( file_path ) {
@@ -54,9 +71,11 @@ app.controller("editorCtrl", function($scope, $rootScope) {
 	    if( activeFile._changed ) {
 		    if( confirm("There are unsaved changes, close " + activeFile.name + " anyway?" ) ) {
 			    delete $scope.files[ $scope.active ];
+				window.localStorage.open_files.remove( file_path );
 		    }
 	    } else {
 		    delete $scope.files[ $scope.active ];
+			window.localStorage.open_files.remove( file_path );
 	    }
 		
 		// set last tab as active
@@ -82,6 +101,8 @@ app.controller("editorCtrl", function($scope, $rootScope) {
 	    $rootScope.$emit('progressbar', 1);
 				
 		activeFile._changed = false;
+		
+		$rootScope.$emit('editor.saved');
     }
     
     // get info (which views & widgets)
@@ -106,7 +127,7 @@ app.controller("editorCtrl", function($scope, $rootScope) {
 		// "/animations/*.js"
 	    if( file.ext == '.js' && file.dir == '/animations' ) {
 		    view = 'codemirror';
-		    widgets = [ 'animation' ];
+		    widgets = [ 'ledring' ];
 		}
 		
 	    return {

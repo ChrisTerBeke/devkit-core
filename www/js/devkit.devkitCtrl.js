@@ -6,7 +6,45 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http) {
 	
 	// variables
 	$rootScope.project = {};
+	$scope.loaded = false;
 	$scope.platform = os.platform();
+	$scope.focus = true;
+
+	// window focus/blurring	
+	var gui = require('nw.gui');
+    var win = gui.Window.get();
+    win.on('focus', function() {
+        $scope.focus = true;
+		$scope.$apply();
+    });
+    win.on('blur', function() {
+	    $scope.focus = false;
+		$scope.$apply();
+    });
+	window.addEventListener('blur', function(){
+		$scope.focus = false;
+		$scope.$apply();
+	});
+	window.addEventListener('focus', function(){
+		$scope.focus = true;
+		$scope.$apply();
+	});
+	
+	win.on('close', function() {
+		
+		// hide ourselves first
+		$scope.loaded = false;
+		$scope.$apply();
+		
+		// emit closing
+		$rootScope.$emit('devkit.close');
+		
+		// close for real
+		setTimeout(function(){
+			this.close(true);
+		}.bind(this), 1000);
+		
+	});
 	
 	// methods
 	$scope.load = function( project_dir ){
@@ -24,10 +62,6 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http) {
 		window.localStorage.project_dir = project_dir;
 		
 	}
-		
-	$scope.run = function(){
-		alert('run')
-	}
 	
 	$scope.open = function(){	
 		var directorychooser = document.getElementById('directorychooser');
@@ -37,11 +71,31 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http) {
 		directorychooser.click();
 	}
 	
-	// load previous project, if available 
 	window.addEventListener('load', function(){
+		$scope.loaded = true;
+		
+		// load previous project, if available 
 		if( typeof window.localStorage.project_dir == 'string' ) {
 			$scope.load( window.localStorage.project_dir );
 		}
+		
+		// load previous files, if available
+		if( typeof window.localStorage.files_open != 'undefined' ) {
+			
+			var files_open = window.localStorage.files_open.split(',');
+			
+			if( files_open.length < 1 ) return;
+						
+			files_open.forEach(function( file_path ){
+				if( fs.existsSync(file_path) ) {
+					$rootScope.$emit('editor.open', file_path );
+				}
+			});
+			
+		} else {
+			window.localStorage.files_open = '';
+		}
+		
 	});
 	
 	// progressbar
@@ -200,10 +254,30 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http) {
 	
 	project.insert(new gui.MenuItem({
 		label: 'Run',
-		click: $scope.run,
+		click: function(){
+			$rootScope.$emit('homey.run');
+		},
 		key: 'r',
 		modifiers: 'cmd'
-	}));
+	}), 0);
+	
+	project.insert(new gui.MenuItem({
+		label: 'Run and Break',
+		click: function(){
+			$rootScope.$emit('homey.runbrk');
+		},
+		key: 'r',
+		modifiers: 'cmd+shift'
+	}), 1);
+	
+	project.insert(new gui.MenuItem({
+		label: 'REFRESH',
+		click: function(){
+			window.location.reload( true );
+		},
+		key: '§',
+		modifiers: 'cmd'
+	}),2);
 	
 	win.menu.insert(new gui.MenuItem({
 		label: 'Project',
