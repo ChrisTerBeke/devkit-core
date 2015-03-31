@@ -15,10 +15,11 @@
     "title": "Homey Development Kit",
     "show": true,
     "toolbar": true,
-    "frame": true,
+    "frame": false,
+    "transparent": true,
     "width": 960,
-    "height": 700,
+    "height": 550,
     "min_width": 800,
-    "min_height": 600
+    "min_height": 550
   }
 }

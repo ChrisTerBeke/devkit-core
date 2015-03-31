@@ -28,118 +28,161 @@
 		<link rel="stylesheet" href="./css/style.css" type="text/css" />
 		<link rel="stylesheet" href="./css/font.css" type="text/css" />
 		<script type="text/javascript" src="./js/devkit.js"></script>
+		<script type="text/javascript" src="./js/devkit.devkitCtrl.js"></script>
+		<script type="text/javascript" src="./js/devkit.editorCtrl.js"></script>
+		<script type="text/javascript" src="./js/devkit.sidebarCtrl.js"></script>
+		<script type="text/javascript" src="./js/devkit.widgetCtrl.js"></script>
+		<script type="text/javascript" src="./js/devkit.animationWidgetCtrl.js"></script>
+		<script type="text/javascript" src="./js/devkit.codemirrorViewCtrl.js"></script>
+		<script type="text/javascript" src="./js/devkit.manifestViewCtrl.js"></script>
+		<script type="text/javascript" src="./js/devkit.directives.js"></script>
 		
 	</head>
-	<body class="os-{{platform}}">
+	<body
+		class="os-{{platform}}"
+		ng-class="{ 'maximized': maximized }"
+	>
 		
-		<header>
-			
-			<div id="chrome-stoplight">
-				<div id="chrome-stoplight-close" ng-click="window.close()"></div>
-				<div id="chrome-stoplight-minimize"></div>
-				<div id="chrome-stoplight-zoom"></div>
-			</div>
-			
-			<div id="chrome-title">{{project.metadata.name.en}}</div>
-			
-			<div id="play">
-				<div id="play-button"></div>
-			</div>
-			
-			<div id="progressbar">
-				<div id="progressbar-inner" style="width: {{progressbar*100}}%;"></div>
-			</div>
-			
-			<div id="user">
-				<div class="name">Emile</div>
-				<img src="https://avatars1.githubusercontent.com/u/319873?v=3&s=460" />
-			</div>
-			
-		</header>
+		<wrap>
 		
-		<content>
+			<header>
+				
+				<div id="chrome-stoplight">
+					<div id="chrome-stoplight-close" ng-click="close()"></div>
+					<div id="chrome-stoplight-minimize" ng-click="minimize()"></div>
+					<div id="chrome-stoplight-zoom" ng-click="zoom()"></div>
+				</div>
+				
+				<div id="chrome-title">{{project.metadata.name.en}}</div>
+				
+				<div id="play">
+					<div id="play-button"></div>
+				</div>
+				
+				<div id="progressbar">
+					<div id="progressbar-inner" style="width: {{progressbar*100}}%;"></div>
+				</div>
+				
+				<div id="user">
+					<div class="name">Emile</div>
+					<img src="https://avatars1.githubusercontent.com/u/319873?v=3&s=460" />
+				</div>
+				
+			</header>
 			
-			<sidebar ng-controller="sidebarCtrl">
-			
-				<script type="text/ng-template" id="filetreeTmpl">
-						<span
-							ng-click="selected = true"
-							ng-dblclick="open( item.path )"
-							ng-class="{ 'selected___TODO': selected }"
-							class="label"
+			<content>
+				
+				<sidebar ng-controller="sidebarCtrl">
+				
+					<script type="text/ng-template" id="filetreeTmpl">
+							<span
+								ng-click="selected = true"
+								ng-dblclick="open( item.path )"
+								ng-class="{ 'selected___TODO': selected }"
+								class="label"
+							>
+								<span class="expand" ng-click="expanded = !expanded || false;" stop-event></span>
+								<span class="icon"></span>
+								<span class="name">{{item.name}}</span>
+							</span>
+						    <ul ng-if="item.children" ng-show="expanded">
+						        <li
+						        	ng-repeat="item in item.children"
+						        	ng-include="'filetreeTmpl'"
+						        	ng-class="{ 'expanded': expanded }"
+						        	ng-init="selected = false; expanded = false;"
+						        	class="type-{{item.type}}"
+						        ></li>
+						    </ul>
+						</li>
+					</script>
+				
+					<ul id="filetree">
+						<li
+							ng-repeat="item in filetree"
+							ng-include="'filetreeTmpl'"
+							ng-class="{ 'expanded': expanded }"
+							ng-init="expanded=true"
+							class="type-{{item.type}}"
+						></li>
+					</ul>
+					
+					<div id="sidebar-helper"></div>
+					
+				</sidebar>
+				
+				<editor ng-controller="editorCtrl">
+				
+					<tabs>
+						<tab
+							ng-repeat="file in files"
+							ng-init="active = false;"
+							ng-click="$parent.active = file.path;"
+							ng-class="{ 'active': $parent.active == file.path, 'changed': file._changed }"
 						>
-							<span class="expand" ng-click="expanded = !expanded || false;" stop-event></span>
-							<span class="icon"></span>
-							<span class="name">{{item.name}}</span>
-						</span>
-					    <ul ng-if="item.children" ng-show="expanded">
-					        <li
-					        	ng-repeat="item in item.children"
-					        	ng-include="'filetreeTmpl'"
-					        	ng-class="{ 'expanded': expanded }"
-					        	ng-init="selected = false; expanded = false;"
-					        	class="type-{{item.type}}"
-					        ></li>
-					    </ul>
-					</li>
-				</script>
-			
-				<ul id="filetree">
-					<li
-						ng-repeat="item in filetree"
-						ng-include="'filetreeTmpl'"
-						ng-class="{ 'expanded': expanded }"
-						ng-init="expanded=true"
-						class="type-{{item.type}}"
-					></li>
-				</ul>
+							<span class="close" ng-click="close(file.path)">
+								<span class="changed"></span>
+								<span class="cross">✕</span>
+							</span>
+							<span class="icon">{{file.icon}}</span>
+							<span class="name">{{file.name}}</span>
+						</tab>
+					</tabs>
+					
+					<editorviews>
+									
+						<editorview
+							ng-repeat="file in files"
+							ng-include="'editor/views/' + file._view + '.html'"
+							ng-show="$parent.active == file.path"
+							ng-class="{ 'widgets': file._widgets.length > 0 }"
+						>
+						</editorview>
+						
+						<noeditorview ng-show="!active">
+							
+							<div class="table">
+								<div class="tablecell">
+									
+									<p>
+										<img src="img/tools.svg" width="12%" style="opacity: 0.25;" />
+									</p>
+									
+									<h1>Welcome, Homey Developer!</h1>
+							
+									<p>Let's get started. <a href="#">Build your first Homey App &raquo;</a></p>
+							
+								</div>
+							</div>
+							
+						</noeditorview>
+					
+					</editorviews>
 				
-				<div id="sidebar-helper"></div>
-				
-			</sidebar>
-			
-			<editor ng-controller="editorCtrl">
-			
-				<tabs>
-					<tab
+					<helper
 						ng-repeat="file in files"
-						ng-init="active = false;"
-						ng-click="$parent.active = file.path;"
-						ng-class="{ 'active': $parent.active == file.path, 'changed': file._changed }"
+						ng-show="$parent.active == file.path && file._widgets.length > 0"
 					>
-						<span class="close" ng-click="close(file.path)">
-							<span class="changed"></span>
-							<span class="cross">✕</span>
-						</span>
-						<span class="icon">{{file.icon}}</span>
-						<span class="name">{{file.name}}</span>
-					</tab>
-				</tabs>
+						<block ng-repeat="widget in file._widgets">
+							<title>{{widget}}</title>
+							<blockcontent ng-include="'editor/widgets/' + widget + '.html'"></blockcontent>
+						</block>
+					</helper>
+					
+				</editor>
 				
-				<editorviews>
-				
-					<editorview
-						ng-repeat="file in files"
-						ng-include="view(file.path)"
-						ng-class="{ 'active': $parent.active == file.path }"
-					>
-					</editorview>
-				
-				</editorviews>
+			</content>
 			
-				<helper>
-					<block>
-						<title>Test block</title>
-						<blockcontent>
-							block content
-							{{project.metadata.description.en}}
-						</blockcontent>
-					</block>
-				</helper>
-				
-			</editor>
+			<devtools>
+				<iframe id="devtools" src="" />
+			</devtools>
 			
-		</content>
+			<!-- hidden things -->
+			<util>
+				<input id="directorychooser" type="file" webkitdirectory />
+			</util>
+		
+		</wrap>
 		
 	</body>
 </html>

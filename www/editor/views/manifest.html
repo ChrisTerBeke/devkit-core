@@ -1,21 +1,21 @@
-<form>
+<form ng-controller="manifestViewCtrl">
 
 	<fieldset>
 		<legend>General</legend>
 		
 		<row>
 			<label>Name</label>
-			<input type="text" ng-model="project.metadata.name.en" />
+			<input type="text" ng-model="manifest.name.en" />
 		</row>
 		
 		<row>
 			<label>Description</label>
-			<textarea ng-model="project.metadata.description.en"></textarea>
+			<textarea ng-model="manifest.description.en"></textarea>
 		</row>
 		
 		<row>
 			<label>Version</label>
-			<input ng-model="project.metadata.version" placeholder="1.0.0" />
+			<input ng-model="manifest.version" placeholder="1.0.0" />
 		</row>
 		
 	</fieldset>
@@ -25,12 +25,12 @@
 		
 		<row>
 			<label>Name</label>
-			<input type="text" ng-model="project.metadata.author.name" placeholder="John Doe" />
+			<input type="text" ng-model="manifest.author.name" placeholder="John Doe" />
 		</row>
 		
 		<row>
 			<label>Author's e-mail</label>
-			<input type="text" ng-model="project.metadata.author.email" placeholder="a.uthor@gmail.com" />
+			<input type="text" ng-model="manifest.author.email" placeholder="a.uthor@gmail.com" />
 		</row>
 		
 	</fieldset>
@@ -39,7 +39,7 @@
 		<legend>Permissions</legend>
 		
 		<row>
-			<tags-input ng-model="project.metadata.permissions">
+			<tags-input ng-model="manifest.permissions">
 				<auto-complete source="autocompletePermissionTags($query)"></auto-complete>
 			</tags-input>
 		</row>
@@ -52,7 +52,7 @@
 		<div class="row">
 			
 			<ul class="triggers">
-				<li ng-repeat="trigger in project.metadata.interfaces.speech.triggers">
+				<li ng-repeat="trigger in manifest.interfaces.speech.triggers">
 					<row>
 						<label>Trigger ID</label>
 						<input type="text" ng-model="trigger.id" />

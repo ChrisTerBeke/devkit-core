@@ -4,9 +4,20 @@
 	border: none;
 }
 
+.table {
+	display: table;
+	width: 100%;
+	height: 100%;
+}
+.tablecell {
+	display: table-cell;
+	width: 100%;
+	vertical-align: middle;
+}
+
 html {
 	height: 100%;
-	background: #262821;
+	background: transparent;
 }
 
 body {
@@ -14,7 +25,40 @@ body {
 	-webkit-user-select: none;
 	
 	font-family: "Roboto";
-	font-weight: 200;
+	font-weight: 300;
+	background: transparent;
+}
+
+wrap {
+	display: block;
+	position: absolute;
+	top: 0px;
+	bottom: 15px;
+	left: 10px;
+	right: 10px;
+	border-radius: 5px;
+	overflow: hidden;
+	background: url(../img/body-bg.jpg) center center no-repeat;
+	box-shadow: 0 5px 20px rgba(0,0,0,0.35);
+	
+	border: 1px solid rgba(0,0,0,0.25);
+	
+	transition: all 0.5s;
+}
+
+@media (min-width: 1500px), (min-height: 1042px){
+	wrap {
+		background-size: cover;
+	}
+}
+
+body.maximized wrap {
+	left: 0;
+	right: 0;
+	bottom: 0;
+	box-shadow: none;
+	border-radius: 0;
+	border-width: 0;
 }
 
 header {
@@ -23,7 +67,7 @@ header {
 	left: 0;
 	right: 0;
 	height: 40px;
-	background: rgba(255,255,255,0.05);
+	background: rgba(0,0,0,.15);
 	-webkit-app-region: drag;
 }
 
@@ -77,10 +121,11 @@ header {
 		top: 10px;
 		bottom: 10px;
 		line-height: 20px;
-		font-size: 16px;
+		font-size: 14px;
 		font-weight: 200;
 		text-align: center;
 		color: white;
+		text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 	}
 	#user {
 		position: absolute;
@@ -92,7 +137,8 @@ header {
 			vertical-align: middle;
 			display: inline-block;
 			font-size: 14px;
-			color: rgba(255,255,255,0.5);
+			color: rgba(255,255,255,0.75);
+			text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 			margin: 0 6px;
 		}
 		#user img {
@@ -100,20 +146,20 @@ header {
 			display: inline-block;
 			width: 24px;
 			height: 24px;
-			border: 1px solid rgba(0,0,0,0.15);
+			border: 1px solid rgba(255,255,255,0.5);
 			border-radius: 50%;
 		}
 	#progressbar {
+		display: none;
 		position: absolute;
 		bottom: 0;
 		left: 0;
 		right: 0;
 		height: 1px;
-		background: rgba(255,255,255,0.05);
 	}
 		#progressbar-inner {
 			height: 100%;
-			background: linear-gradient(to right, #a6e22e 0%, #a6e22e 94%, rgba(166, 226, 46, 0) 100%);
+			background: linear-gradient(to right, white 0%, white 94%, rgba(255,255,255, 0) 100%);
 			-webkit-transition: width 0.3s;
 		}
 	#play {
@@ -150,7 +196,7 @@ content {
 	top: 40px;
 	left: 0;
 	right: 0;
-	bottom: 0;
+	bottom: 0px;
 }
 
 	sidebar,
@@ -161,13 +207,8 @@ content {
 		bottom: 0;
 		width: 220px;
 		background: rgba(255,255,255,0.05);
-		border-color: rgba(255,255,255,0.05);
-		border-style: solid;
-		border-width: 0;
 		box-sizing: border-box;
-	}
-	sidebar {
-		border-right-width: 1px;
+		background: rgba(0,0,0,.15);
 	}
 		#filetree {
 			list-style: none;
@@ -190,7 +231,7 @@ content {
 					background: rgba(255,255,255,0.05);
 				}
 					#filetree li .label .expand {
-						border-left: 6px solid #5A5A5A;
+						border-left: 6px solid white;
 						border-top: 4px solid transparent;
 						border-bottom: 4px solid transparent;
 						display: inline-block;
@@ -213,6 +254,7 @@ content {
 						font-size: 12px;
 						display: inline-block;
 						vertical-align: middle;
+						text-shadow: 0 1px 1px rgba(0,0,0,0.2);
 					}
 					#filetree li .label .icon {
 						-webkit-mask-position: center center;
@@ -252,48 +294,72 @@ content {
 		left: 220px;
 		right: 0;
 		bottom: 0;
+		box-shadow: -5px 0 5px -3px rgba(0,0,0,0.05);
+		border: 1px solid rgba(0,0,0,0.25);
+		border-bottom-width: 0;
+		border-right-width: 0;
 	}
 		
 		tabs {
 			position: absolute;
-			left: 0;
-			top: 0;
+			left: 10px;
+			top: 10px;
 			right: 0;
 			height: 25px;
-			border-bottom: 1px solid rgba(255,255,255,0.05);
 			box-sizing: border-box;
+			overflow: hidden;
 		}
 			tabs tab {
+				position: relative;
+				z-index: 1;
 				float: left;
 				width: 120px;
 				height: 25px;
-				border-right: 1px solid rgba(255,255,255,0.05);
 				text-align: center;
 				line-height: 25px;
 				box-sizing: border-box;
 				font-size: 12px;
 				color: #aaa;
-				border-bottom: 1px solid transparent;
+				background: #eee;
+				box-shadow: 0 0 10px rgba(0,0,0,0.2);
+			}
+			tabs tab + tab {
+				border-left: 1px solid rgba(0,0,0,0.15);
+			}
+			tabs tab.active + tab {
+				border-left-color: white;				
 			}
 			tabs tab.active {
-				color: white;
-				border-bottom-color: #262821;
+				color: #333;
+				position: relative;
+				z-index: 2;
+				box-shadow: 0 0 10px rgba(0,0,0,0.25);
+				background: white;
 			}
 				tabs tab * {
 					display: inline-block;
 					vertical-align: middle;
+					cursor: default;
 				}
 				tabs tab .close {
 					border-radius: 50%;
 					float: left;
-					background: rgba(255,255,255,0.2);
+					background: transparent;
 					width: 12px;
 					height: 12px;
 					margin: 6.5px;
-					color: white;
+					color: #333;
 					text-align: center;
 					line-height: 13px;
 					font-size: 6px;
+					cursor: default;
+					box-shadow: inset 0 0 2px rgba(0,0,0,0.5);
+				}
+				tabs tab .close:hover {
+					background: rgba(0,0,0,0.04);
+				}
+				tabs tab .close:active {
+					background: rgba(0,0,0,0.01);
 				}
 					tabs tab.changed .close .cross,
 					tabs tab .close .changed {
@@ -303,22 +369,61 @@ content {
 					tabs tab.changed .close .changed {
 						display: block;
 					}
-			
+					tabs tab.changed .close .changed {
+						margin: 4px;
+						width: 4px;
+						height: 4px;
+						background: rgba(0,0,0,0.1);
+						border-radius: 3px;
+					}
+		noeditorview,
 		editorview {
 			position: absolute;
-			left: 0;
-			top: 25px;
-			bottom: 0;
-			right: 220px;
-			display: none;
+			left: 10px;
+			top: 35px;
+			bottom: 10px;
+			right: 10px;
+			background: white;
+			overflow: auto;
+			box-shadow: 0 0 10px rgba(0,0,0,0.2);
 		}
-		editorview.active {
-			display: block;
+		editorview.widgets {
+			right: 230px;
 		}
+			editorview .viewWrap {
+				width: 100%;
+				height: 100%;
+			}
+			
+		noeditorview {
+			top: 10px;
+			padding: 20px;
+			text-align: center;
+		}
+			noeditorview h1 {
+				font-weight: 200;
+				text-align: center;
+				margin-bottom: 0.5em;
+			}
+			noeditorview p {
+				font-size: 18px;
+				font-weight: 300;
+				margin-bottom: 1em;
+			}
+			noeditorview p:last-child {
+				margin-bottom: 0;
+			}
+				noeditorview p a {
+					color: #00abff;
+					text-decoration: none;
+				}
+				noeditorview p a:hover {
+					text-decoration: underline;
+				}
 	
 		helper {
 			position: absolute;
-			top: 25px;
+			top: 0;
 			left: auto;
 			right: 0;
 			bottom: 0;
@@ -327,35 +432,39 @@ content {
 		}
 			helper block {
 				display: block;
-				margin: 4px;
+				background: white;
+				margin: 5px;
+				box-shadow: 0 5px 5px rgba(0,0,0,0.05);
+				overflow: hidden;
 			}
 				helper block title {
 					display: block;
 					padding: 4px 8px;
 					height: 18px;
 					line-height: 18px;
-					background: rgba(0,0,0,0.5);
+					background: #333;
 					font-size: 12px;
 					color: white;
 				}
 				helper block blockcontent {
 					display: block;
 					padding: 8px;
-					border: 1px solid rgba(0,0,0,0.5);
-					border-top: none;
 				}
 	
 	
 .CodeMirror {
 	font-size: 11px;
+	line-height: 13px;
 	font-family: "Menlo", monospace !important;
 	height: 100% !important;
-}	
+	background: white !important;
+}
 	.CodeMirror-gutters {
-		border-right: 1px solid rgba(255,255,255,0.05) !important;
+		background: transparent;
+		border-right: 1px solid #eee;
 	}
 	.CodeMirror-linenumber {
-		opacity: 0.1;
+		opacity: 0.5;
 	}
 	
 form {
@@ -363,17 +472,19 @@ form {
 }
 	form fieldset {
 		padding: 10px;
-		border: 1px solid rgba(255,255,255,0.2);
+		border: 1px solid rgba(0,0,0,0.1);
 		margin-bottom: 10px;
 	}
 		form fieldset legend {
 			font-size: 12px;
+			font-weight: 400;
 			padding: 0 4px;
-			color: rgba(255,255,255,0.5);
+			color: #333;
 		}
 		form fieldset row {
 			display: block;
-			margin-bottom: 1em;
+			overflow: hidden;
+			margin-bottom: 10px;
 		}
 		form fieldset row:after {
 			content: "";
@@ -385,27 +496,51 @@ form {
 		form fieldset label {
 			display: block;
 			font-size: 12px;
-			color: white;
+			color: #333;
+			font-weight: 300;
 			line-height: 16px;
 		}
 		form fieldset row label {
 			float: left;
 			width: 200px;
+			text-align: right;
+			line-height: 24px;
+			margin-right: 10px;
 		}
 		form input,
 		form textarea {
 			background: transparent;
-			border: 1px solid rgba(255,255,255,0.25);
-			background: rgba(0,0,0,0.1);
+			border: 1px solid rgba(0,0,0,0.15);
+			background: rgba(0,0,0,0.05);
 			border-radius: 2px;
 			padding: 4px;
 			font-family: inherit;
-			font-weight: inherit;
+			font-weight: 300;
 			font-size: 12px;
-			color: white;
+			color: #333;
 		}
 		form row input,
 		form row textarea {
 			float: left;
 			width: 200px;
 		}
+
+devtools {
+	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 300px;
+	
+	display: none;
+}
+	devtools iframe {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+		
+util {
+	display: none;
+}
