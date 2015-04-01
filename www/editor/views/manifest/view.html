@@ -39,7 +39,8 @@
 		<legend>Permissions</legend>
 		
 		<row>
-			<tags-input ng-model="manifest.permissions">
+			<label>Permissions</label>
+			<tags-input ng-model="manifest.permissions" placeholder="Add a permission">
 				<auto-complete source="autocompletePermissionTags($query)"></auto-complete>
 			</tags-input>
 		</row>
@@ -58,8 +59,21 @@
 						<input type="text" ng-model="trigger.id" />
 					</row>
 					<row>
+						<label>Importance</label>
+						<input type="range" min="0" max="1" step="0.01" ng-model="importance" /> {{importance}}
+					</row>
+					<row>
 						<label>Synonyms</label>
-						<tags-input ng-model="trigger.synonyms.en"></tags-input>
+						<tags-input ng-model="trigger.synonyms.en" placeholder="Add a synonym">
+							<auto-complete
+								class="reversed"
+								source="autocompleteSynonyms(trigger.id)"
+								min-length="0"
+								load-on-down-arrow="true"
+								load-on-empty="true"
+								load-on-focus="true"
+							></auto-complete>
+						</tags-input>
 					</row>
 				</li>
 			</ul>

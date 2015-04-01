@@ -1,7 +1,8 @@
-app.controller("editorCtrl", function($scope, $rootScope) {
+app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
     
 	$scope.files = {}; // files open
 	$scope.active = undefined; // currently viewing
+	$scope.fileHistory = [];
 	$scope.Object = Object;
 	
 	// open a new file
@@ -18,10 +19,10 @@ app.controller("editorCtrl", function($scope, $rootScope) {
     });
     
     $rootScope.$on('editor.close', function(){
-		$scope.close();
+		$scope.close( $scope.active );
     });
     
-    $rootScope.$on('devkit.close', function(){
+    windowEventsFactory.addToQueue('close', function(){
 	    
 		window.localStorage.files_open = '';
 		
@@ -32,7 +33,7 @@ app.controller("editorCtrl", function($scope, $rootScope) {
 		}
 		
 		window.localStorage.files_open = files_open.join(',');
-		
+						
     });
 	    
     $scope.open = function( file_path ){
@@ -56,35 +57,55 @@ app.controller("editorCtrl", function($scope, $rootScope) {
 	    }
 	    
 	    $scope.active = file_path;
+	    
+		$scope.fileHistory =  $scope.fileHistory.filter(function( file_path_history ){
+			return file_path_history != file_path;
+		});
+	    $scope.fileHistory.push( file_path );
+	    	    
+	    $rootScope.$emit('editor.focus.' + file_path );
+	    
 	    $scope.$apply();
 	    
 	}
     
     // close an item
     $scope.close = function( file_path ) {
-	    
-	    if( typeof $scope.active == 'undefined' ) return;
-	    
-	    var activeFile = $scope.files[ $scope.active ];
+	    	    
+	    var activeFile = $scope.files[ file_path ];
 	    
 	    // check for unsaved changes
 	    if( activeFile._changed ) {
 		    if( confirm("There are unsaved changes, close " + activeFile.name + " anyway?" ) ) {
-			    delete $scope.files[ $scope.active ];
-				window.localStorage.open_files.remove( file_path );
+			    delete $scope.files[ file_path ];
 		    }
 	    } else {
-		    delete $scope.files[ $scope.active ];
-			window.localStorage.open_files.remove( file_path );
+		    delete $scope.files[ file_path ];
 	    }
 		
 		// set last tab as active
 		// TODO: set last viewed tab as active
+		/*
 		if( Object.keys($scope.files).length > 0 ) {			
-			$scope.active = $scope.files[Object.keys($scope.files)[Object.keys($scope.files).length - 1]].path;
+			$scope.open( $scope.files[Object.keys($scope.files)[Object.keys($scope.files).length - 1]].path );
 		} else {
 			$scope.active = undefined;
 		}
+		*/
+		
+		// remove from file history
+		$scope.fileHistory =  $scope.fileHistory.filter(function( file_path_history ){
+			return file_path_history != file_path;
+		});
+						
+		// set last tab as active
+		if( $scope.fileHistory.length > 0 ) {
+			var lastFile = $scope.fileHistory[ $scope.fileHistory.length-1 ];
+			$scope.open( lastFile )
+		} else {
+			$scope.active = undefined;
+		}
+		
     }
 
     // write the file to disk	    

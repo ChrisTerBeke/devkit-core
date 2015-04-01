@@ -2,7 +2,7 @@ var os 			= require('os');
 var fs 			= require('os');
 var path		= require('path');
 
-app.controller("devkitCtrl", function($scope, $rootScope, $http) {
+app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFactory) {
 	
 	// variables
 	$rootScope.project = {};
@@ -14,35 +14,38 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http) {
 	var gui = require('nw.gui');
     var win = gui.Window.get();
     win.on('focus', function() {
-        $scope.focus = true;
-		$scope.$apply();
+		$scope.$apply(function(){
+		    $scope.focus = true;			
+		});
     });
     win.on('blur', function() {
-	    $scope.focus = false;
-		$scope.$apply();
+		$scope.$apply(function(){
+		    $scope.focus = false;
+		});
     });
 	window.addEventListener('blur', function(){
-		$scope.focus = false;
-		$scope.$apply();
+		$scope.$apply(function(){
+		    $scope.focus = false;			
+		});
 	});
 	window.addEventListener('focus', function(){
-		$scope.focus = true;
-		$scope.$apply();
+		$scope.$apply(function(){
+		    $scope.focus = true;			
+		});
 	});
 	
 	win.on('close', function() {
 		
 		// hide ourselves first
-		$scope.loaded = false;
-		$scope.$apply();
+		$scope.$apply(function(){
+			$scope.loaded = false;
+		});
 		
-		// emit closing
-		$rootScope.$emit('devkit.close');
-		
+		// fire all callbacks
+		windowEventsFactory.runQueue('close');
+				
 		// close for real
-		setTimeout(function(){
-			this.close(true);
-		}.bind(this), 1000);
+		this.close(true);
 		
 	});
 	
@@ -105,10 +108,6 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http) {
 	    console.log('progressbar', percent * 100 + '%')
 		$scope.progressbar = percent;
     });
-    
-	$scope.autocompletePermissionTags = function( query ){
-		return $http.get('./res/autocomplete/permissions.json');
-	}
 	
 	// stoplight button methods
 	$scope.minimize = function(){

@@ -24,32 +24,32 @@
 		<script type="text/javascript" src="./bower_components/angular-hotkeys/build/hotkeys.js"></script>
 		
 		<!-- angular-tags-input -->
-		<link rel="stylesheet" type="text/css" href="./bower_components/ng-tags-input/ng-tags-input.css" />
+		<!--<link rel="stylesheet" type="text/css" href="./bower_components/ng-tags-input/ng-tags-input.css" />-->
 		<script type="text/javascript" src="./bower_components/ng-tags-input/ng-tags-input.js"></script>
 		
 		<!-- devkit -->
 		<link rel="stylesheet" href="./css/style.css" type="text/css" />
 		<link rel="stylesheet" href="./css/font.css" type="text/css" />
+		
 		<script type="text/javascript" src="./js/devkit.js"></script>
+		
 		<script type="text/javascript" src="./js/devkit.devkitCtrl.js"></script>
 		<script type="text/javascript" src="./js/devkit.editorCtrl.js"></script>
 		<script type="text/javascript" src="./js/devkit.homeyCtrl.js"></script>
 		<script type="text/javascript" src="./js/devkit.sidebarCtrl.js"></script>
 		<script type="text/javascript" src="./js/devkit.widgetCtrl.js"></script>
-		<script type="text/javascript" src="./js/devkit.ledringWidgetCtrl.js"></script>
-		<script type="text/javascript" src="./js/devkit.codemirrorViewCtrl.js"></script>
-		<script type="text/javascript" src="./js/devkit.manifestViewCtrl.js"></script>
+		
 		<script type="text/javascript" src="./js/devkit.directives.js"></script>
-		<!--
 		<script type="text/javascript" src="./js/devkit.services.js"></script>
-		-->
+		
+		<script type="text/javascript" src="editor/widgets/ledring/widget.js"></script>
+		<script type="text/javascript" src="editor/views/codemirror/view.js"></script>
+		<script type="text/javascript" src="editor/views/manifest/view.js"></script>
 		
 	</head>
 	<body
 		class="os-{{platform}}"
 		ng-class="{ 'maximized': maximized, 'loaded': loaded, 'focus': focus }"
-		ng-blur="focus = false; alert('d')"
-		ng-focus="focus = true"
 	>
 				
 		<wrap>
@@ -93,12 +93,16 @@
 			
 			<content>
 				
-				<sidebar ng-controller="sidebarCtrl">
+				<sidebar
+					ng-controller="sidebarCtrl"
+					ng-right-click="showCtxmenu(false, $event)"
+				>
 				
 					<script type="text/ng-template" id="filetreeTmpl">
 							<span
 								ng-click="selected = true"
 								ng-dblclick="open( item.path )"
+								ng-right-click="showCtxmenu(item, $event)"
 								ng-class="{ 'selected___TODO': selected }"
 								class="label"
 							>
@@ -142,7 +146,7 @@
 							<tab
 								ng-repeat="file in files"
 								ng-init="active = false;"
-								ng-click="$parent.active = file.path;"
+								ng-click="open(file.path)"
 								ng-class="{ 'active': $parent.active == file.path, 'changed': file._changed }"
 							>
 								<span class="close" ng-click="close(file.path)">
@@ -155,13 +159,16 @@
 						</tabs>
 						
 						<editorviews>
-										
+							
 							<editorview
+								class="{{file._view}}"
 								ng-repeat="file in files"
-								ng-include="'editor/views/' + file._view + '.html'"
+								ng-include="'editor/views/' + file._view + '/view.html'"
 								ng-show="$parent.active == file.path"
 							>
 							</editorview>
+							
+							<link rel="stylesheet" type="text/css" ng-href="editor/views/{{file._view}}/view.css" ng-repeat="file in files" />
 							
 							<noeditorview ng-show="!active">
 								
@@ -189,8 +196,7 @@
 						ng-repeat="file in files"
 						ng-show="$parent.active == file.path && file._widgets.length > 0"
 					>
-						{{file.name}}
-						<widgetwrap ng-repeat="widget in file._widgets">
+						<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path">
 							<title>{{widget}}</title>
 							<link rel="stylesheet" type="text/css" ng-href="editor/widgets/{{widget}}/widget.css" />
 							<widget class="{{widget}}" ng-include="'editor/widgets/' + widget + '/widget.html'"></widgetcontent>

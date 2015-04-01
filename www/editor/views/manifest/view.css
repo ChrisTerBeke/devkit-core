@@ -1,0 +1,282 @@
+editorview.manifest {
+	padding: 10px;
+}
+	editorview.manifest fieldset {
+		padding: 10px;
+		border: 1px solid rgba(0,0,0,0.1);
+		margin-bottom: 10px;
+	}
+		editorview.manifest fieldset legend {
+			font-size: 12px;
+			font-weight: 400;
+			padding: 0 4px;
+			color: #333;
+		}
+		editorview.manifest fieldset row {
+			display: block;
+			margin-bottom: 10px;
+		}
+		editorview.manifest fieldset row:after {
+			content: "";
+			clear: both;
+			visibility: hidden;
+			display: block;
+			font-size: 0;
+			content: " ";
+			clear: both;
+			height: 0;
+		}
+		editorview.manifest fieldset row:last-child {
+			margin-bottom: 0;
+		}
+		editorview.manifest fieldset label {
+			display: block;
+			font-size: 12px;
+			color: #333;
+			font-weight: 300;
+			line-height: 16px;
+		}
+		editorview.manifest fieldset row label {
+			float: left;
+			width: 200px;
+			text-align: right;
+			line-height: 24px;
+			margin-right: 10px;
+		}
+		editorview.manifest input,
+		editorview.manifest textarea,
+		editorview.manifest tags-input .tags {
+			background: transparent;
+			border: 1px solid rgba(0,0,0,0.15);
+			background: rgba(0,0,0,0.05);
+			border-radius: 2px;
+			padding: 4px;
+			font-family: inherit;
+			font-weight: 300;
+			font-size: 12px;
+			color: #333;
+		}
+		editorview.manifest row input,
+		editorview.manifest row textarea {
+			float: left;
+			width: 200px;
+		}
+		
+		editorview.manifest ul {
+			list-style: none;
+		}
+		
+		/*
+		
+		editorview.manifest tags-input .host {
+			margin: 0;
+		}
+		
+		editorview.manifest tags-input .tags {
+			padding: 0;
+			box-shadow: none;
+		}
+		
+		editorview.manifest tags-input .tags .tag-item {
+			background: #222222;
+			border: none;
+			height: 24px;
+			line-height: 24px;
+			color: white;
+			font-family: inherit;
+			font-size: 12px;
+		}
+		editorview.manifest tags-input .tags .tag-item .remove-button {
+			font-family: inherit;
+			vertical-align: inherit;
+			opacity: 0.5;
+			margin: 0 2px;
+		}
+		editorview.manifest tags-input .tags .tag-item .remove-button:hover {
+			opacity: 1;
+		}
+		
+		*/
+		
+		
+		
+tags-input {
+  display: block;
+  float: left;
+  width: 208px;
+}
+tags-input *, tags-input *:before, tags-input *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+tags-input .host {
+  position: relative;
+  height: 100%;
+}
+tags-input .host:active {
+  outline: none;
+}
+
+tags-input .tags {
+  overflow: hidden;
+  word-wrap: break-word;
+  cursor: text;
+  height: 100%;
+  padding: 0 1px !important;
+}
+tags-input .tags.focused {
+  outline: none;
+}
+tags-input .tags .tag-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+tags-input .tags .tag-item {
+  margin: 2px 1px;
+  padding: 0 5px;
+  display: inline-block;
+  float: left;
+  height: 22px;
+  line-height: 24px;
+  font-size: 12px;
+  border-radius: 3px;
+  background: #222;
+  color: white;
+}
+tags-input .tags .tag-item.selected {
+	
+}
+tags-input .tags .tag-item .remove-button {
+  margin: 0 2px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: white;
+  opacity: 0.5;
+}
+tags-input .tags .tag-item .remove-button:hover {
+	opacity: 1;
+}
+tags-input .tags .tag-item .remove-button:active {
+	opacity: 0.5;
+}
+tags-input .tags .input {
+  border: 0;
+  outline: none;
+  margin: 2px;
+  padding: 0;
+  padding-left: 5px;
+  float: left;
+  height: 22px;
+}
+tags-input .tags .input.invalid-tag {
+  color: red;
+}
+tags-input .tags .input::-ms-clear {
+  display: none;
+}
+tags-input.ng-invalid .tags {
+	
+}
+tags-input[disabled] .host:focus {
+  outline: none;
+}
+tags-input[disabled] .tags {
+  background-color: #eeeeee;
+  cursor: default;
+}
+tags-input[disabled] .tags .tag-item {
+  opacity: 0.65;
+}
+tags-input[disabled] .tags .tag-item .remove-button {
+  cursor: default;
+}
+tags-input[disabled] .tags .tag-item .remove-button:active {
+  color: #585858;
+}
+tags-input[disabled] .tags .input {
+  background-color: #eeeeee;
+  cursor: default;
+}
+
+tags-input .autocomplete {
+  margin-top: 5px;
+  position: absolute;
+  z-index: 999;
+  width: 100%;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+tags-input auto-complete .autocomplete {
+	top: 35px;
+}
+tags-input auto-complete.reversed .autocomplete {
+	top: auto;
+	bottom: 45px;
+}
+tags-input auto-complete .autocomplete:before {
+	content: "";
+	position: absolute;
+	z-index: 2;
+	left: 10px;
+	top: -10px;
+	border-bottom: 10px solid white;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+}
+tags-input auto-complete.reversed .autocomplete:before {
+	border-bottom: none;
+	border-top: 10px solid white;
+	top: auto;
+	bottom: -10px;
+}
+tags-input auto-complete .autocomplete:after {
+	content: "";
+	position: absolute;
+	z-index: 1;
+	left: 9px;
+	top: -11px;
+	border-bottom: 11px solid rgba(0,0,0,0.2);
+	border-left: 11px solid transparent;
+	border-right: 11px solid transparent;
+}
+tags-input auto-complete.reversed .autocomplete:after {
+	border-bottom: none;
+	border-top: 11px solid rgba(0,0,0,0.2);;
+	top: auto;
+	bottom: -11px;
+}
+
+tags-input .autocomplete .suggestion-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  max-height: 280px;
+  overflow-y: auto;
+  position: relative;
+}
+tags-input .autocomplete .suggestion-item {
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: black;
+  background-color: white;
+  font-size: 12px;
+}
+tags-input .autocomplete .suggestion-item.selected {
+  text-decoration: underline;
+}
+tags-input .autocomplete .suggestion-item.selected em {
+	text-decoration: underline;
+}
+tags-input .autocomplete .suggestion-item em {
+  color: black;
+  background-color: white;
+}
