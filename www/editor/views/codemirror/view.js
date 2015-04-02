@@ -1,11 +1,13 @@
 app.controller("codemirrorViewCtrl", function( $scope, $rootScope, $http ){
-			
+	
 	$scope.codemirrorOpts = {
 		lineNumbers: true,
 //		theme: 'monokai',
 		mode: 'javascript',
 		indentWithTabs: true,
 		onLoad: function( _editor ){
+			
+			$scope.editor = _editor;
 		
 			// fix hidden bug
 			setTimeout( function(){
@@ -27,6 +29,13 @@ app.controller("codemirrorViewCtrl", function( $scope, $rootScope, $http ){
 	
     $rootScope.$on('editor.saveRequest.' + $scope.file.path, function(){	    	    
 		$rootScope.$emit('editor.performSave');
+    });
+    
+    $rootScope.$on('editor.focus.' + $scope.file.path, function(){	    
+	    setTimeout(function(){
+			$scope.editor.refresh();
+			$scope.editor.focus();
+		}, 1);
     });
 	
 });

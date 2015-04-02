@@ -20,3 +20,27 @@ app.directive('ngRightClick', function($parse) {
         });
     };
 });
+
+app.directive('fileDrop', function ( $parse ) {
+	return function (scope, element, attrs) {
+    	var fn = $parse(attrs.fileDrop);
+		element.bind('drop', function(event){
+        	scope.$apply(function() {
+				event.preventDefault();
+				event.stopPropagation();
+				var file = event.dataTransfer.files[0], reader = new FileReader();
+				fn(scope, {$event:event, file: file});
+			});
+		});
+		element.bind('dragover', function(event){
+        	scope.$apply(function() {
+				element.addClass('file-drop-over');
+			});
+		});
+		element.bind('dragleave', function(event){
+        	scope.$apply(function() {
+				element.removeClass('file-drop-over');
+			});
+		});
+	};
+});

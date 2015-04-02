@@ -65,7 +65,7 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 	    	    
 	    $rootScope.$emit('editor.focus.' + file_path );
 	    
-	    $scope.$apply();
+//	    $scope.$apply();
 	    
 	}
     
@@ -112,14 +112,10 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
     $scope.save = function(){
 	    
 	    if( typeof $scope.active == 'undefined' ) return;
-	    
-	    $rootScope.$emit('progressbar', 0);
-	    
+	   
 	    var activeFile = $scope.files[ $scope.active ];
 	    
 	    fs.writeFileSync( activeFile.path, activeFile.code );
-	    
-	    $rootScope.$emit('progressbar', 1);
 				
 		activeFile._changed = false;
 		

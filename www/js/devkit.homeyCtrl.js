@@ -75,9 +75,6 @@ app.controller("homeyCtrl", function($scope, $rootScope) {
 				}
 				$scope.$apply();
 				
-				
-//				alert(response)
-				
 			});
 		});
 	}

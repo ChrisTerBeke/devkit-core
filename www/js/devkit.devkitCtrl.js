@@ -9,6 +9,7 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFac
 	$scope.loaded = false;
 	$scope.platform = os.platform();
 	$scope.focus = true;
+	$scope.blurred = false;
 
 	// window focus/blurring	
 	var gui = require('nw.gui');
@@ -49,7 +50,15 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFac
 		
 	});
 	
+	$rootScope.$on('devkit.blur', function( event, blur ){
+		$scope.blurred = blur;
+	});
+	
 	// methods
+	$scope.emit = function( event ){
+		$rootScope.$emit( event );
+	}
+	
 	$scope.load = function( project_dir ){
 		
 		$rootScope.project.path = project_dir;
@@ -100,15 +109,7 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFac
 		}
 		
 	});
-	
-	// progressbar
-	$scope.progressbar = 0;
-	
-    $rootScope.$on('progressbar', function( event, percent ) {
-	    console.log('progressbar', percent * 100 + '%')
-		$scope.progressbar = percent;
-    });
-	
+		
 	// stoplight button methods
 	$scope.minimize = function(){
 		var gui = require('nw.gui');

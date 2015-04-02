@@ -55,6 +55,7 @@ editorview.manifest {
 			font-weight: 300;
 			font-size: 12px;
 			color: #333;
+			cursor: text;
 		}
 		editorview.manifest row input,
 		editorview.manifest row textarea {
@@ -66,40 +67,17 @@ editorview.manifest {
 			list-style: none;
 		}
 		
-		/*
-		
-		editorview.manifest tags-input .host {
-			margin: 0;
-		}
-		
-		editorview.manifest tags-input .tags {
-			padding: 0;
-			box-shadow: none;
-		}
-		
-		editorview.manifest tags-input .tags .tag-item {
-			background: #222222;
-			border: none;
-			height: 24px;
-			line-height: 24px;
-			color: white;
-			font-family: inherit;
-			font-size: 12px;
-		}
-		editorview.manifest tags-input .tags .tag-item .remove-button {
-			font-family: inherit;
-			vertical-align: inherit;
-			opacity: 0.5;
-			margin: 0 2px;
-		}
-		editorview.manifest tags-input .tags .tag-item .remove-button:hover {
-			opacity: 1;
-		}
-		
-		*/
-		
-		
-		
+editorview.manifest #manifest-icon {
+	width: 80px;
+	height: 80px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	background: url(./img/transparent.png) repeat;
+}
+editorview.manifest #manifest-icon.file-drop-over {
+	border-color: #333;
+}
+
 tags-input {
   display: block;
   float: left;

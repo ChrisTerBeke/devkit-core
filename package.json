@@ -24,5 +24,6 @@
     "height": 550,
     "min_width": 800,
     "min_height": 550
-  }
+  },
+  "node-remote": "https://devkit.athom.nl/auth/callback"
 }
