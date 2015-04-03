@@ -27,9 +27,16 @@ app.controller("authCtrl", function($scope, $rootScope, $http) {
 	$scope.getUserInfo = function(){
 		
 		$http
-			.get('https://api.athom.nl/homeyManager/homey')
+			.get('https://api.athom.nl/homey')
 			.success(function( data ){
-				console.log(data)
+				
+				$rootScope.user.logged_in = true;
+				
+				$rootScope.user.firstname 	= data.firstname;
+				$rootScope.user.lastname 	= data.lastname;
+				$rootScope.user.email 		= data.email;
+				$rootScope.user.homeys		= data.homeys;
+				
 			})
 			.error(function( data ){
 				console.log(data)
@@ -54,7 +61,7 @@ app.controller("authCtrl", function($scope, $rootScope, $http) {
 	});
 			
 	if(	typeof $rootScope.user == 'undefined' ) {
-		//$scope.logout();
+		$scope.logout();
 	}
 	
 });

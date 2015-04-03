@@ -2,6 +2,7 @@
 	margin: 0;
 	padding: 0;
 	border: none;
+	outline: none;
 }
 
 .table {
@@ -711,3 +712,36 @@ auth.visible {
 		width: 100%;
 		height: 100%;
 	}
+	
+button {
+	display: inline-block;
+	background: #eee;
+	border: 1px solid rgba(0,0,0,0.1);
+	border-radius: 3px;
+	padding: 4px 10px;
+}
+button:hover {
+	background: #f9f9f9;	
+}
+button:active {
+	background: #e3e3e3;	
+}
+
+button .label {
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 13px;
+	color: #333;	
+}
+button .icon {
+	display: inline-block;
+	vertical-align: middle;
+	width: 10px;
+	height: 10px;
+	-webkit-mask-repeat: no-repeat;
+	-webkit-mask-position: center center;
+	-webkit-mask-size: contain;
+	background: #333;
+	margin-right: 3px;
+}
+button .icon-add { -webkit-mask-image: url(../img/icon/add.svg); }

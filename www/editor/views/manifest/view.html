@@ -50,12 +50,15 @@
 	</fieldset>
 	
 	<fieldset>
-		<legend>Speech input</legend>
+		<legend>Speech Triggers</legend>
 		
 		<div class="row">
 			
 			<ul class="triggers">
-				<li ng-repeat="trigger in manifest.interfaces.speech.triggers">
+				<li class="trigger" ng-repeat="trigger in manifest.interfaces.speech.triggers">
+				
+					<div class="remove" ng-click="removeTrigger(trigger)">✕</div>
+				
 					<row>
 						<label>Trigger ID</label>
 						<input type="text" ng-model="trigger.id" />
@@ -78,8 +81,11 @@
 						</tags-input>
 					</row>
 				</li>
-				<li>
-					<div ng-click="addTrigger()">Add trigger</div>
+				<li class="addTrigger" ng-click="addTrigger()">
+					<button>
+						<span class="icon icon-add"></span>
+						<span class="label">Add trigger</span>
+					</button>
 				</li>
 			</ul>
 			

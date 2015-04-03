@@ -85,7 +85,7 @@
 				<div id="user">
 					
 					<div ng-click="emit('auth.login')">
-						<div class="name">{{user.name_first || 'Log in'}}</div>
+						<div class="name">{{user.firstname || 'Log in'}}</div>
 						<img ng-src="{{user.avatar.small || './img/avatar-fallback.jpg'}}" />
 					</div>
 					
@@ -97,8 +97,8 @@
 							</span>
 							<ul class="homeys">
 								<li ng-repeat="homey in user.homeys">
-									<label class="label" for="activeHomey-{{id}}">
-										<input type="radio" id="activeHomey-{{id}}" name="activeHomey" ng-model="activeHomey" value="{{homey.id}}">
+									<label class="label" for="activeHomey-{{homey._id}}">
+										<input type="radio" id="activeHomey-{{homey._id}}" name="activeHomey" ng-model="activeHomey" value="{{homey._id}}">
 										<span class="title">{{homey.name}}</span>
 									</label>
 								</li>

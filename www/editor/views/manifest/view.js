@@ -46,6 +46,11 @@ app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q ){
 	    });
     }
     
+    $scope.removeTrigger = function( trigger ) {
+		var index = $scope.manifest.interfaces.speech.triggers.indexOf(trigger);
+		$scope.manifest.interfaces.speech.triggers.splice(index, 1);     
+    }
+    
     $scope.received = function( event, file ) {
 	    
 	    if( file.type != 'image/svg+xml' ) {
