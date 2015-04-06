@@ -86,7 +86,7 @@
 					
 					<div ng-click="emit('auth.login')">
 						<div class="name">{{user.firstname || 'Log in'}}</div>
-						<img ng-src="{{user.avatar.small || './img/avatar-fallback.jpg'}}" />
+						<img ng-src="{{user.avatar || './img/avatar-fallback.jpg'}}?size=30" />
 					</div>
 					
 					<ul class="dropdown" ng-show="user.logged_in">

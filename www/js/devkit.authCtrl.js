@@ -8,6 +8,7 @@ app.controller("authCtrl", function($scope, $rootScope, $http) {
 	});
 	
 	$rootScope.$on('auth.logout', function(){
+		alert('logout')
 		$scope.logout();
 	});
 	
@@ -27,21 +28,33 @@ app.controller("authCtrl", function($scope, $rootScope, $http) {
 	$scope.getUserInfo = function(){
 		
 		$http
-			.get('https://api.athom.nl/homey')
+			.get('https://api.athom.nl/user/me')
 			.success(function( data ){
-				
+												
 				$rootScope.user.logged_in = true;
 				
 				$rootScope.user.firstname 	= data.firstname;
 				$rootScope.user.lastname 	= data.lastname;
 				$rootScope.user.email 		= data.email;
-				$rootScope.user.homeys		= data.homeys;
+				$rootScope.user.avatar 		= data.avatar;
 				
 			})
 			.error(function( data ){
 				console.log(data)
 			});
 		
+	}
+	
+	$scope.getHomeys = function(){
+		
+		$http
+			.get('https://api.athom.nl/homey')
+			.success(function( data ){
+				$rootScope.user.homeys = data;				
+			})
+			.error(function( data ){
+				console.log(data)
+			});
 	}
 
 	// listen for a message from the iframe
@@ -56,6 +69,7 @@ app.controller("authCtrl", function($scope, $rootScope, $http) {
 			$scope.url = '';
 			
 			$scope.getUserInfo();
+			$scope.getHomeys();
 			
 		});
 	});

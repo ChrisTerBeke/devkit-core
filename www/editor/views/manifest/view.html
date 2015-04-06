@@ -3,8 +3,9 @@
 	<fieldset>
 		<legend>General</legend>
 		
-		<img id="manifest-icon" ng-src="{{iconUrl}}" file-drop="received($event, file)" />
-		
+		<row>
+			<label>Icon</label>
+			<img id="manifest-icon" ng-src="{{iconUrl}}" file-drop="received($event, file)" />
 		<row>
 			<label>Name</label>
 			<input type="text" ng-model="manifest.name.en" />
