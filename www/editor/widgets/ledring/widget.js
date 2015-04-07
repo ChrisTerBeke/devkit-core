@@ -27,10 +27,15 @@ app.controller("ledringWidgetCtrl", function( $scope, $rootScope, $http, $interv
 		var homeyCode = 'global.Homey = { color: require("' + oneColorPath + '") }; ';
 		var code = homeyCode + $scope.$parent.files[ $scope.$parent.active ].code;
 		
+		console.log( code );
+		
 		var animation = requireFromString( code );
+		
+		console.log(animation)
 		
 		try {
 			animation = animation();	
+			console.log(animation)
 			$scope.animation = animation;
 		} catch( e ) {
 			// TODO: display nicely

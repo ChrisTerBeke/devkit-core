@@ -1,0 +1,878 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose readDependencies using package.json deps
+5 verbose install where, deps [ '/Users/emile/Bitbucket/homey-devkit',
+5 verbose install   [ 'archiver',
+5 verbose install     'fs-extra',
+5 verbose install     'fs-watch-tree',
+5 verbose install     'open',
+5 verbose install     'request',
+5 verbose install     'semver',
+5 verbose install     'tmp',
+5 verbose install     'trash' ] ]
+6 info preinstall devkit@1.0.0
+7 verbose readDependencies using package.json deps
+8 verbose cache add [ 'fs-extra@^0.18.0', null ]
+9 verbose cache add name=undefined spec="fs-extra@^0.18.0" args=["fs-extra@^0.18.0",null]
+10 verbose parsed url { protocol: null,
+10 verbose parsed url   slashes: null,
+10 verbose parsed url   auth: null,
+10 verbose parsed url   host: null,
+10 verbose parsed url   port: null,
+10 verbose parsed url   hostname: null,
+10 verbose parsed url   hash: null,
+10 verbose parsed url   search: null,
+10 verbose parsed url   query: null,
+10 verbose parsed url   pathname: 'fs-extra@^0.18.0',
+10 verbose parsed url   path: 'fs-extra@^0.18.0',
+10 verbose parsed url   href: 'fs-extra@^0.18.0' }
+11 verbose cache add [ 'fs-watch-tree@^0.2.5', null ]
+12 verbose cache add name=undefined spec="fs-watch-tree@^0.2.5" args=["fs-watch-tree@^0.2.5",null]
+13 verbose parsed url { protocol: null,
+13 verbose parsed url   slashes: null,
+13 verbose parsed url   auth: null,
+13 verbose parsed url   host: null,
+13 verbose parsed url   port: null,
+13 verbose parsed url   hostname: null,
+13 verbose parsed url   hash: null,
+13 verbose parsed url   search: null,
+13 verbose parsed url   query: null,
+13 verbose parsed url   pathname: 'fs-watch-tree@^0.2.5',
+13 verbose parsed url   path: 'fs-watch-tree@^0.2.5',
+13 verbose parsed url   href: 'fs-watch-tree@^0.2.5' }
+14 verbose cache add [ 'open@0.0.5', null ]
+15 verbose cache add name=undefined spec="open@0.0.5" args=["open@0.0.5",null]
+16 verbose parsed url { protocol: null,
+16 verbose parsed url   slashes: null,
+16 verbose parsed url   auth: null,
+16 verbose parsed url   host: null,
+16 verbose parsed url   port: null,
+16 verbose parsed url   hostname: null,
+16 verbose parsed url   hash: null,
+16 verbose parsed url   search: null,
+16 verbose parsed url   query: null,
+16 verbose parsed url   pathname: 'open@0.0.5',
+16 verbose parsed url   path: 'open@0.0.5',
+16 verbose parsed url   href: 'open@0.0.5' }
+17 verbose cache add [ 'request@^2.54.0', null ]
+18 verbose cache add name=undefined spec="request@^2.54.0" args=["request@^2.54.0",null]
+19 verbose parsed url { protocol: null,
+19 verbose parsed url   slashes: null,
+19 verbose parsed url   auth: null,
+19 verbose parsed url   host: null,
+19 verbose parsed url   port: null,
+19 verbose parsed url   hostname: null,
+19 verbose parsed url   hash: null,
+19 verbose parsed url   search: null,
+19 verbose parsed url   query: null,
+19 verbose parsed url   pathname: 'request@^2.54.0',
+19 verbose parsed url   path: 'request@^2.54.0',
+19 verbose parsed url   href: 'request@^2.54.0' }
+20 verbose cache add name="fs-extra" spec="^0.18.0" args=["fs-extra","^0.18.0"]
+21 verbose parsed url { protocol: null,
+21 verbose parsed url   slashes: null,
+21 verbose parsed url   auth: null,
+21 verbose parsed url   host: null,
+21 verbose parsed url   port: null,
+21 verbose parsed url   hostname: null,
+21 verbose parsed url   hash: null,
+21 verbose parsed url   search: null,
+21 verbose parsed url   query: null,
+21 verbose parsed url   pathname: '^0.18.0',
+21 verbose parsed url   path: '^0.18.0',
+21 verbose parsed url   href: '^0.18.0' }
+22 verbose addNamed [ 'fs-extra', '^0.18.0' ]
+23 verbose addNamed [ null, '>=0.18.0-0 <0.19.0-0' ]
+24 verbose cache add name="fs-watch-tree" spec="^0.2.5" args=["fs-watch-tree","^0.2.5"]
+25 verbose parsed url { protocol: null,
+25 verbose parsed url   slashes: null,
+25 verbose parsed url   auth: null,
+25 verbose parsed url   host: null,
+25 verbose parsed url   port: null,
+25 verbose parsed url   hostname: null,
+25 verbose parsed url   hash: null,
+25 verbose parsed url   search: null,
+25 verbose parsed url   query: null,
+25 verbose parsed url   pathname: '^0.2.5',
+25 verbose parsed url   path: '^0.2.5',
+25 verbose parsed url   href: '^0.2.5' }
+26 verbose addNamed [ 'fs-watch-tree', '^0.2.5' ]
+27 verbose addNamed [ null, '>=0.2.5-0 <0.3.0-0' ]
+28 verbose cache add name="open" spec="0.0.5" args=["open","0.0.5"]
+29 verbose parsed url { protocol: null,
+29 verbose parsed url   slashes: null,
+29 verbose parsed url   auth: null,
+29 verbose parsed url   host: null,
+29 verbose parsed url   port: null,
+29 verbose parsed url   hostname: null,
+29 verbose parsed url   hash: null,
+29 verbose parsed url   search: null,
+29 verbose parsed url   query: null,
+29 verbose parsed url   pathname: '0.0.5',
+29 verbose parsed url   path: '0.0.5',
+29 verbose parsed url   href: '0.0.5' }
+30 verbose addNamed [ 'open', '0.0.5' ]
+31 verbose addNamed [ '0.0.5', '0.0.5' ]
+32 verbose cache add [ 'semver@*', null ]
+33 verbose cache add name=undefined spec="semver@*" args=["semver@*",null]
+34 verbose parsed url { protocol: null,
+34 verbose parsed url   slashes: null,
+34 verbose parsed url   auth: null,
+34 verbose parsed url   host: null,
+34 verbose parsed url   port: null,
+34 verbose parsed url   hostname: null,
+34 verbose parsed url   hash: null,
+34 verbose parsed url   search: null,
+34 verbose parsed url   query: null,
+34 verbose parsed url   pathname: 'semver@*',
+34 verbose parsed url   path: 'semver@*',
+34 verbose parsed url   href: 'semver@*' }
+35 verbose cache add [ 'tmp@0.0.25', null ]
+36 verbose cache add name=undefined spec="tmp@0.0.25" args=["tmp@0.0.25",null]
+37 verbose parsed url { protocol: null,
+37 verbose parsed url   slashes: null,
+37 verbose parsed url   auth: null,
+37 verbose parsed url   host: null,
+37 verbose parsed url   port: null,
+37 verbose parsed url   hostname: null,
+37 verbose parsed url   hash: null,
+37 verbose parsed url   search: null,
+37 verbose parsed url   query: null,
+37 verbose parsed url   pathname: 'tmp@0.0.25',
+37 verbose parsed url   path: 'tmp@0.0.25',
+37 verbose parsed url   href: 'tmp@0.0.25' }
+38 verbose cache add name="request" spec="^2.54.0" args=["request","^2.54.0"]
+39 verbose parsed url { protocol: null,
+39 verbose parsed url   slashes: null,
+39 verbose parsed url   auth: null,
+39 verbose parsed url   host: null,
+39 verbose parsed url   port: null,
+39 verbose parsed url   hostname: null,
+39 verbose parsed url   hash: null,
+39 verbose parsed url   search: null,
+39 verbose parsed url   query: null,
+39 verbose parsed url   pathname: '^2.54.0',
+39 verbose parsed url   path: '^2.54.0',
+39 verbose parsed url   href: '^2.54.0' }
+40 verbose addNamed [ 'request', '^2.54.0' ]
+41 verbose addNamed [ null, '>=2.54.0-0 <3.0.0-0' ]
+42 silly lockFile db603eae-fs-extra-0-18-0 fs-extra@^0.18.0
+43 verbose lock fs-extra@^0.18.0 /Users/emile/.npm/db603eae-fs-extra-0-18-0.lock
+44 silly lockFile 719fa03d-fs-watch-tree-0-2-5 fs-watch-tree@^0.2.5
+45 verbose lock fs-watch-tree@^0.2.5 /Users/emile/.npm/719fa03d-fs-watch-tree-0-2-5.lock
+46 silly lockFile c6d41519-open-0-0-5 open@0.0.5
+47 verbose lock open@0.0.5 /Users/emile/.npm/c6d41519-open-0-0-5.lock
+48 silly lockFile d4c1f396-request-2-54-0 request@^2.54.0
+49 verbose lock request@^2.54.0 /Users/emile/.npm/d4c1f396-request-2-54-0.lock
+50 verbose cache add name="semver" spec="*" args=["semver","*"]
+51 verbose parsed url { protocol: null,
+51 verbose parsed url   slashes: null,
+51 verbose parsed url   auth: null,
+51 verbose parsed url   host: null,
+51 verbose parsed url   port: null,
+51 verbose parsed url   hostname: null,
+51 verbose parsed url   hash: null,
+51 verbose parsed url   search: null,
+51 verbose parsed url   query: null,
+51 verbose parsed url   pathname: '*',
+51 verbose parsed url   path: '*',
+51 verbose parsed url   href: '*' }
+52 verbose addNamed [ 'semver', '*' ]
+53 verbose addNamed [ null, '*' ]
+54 silly lockFile b5fa7ad1-semver semver@*
+55 verbose lock semver@* /Users/emile/.npm/b5fa7ad1-semver.lock
+56 verbose cache add [ 'trash@^1.4.1', null ]
+57 verbose cache add name=undefined spec="trash@^1.4.1" args=["trash@^1.4.1",null]
+58 verbose parsed url { protocol: null,
+58 verbose parsed url   slashes: null,
+58 verbose parsed url   auth: null,
+58 verbose parsed url   host: null,
+58 verbose parsed url   port: null,
+58 verbose parsed url   hostname: null,
+58 verbose parsed url   hash: null,
+58 verbose parsed url   search: null,
+58 verbose parsed url   query: null,
+58 verbose parsed url   pathname: 'trash@^1.4.1',
+58 verbose parsed url   path: 'trash@^1.4.1',
+58 verbose parsed url   href: 'trash@^1.4.1' }
+59 verbose cache add [ 'archiver@^0.14.3', null ]
+60 verbose cache add name=undefined spec="archiver@^0.14.3" args=["archiver@^0.14.3",null]
+61 verbose parsed url { protocol: null,
+61 verbose parsed url   slashes: null,
+61 verbose parsed url   auth: null,
+61 verbose parsed url   host: null,
+61 verbose parsed url   port: null,
+61 verbose parsed url   hostname: null,
+61 verbose parsed url   hash: null,
+61 verbose parsed url   search: null,
+61 verbose parsed url   query: null,
+61 verbose parsed url   pathname: 'archiver@^0.14.3',
+61 verbose parsed url   path: 'archiver@^0.14.3',
+61 verbose parsed url   href: 'archiver@^0.14.3' }
+62 verbose cache add name="tmp" spec="0.0.25" args=["tmp","0.0.25"]
+63 verbose parsed url { protocol: null,
+63 verbose parsed url   slashes: null,
+63 verbose parsed url   auth: null,
+63 verbose parsed url   host: null,
+63 verbose parsed url   port: null,
+63 verbose parsed url   hostname: null,
+63 verbose parsed url   hash: null,
+63 verbose parsed url   search: null,
+63 verbose parsed url   query: null,
+63 verbose parsed url   pathname: '0.0.25',
+63 verbose parsed url   path: '0.0.25',
+63 verbose parsed url   href: '0.0.25' }
+64 verbose addNamed [ 'tmp', '0.0.25' ]
+65 verbose addNamed [ '0.0.25', '0.0.25' ]
+66 silly lockFile eb279425-tmp-0-0-25 tmp@0.0.25
+67 verbose lock tmp@0.0.25 /Users/emile/.npm/eb279425-tmp-0-0-25.lock
+68 verbose cache add name="trash" spec="^1.4.1" args=["trash","^1.4.1"]
+69 verbose parsed url { protocol: null,
+69 verbose parsed url   slashes: null,
+69 verbose parsed url   auth: null,
+69 verbose parsed url   host: null,
+69 verbose parsed url   port: null,
+69 verbose parsed url   hostname: null,
+69 verbose parsed url   hash: null,
+69 verbose parsed url   search: null,
+69 verbose parsed url   query: null,
+69 verbose parsed url   pathname: '^1.4.1',
+69 verbose parsed url   path: '^1.4.1',
+69 verbose parsed url   href: '^1.4.1' }
+70 verbose addNamed [ 'trash', '^1.4.1' ]
+71 verbose addNamed [ null, '>=1.4.1-0 <2.0.0-0' ]
+72 silly lockFile 414ca931-trash-1-4-1 trash@^1.4.1
+73 verbose lock trash@^1.4.1 /Users/emile/.npm/414ca931-trash-1-4-1.lock
+74 verbose cache add name="archiver" spec="^0.14.3" args=["archiver","^0.14.3"]
+75 verbose parsed url { protocol: null,
+75 verbose parsed url   slashes: null,
+75 verbose parsed url   auth: null,
+75 verbose parsed url   host: null,
+75 verbose parsed url   port: null,
+75 verbose parsed url   hostname: null,
+75 verbose parsed url   hash: null,
+75 verbose parsed url   search: null,
+75 verbose parsed url   query: null,
+75 verbose parsed url   pathname: '^0.14.3',
+75 verbose parsed url   path: '^0.14.3',
+75 verbose parsed url   href: '^0.14.3' }
+76 verbose addNamed [ 'archiver', '^0.14.3' ]
+77 verbose addNamed [ null, '>=0.14.3-0 <0.15.0-0' ]
+78 silly lockFile 319abca3-archiver-0-14-3 archiver@^0.14.3
+79 verbose lock archiver@^0.14.3 /Users/emile/.npm/319abca3-archiver-0-14-3.lock
+80 silly addNameRange { name: 'fs-extra',
+80 silly addNameRange   range: '>=0.18.0-0 <0.19.0-0',
+80 silly addNameRange   hasData: false }
+81 silly addNameRange { name: 'fs-watch-tree',
+81 silly addNameRange   range: '>=0.2.5-0 <0.3.0-0',
+81 silly addNameRange   hasData: false }
+82 silly addNameRange { name: 'request', range: '>=2.54.0-0 <3.0.0-0', hasData: false }
+83 silly addNameRange { name: 'semver', range: '*', hasData: false }
+84 verbose request where is /fs-watch-tree
+85 verbose request registry https://registry.npmjs.org/
+86 verbose request id d788caa09d2ff388
+87 verbose url raw /fs-watch-tree
+88 verbose url resolving [ 'https://registry.npmjs.org/', './fs-watch-tree' ]
+89 verbose url resolved https://registry.npmjs.org/fs-watch-tree
+90 verbose request where is https://registry.npmjs.org/fs-watch-tree
+91 info trying registry request attempt 1 at 12:12:43
+92 http GET https://registry.npmjs.org/fs-watch-tree
+93 silly addNameRange { name: 'trash', range: '>=1.4.1-0 <2.0.0-0', hasData: false }
+94 verbose request where is /open
+95 verbose request registry https://registry.npmjs.org/
+96 verbose url raw /open
+97 verbose url resolving [ 'https://registry.npmjs.org/', './open' ]
+98 verbose url resolved https://registry.npmjs.org/open
+99 verbose request where is https://registry.npmjs.org/open
+100 info trying registry request attempt 1 at 12:12:43
+101 http GET https://registry.npmjs.org/open
+102 silly addNameRange { name: 'archiver',
+102 silly addNameRange   range: '>=0.14.3-0 <0.15.0-0',
+102 silly addNameRange   hasData: false }
+103 verbose request where is /trash
+104 verbose request registry https://registry.npmjs.org/
+105 verbose url raw /trash
+106 verbose url resolving [ 'https://registry.npmjs.org/', './trash' ]
+107 verbose url resolved https://registry.npmjs.org/trash
+108 verbose request where is https://registry.npmjs.org/trash
+109 info trying registry request attempt 1 at 12:12:43
+110 http GET https://registry.npmjs.org/trash
+111 verbose request where is /fs-extra
+112 verbose request registry https://registry.npmjs.org/
+113 verbose url raw /fs-extra
+114 verbose url resolving [ 'https://registry.npmjs.org/', './fs-extra' ]
+115 verbose url resolved https://registry.npmjs.org/fs-extra
+116 verbose request where is https://registry.npmjs.org/fs-extra
+117 info trying registry request attempt 1 at 12:12:43
+118 verbose etag "5GIWV4AXL5SCEXI5XFTIT2GMI"
+119 http GET https://registry.npmjs.org/fs-extra
+120 verbose request where is /semver
+121 verbose request registry https://registry.npmjs.org/
+122 verbose url raw /semver
+123 verbose url resolving [ 'https://registry.npmjs.org/', './semver' ]
+124 verbose url resolved https://registry.npmjs.org/semver
+125 verbose request where is https://registry.npmjs.org/semver
+126 info trying registry request attempt 1 at 12:12:43
+127 verbose etag "3769X09SAZVFUVS7S7SE2W518"
+128 http GET https://registry.npmjs.org/semver
+129 verbose request where is /request
+130 verbose request registry https://registry.npmjs.org/
+131 verbose url raw /request
+132 verbose url resolving [ 'https://registry.npmjs.org/', './request' ]
+133 verbose url resolved https://registry.npmjs.org/request
+134 verbose request where is https://registry.npmjs.org/request
+135 info trying registry request attempt 1 at 12:12:43
+136 verbose etag "59AOB20PNC7QOX0ODXRK2R73U"
+137 http GET https://registry.npmjs.org/request
+138 verbose request where is /tmp
+139 verbose request registry https://registry.npmjs.org/
+140 verbose url raw /tmp
+141 verbose url resolving [ 'https://registry.npmjs.org/', './tmp' ]
+142 verbose url resolved https://registry.npmjs.org/tmp
+143 verbose request where is https://registry.npmjs.org/tmp
+144 info trying registry request attempt 1 at 12:12:43
+145 verbose etag "9WSW7ZAG0IV5ULD9IXICBJU4Q"
+146 http GET https://registry.npmjs.org/tmp
+147 verbose request where is /archiver
+148 verbose request registry https://registry.npmjs.org/
+149 verbose url raw /archiver
+150 verbose url resolving [ 'https://registry.npmjs.org/', './archiver' ]
+151 verbose url resolved https://registry.npmjs.org/archiver
+152 verbose request where is https://registry.npmjs.org/archiver
+153 info trying registry request attempt 1 at 12:12:43
+154 verbose etag "3FFYM10E3M7S3T84WG24OJ87I"
+155 http GET https://registry.npmjs.org/archiver
+156 http 304 https://registry.npmjs.org/semver
+157 silly registry.get cb [ 304,
+157 silly registry.get   { date: 'Sat, 04 Apr 2015 10:12:41 GMT',
+157 silly registry.get     server: 'Apache',
+157 silly registry.get     via: '1.1 varnish',
+157 silly registry.get     'last-modified': 'Sat, 04 Apr 2015 10:12:41 GMT',
+157 silly registry.get     'cache-control': 'max-age=60',
+157 silly registry.get     etag: '"3769X09SAZVFUVS7S7SE2W518"',
+157 silly registry.get     age: '55',
+157 silly registry.get     'x-served-by': 'cache-ams4143-AMS',
+157 silly registry.get     'x-cache': 'HIT',
+157 silly registry.get     'x-cache-hits': '1',
+157 silly registry.get     'x-timer': 'S1428142361.049838,VS0,VE0',
+157 silly registry.get     vary: 'Accept',
+157 silly registry.get     'content-length': '0',
+157 silly registry.get     'keep-alive': 'timeout=10, max=50',
+157 silly registry.get     connection: 'Keep-Alive' } ]
+158 verbose etag https://registry.npmjs.org/semver from cache
+159 silly addNameRange number 2 { name: 'semver', range: '*', hasData: true }
+160 silly addNameRange versions [ 'semver',
+160 silly addNameRange   [ '1.0.0',
+160 silly addNameRange     '1.0.1',
+160 silly addNameRange     '1.0.2',
+160 silly addNameRange     '1.0.3',
+160 silly addNameRange     '1.0.4',
+160 silly addNameRange     '1.0.5',
+160 silly addNameRange     '1.0.6',
+160 silly addNameRange     '1.0.7',
+160 silly addNameRange     '1.0.8',
+160 silly addNameRange     '1.0.9',
+160 silly addNameRange     '1.0.10',
+160 silly addNameRange     '1.0.11',
+160 silly addNameRange     '1.0.12',
+160 silly addNameRange     '1.0.13',
+160 silly addNameRange     '1.0.14',
+160 silly addNameRange     '1.1.0',
+160 silly addNameRange     '1.1.1',
+160 silly addNameRange     '1.1.2',
+160 silly addNameRange     '1.1.3',
+160 silly addNameRange     '1.1.4',
+160 silly addNameRange     '2.0.0-alpha',
+160 silly addNameRange     '2.0.0-beta',
+160 silly addNameRange     '2.0.1',
+160 silly addNameRange     '2.0.2',
+160 silly addNameRange     '2.0.3',
+160 silly addNameRange     '2.0.4',
+160 silly addNameRange     '2.0.5',
+160 silly addNameRange     '2.0.6',
+160 silly addNameRange     '2.0.7',
+160 silly addNameRange     '2.0.8',
+160 silly addNameRange     '2.0.9',
+160 silly addNameRange     '2.0.10',
+160 silly addNameRange     '2.0.11',
+160 silly addNameRange     '2.1.0',
+160 silly addNameRange     '2.2.0',
+160 silly addNameRange     '2.2.1',
+160 silly addNameRange     '2.3.0',
+160 silly addNameRange     '2.3.1',
+160 silly addNameRange     '2.3.2',
+160 silly addNameRange     '3.0.0',
+160 silly addNameRange     '3.0.1',
+160 silly addNameRange     '4.0.0',
+160 silly addNameRange     '4.0.2',
+160 silly addNameRange     '4.0.3',
+160 silly addNameRange     '4.1.0',
+160 silly addNameRange     '4.1.1',
+160 silly addNameRange     '4.2.0',
+160 silly addNameRange     '4.2.1',
+160 silly addNameRange     '4.2.2',
+160 silly addNameRange     '4.3.0',
+160 silly addNameRange     '4.3.1',
+160 silly addNameRange     '4.3.2',
+160 silly addNameRange     '4.3.3' ] ]
+161 verbose addNamed [ 'semver', '4.3.3' ]
+162 verbose addNamed [ '4.3.3', '4.3.3' ]
+163 silly lockFile 593e89d7-semver-4-3-3 semver@4.3.3
+164 verbose lock semver@4.3.3 /Users/emile/.npm/593e89d7-semver-4-3-3.lock
+165 silly lockFile f2317a8d-pmjs-org-semver-semver-4-3-3-tgz https://registry.npmjs.org/semver/-/semver-4.3.3.tgz
+166 verbose lock https://registry.npmjs.org/semver/-/semver-4.3.3.tgz /Users/emile/.npm/f2317a8d-pmjs-org-semver-semver-4-3-3-tgz.lock
+167 verbose addRemoteTarball [ 'https://registry.npmjs.org/semver/-/semver-4.3.3.tgz',
+167 verbose addRemoteTarball   '15466b61220bc371cd8f0e666a9f785329ea8228' ]
+168 info retry fetch attempt 1 at 12:12:43
+169 verbose fetch to= /var/folders/_8/51xyzn912rg84_0pdxb01yjw0000gn/T/npm-17720-gXzgrq4A/registry.npmjs.org/semver/-/semver-4.3.3.tgz
+170 http GET https://registry.npmjs.org/semver/-/semver-4.3.3.tgz
+171 http 200 https://registry.npmjs.org/fs-extra
+172 silly registry.get cb [ 200,
+172 silly registry.get   { date: 'Sat, 04 Apr 2015 10:12:41 GMT',
+172 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+172 silly registry.get     etag: '"8FALMA91A1WNWOUD898U25YNS"',
+172 silly registry.get     'content-type': 'application/json',
+172 silly registry.get     'cache-control': 'max-age=60',
+172 silly registry.get     'content-length': '68756',
+172 silly registry.get     'accept-ranges': 'bytes',
+172 silly registry.get     via: '1.1 varnish',
+172 silly registry.get     age: '53',
+172 silly registry.get     'x-served-by': 'cache-ams4123-AMS',
+172 silly registry.get     'x-cache': 'HIT',
+172 silly registry.get     'x-cache-hits': '1',
+172 silly registry.get     'x-timer': 'S1428142361.030539,VS0,VE0',
+172 silly registry.get     vary: 'Accept',
+172 silly registry.get     'keep-alive': 'timeout=10, max=50',
+172 silly registry.get     connection: 'Keep-Alive' } ]
+173 silly addNameRange number 2 { name: 'fs-extra',
+173 silly addNameRange   range: '>=0.18.0-0 <0.19.0-0',
+173 silly addNameRange   hasData: true }
+174 silly addNameRange versions [ 'fs-extra',
+174 silly addNameRange   [ '0.0.1',
+174 silly addNameRange     '0.0.11',
+174 silly addNameRange     '0.0.3',
+174 silly addNameRange     '0.0.4',
+174 silly addNameRange     '0.1.0',
+174 silly addNameRange     '0.1.1',
+174 silly addNameRange     '0.1.2',
+174 silly addNameRange     '0.1.3',
+174 silly addNameRange     '0.2.0',
+174 silly addNameRange     '0.2.1',
+174 silly addNameRange     '0.3.0',
+174 silly addNameRange     '0.3.1',
+174 silly addNameRange     '0.3.2',
+174 silly addNameRange     '0.4.0',
+174 silly addNameRange     '0.5.0',
+174 silly addNameRange     '0.6.0',
+174 silly addNameRange     '0.6.1',
+174 silly addNameRange     '0.6.2',
+174 silly addNameRange     '0.6.3',
+174 silly addNameRange     '0.6.4',
+174 silly addNameRange     '0.7.0',
+174 silly addNameRange     '0.7.1',
+174 silly addNameRange     '0.8.0',
+174 silly addNameRange     '0.8.1',
+174 silly addNameRange     '0.9.0',
+174 silly addNameRange     '0.9.1',
+174 silly addNameRange     '0.10.0',
+174 silly addNameRange     '0.11.0',
+174 silly addNameRange     '0.11.1',
+174 silly addNameRange     '0.12.0',
+174 silly addNameRange     '0.13.0',
+174 silly addNameRange     '0.14.0',
+174 silly addNameRange     '0.15.0',
+174 silly addNameRange     '0.16.0',
+174 silly addNameRange     '0.16.1',
+174 silly addNameRange     '0.16.2',
+174 silly addNameRange     '0.16.3',
+174 silly addNameRange     '0.16.4',
+174 silly addNameRange     '0.16.5',
+174 silly addNameRange     '0.17.0',
+174 silly addNameRange     '0.18.0' ] ]
+175 verbose addNamed [ 'fs-extra', '0.18.0' ]
+176 verbose addNamed [ '0.18.0', '0.18.0' ]
+177 silly lockFile 0b6a2f54-fs-extra-0-18-0 fs-extra@0.18.0
+178 verbose lock fs-extra@0.18.0 /Users/emile/.npm/0b6a2f54-fs-extra-0-18-0.lock
+179 silly lockFile 34414d54-org-fs-extra-fs-extra-0-18-0-tgz https://registry.npmjs.org/fs-extra/-/fs-extra-0.18.0.tgz
+180 verbose lock https://registry.npmjs.org/fs-extra/-/fs-extra-0.18.0.tgz /Users/emile/.npm/34414d54-org-fs-extra-fs-extra-0-18-0-tgz.lock
+181 verbose addRemoteTarball [ 'https://registry.npmjs.org/fs-extra/-/fs-extra-0.18.0.tgz',
+181 verbose addRemoteTarball   'cb3cf82bed98041fd8b0704ddbbfef4e058afb69' ]
+182 info retry fetch attempt 1 at 12:12:43
+183 verbose fetch to= /var/folders/_8/51xyzn912rg84_0pdxb01yjw0000gn/T/npm-17720-gXzgrq4A/registry.npmjs.org/fs-extra/-/fs-extra-0.18.0.tgz
+184 http GET https://registry.npmjs.org/fs-extra/-/fs-extra-0.18.0.tgz
+185 http 304 https://registry.npmjs.org/tmp
+186 silly registry.get cb [ 304,
+186 silly registry.get   { date: 'Sat, 04 Apr 2015 10:12:41 GMT',
+186 silly registry.get     server: 'Apache',
+186 silly registry.get     via: '1.1 varnish',
+186 silly registry.get     'last-modified': 'Sat, 04 Apr 2015 10:12:41 GMT',
+186 silly registry.get     'cache-control': 'max-age=60',
+186 silly registry.get     etag: '"9WSW7ZAG0IV5ULD9IXICBJU4Q"',
+186 silly registry.get     age: '13',
+186 silly registry.get     'x-served-by': 'cache-ams4123-AMS',
+186 silly registry.get     'x-cache': 'HIT',
+186 silly registry.get     'x-cache-hits': '1',
+186 silly registry.get     'x-timer': 'S1428142361.159886,VS0,VE0',
+186 silly registry.get     vary: 'Accept',
+186 silly registry.get     'content-length': '0',
+186 silly registry.get     'keep-alive': 'timeout=10, max=49',
+186 silly registry.get     connection: 'Keep-Alive' } ]
+187 verbose etag https://registry.npmjs.org/tmp from cache
+188 silly lockFile eb279425-tmp-0-0-25 tmp@0.0.25
+189 silly lockFile eb279425-tmp-0-0-25 tmp@0.0.25
+190 http 200 https://registry.npmjs.org/request
+191 silly registry.get cb [ 200,
+191 silly registry.get   { date: 'Sat, 04 Apr 2015 10:12:41 GMT',
+191 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+191 silly registry.get     etag: '"3LXQXCC5ZDFVX9S4UNH2X1B4T"',
+191 silly registry.get     'content-type': 'application/json',
+191 silly registry.get     'cache-control': 'max-age=60',
+191 silly registry.get     'content-length': '143386',
+191 silly registry.get     'accept-ranges': 'bytes',
+191 silly registry.get     via: '1.1 varnish',
+191 silly registry.get     age: '14',
+191 silly registry.get     'x-served-by': 'cache-ams4143-AMS',
+191 silly registry.get     'x-cache': 'HIT',
+191 silly registry.get     'x-cache-hits': '1',
+191 silly registry.get     'x-timer': 'S1428142361.093565,VS0,VE0',
+191 silly registry.get     vary: 'Accept',
+191 silly registry.get     'keep-alive': 'timeout=10, max=49',
+191 silly registry.get     connection: 'Keep-Alive' } ]
+192 http 200 https://registry.npmjs.org/semver/-/semver-4.3.3.tgz
+193 silly addNameRange number 2 { name: 'request', range: '>=2.54.0-0 <3.0.0-0', hasData: true }
+194 silly addNameRange versions [ 'request',
+194 silly addNameRange   [ '0.10.0',
+194 silly addNameRange     '0.8.3',
+194 silly addNameRange     '0.9.0',
+194 silly addNameRange     '0.9.1',
+194 silly addNameRange     '0.9.5',
+194 silly addNameRange     '1.0.0',
+194 silly addNameRange     '1.1.0',
+194 silly addNameRange     '1.1.1',
+194 silly addNameRange     '1.2.0',
+194 silly addNameRange     '1.9.0',
+194 silly addNameRange     '1.9.1',
+194 silly addNameRange     '1.9.2',
+194 silly addNameRange     '1.9.3',
+194 silly addNameRange     '1.9.5',
+194 silly addNameRange     '1.9.7',
+194 silly addNameRange     '1.9.8',
+194 silly addNameRange     '1.9.9',
+194 silly addNameRange     '2.0.0',
+194 silly addNameRange     '2.0.1',
+194 silly addNameRange     '2.0.2',
+194 silly addNameRange     '2.0.3',
+194 silly addNameRange     '2.0.4',
+194 silly addNameRange     '2.0.5',
+194 silly addNameRange     '2.1.0',
+194 silly addNameRange     '2.1.1',
+194 silly addNameRange     '2.2.0',
+194 silly addNameRange     '2.2.5',
+194 silly addNameRange     '2.2.6',
+194 silly addNameRange     '2.2.9',
+194 silly addNameRange     '2.9.0',
+194 silly addNameRange     '2.9.1',
+194 silly addNameRange     '2.9.2',
+194 silly addNameRange     '2.9.3',
+194 silly addNameRange     '2.9.100',
+194 silly addNameRange     '2.9.150',
+194 silly addNameRange     '2.9.151',
+194 silly addNameRange     '2.9.152',
+194 silly addNameRange     '2.9.153',
+194 silly addNameRange     '2.9.200',
+194 silly addNameRange     '2.9.201',
+194 silly addNameRange     '2.9.202',
+194 silly addNameRange     '2.9.203',
+194 silly addNameRange     '2.10.0',
+194 silly addNameRange     '2.11.0',
+194 silly addNameRange     '2.11.1',
+194 silly addNameRange     '2.11.2',
+194 silly addNameRange     '2.11.3',
+194 silly addNameRange     '2.11.4',
+194 silly addNameRange     '2.12.0',
+194 silly addNameRange     '2.14.0',
+194 silly addNameRange     '2.16.0',
+194 silly addNameRange     '2.16.2',
+194 silly addNameRange     '2.16.4',
+194 silly addNameRange     '2.16.6',
+194 silly addNameRange     '2.18.0',
+194 silly addNameRange     '2.19.0',
+194 silly addNameRange     '2.20.0',
+194 silly addNameRange     '2.21.0',
+194 silly addNameRange     '2.22.0',
+194 silly addNameRange     '2.23.0',
+194 silly addNameRange     '2.24.0',
+194 silly addNameRange     '2.25.0',
+194 silly addNameRange     '2.26.0',
+194 silly addNameRange     '2.27.0',
+194 silly addNameRange     '2.28.0',
+194 silly addNameRange     '2.29.0',
+194 silly addNameRange     '2.30.0',
+194 silly addNameRange     '2.31.0',
+194 silly addNameRange     '2.32.0',
+194 silly addNameRange     '2.33.0',
+194 silly addNameRange     '2.34.0',
+194 silly addNameRange     '2.35.0',
+194 silly addNameRange     '2.36.0',
+194 silly addNameRange     '2.37.0',
+194 silly addNameRange     '2.38.0',
+194 silly addNameRange     '2.39.0',
+194 silly addNameRange     '2.40.0',
+194 silly addNameRange     '2.41.0',
+194 silly addNameRange     '2.42.0',
+194 silly addNameRange     '2.43.0',
+194 silly addNameRange     '2.44.0',
+194 silly addNameRange     '2.45.0',
+194 silly addNameRange     '2.46.0',
+194 silly addNameRange     '2.47.0',
+194 silly addNameRange     '2.48.0',
+194 silly addNameRange     '2.49.0',
+194 silly addNameRange     '2.50.0',
+194 silly addNameRange     '2.51.0',
+194 silly addNameRange     '2.52.0',
+194 silly addNameRange     '2.53.0',
+194 silly addNameRange     '2.54.0' ] ]
+195 verbose addNamed [ 'request', '2.54.0' ]
+196 verbose addNamed [ '2.54.0', '2.54.0' ]
+197 silly lockFile 130e7565-request-2-54-0 request@2.54.0
+198 verbose lock request@2.54.0 /Users/emile/.npm/130e7565-request-2-54-0.lock
+199 silly lockFile 130e7565-request-2-54-0 request@2.54.0
+200 silly lockFile 130e7565-request-2-54-0 request@2.54.0
+201 silly lockFile d4c1f396-request-2-54-0 request@^2.54.0
+202 silly lockFile d4c1f396-request-2-54-0 request@^2.54.0
+203 http 200 https://registry.npmjs.org/fs-extra/-/fs-extra-0.18.0.tgz
+204 silly lockFile 34414d54-org-fs-extra-fs-extra-0-18-0-tgz https://registry.npmjs.org/fs-extra/-/fs-extra-0.18.0.tgz
+205 silly lockFile 34414d54-org-fs-extra-fs-extra-0-18-0-tgz https://registry.npmjs.org/fs-extra/-/fs-extra-0.18.0.tgz
+206 silly lockFile 0b6a2f54-fs-extra-0-18-0 fs-extra@0.18.0
+207 silly lockFile 0b6a2f54-fs-extra-0-18-0 fs-extra@0.18.0
+208 silly lockFile db603eae-fs-extra-0-18-0 fs-extra@^0.18.0
+209 silly lockFile db603eae-fs-extra-0-18-0 fs-extra@^0.18.0
+210 silly lockFile f2317a8d-pmjs-org-semver-semver-4-3-3-tgz https://registry.npmjs.org/semver/-/semver-4.3.3.tgz
+211 silly lockFile f2317a8d-pmjs-org-semver-semver-4-3-3-tgz https://registry.npmjs.org/semver/-/semver-4.3.3.tgz
+212 silly lockFile 593e89d7-semver-4-3-3 semver@4.3.3
+213 silly lockFile 593e89d7-semver-4-3-3 semver@4.3.3
+214 silly lockFile b5fa7ad1-semver semver@*
+215 silly lockFile b5fa7ad1-semver semver@*
+216 http 200 https://registry.npmjs.org/fs-watch-tree
+217 silly registry.get cb [ 200,
+217 silly registry.get   { date: 'Sat, 04 Apr 2015 10:12:41 GMT',
+217 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+217 silly registry.get     etag: '"7507YZV0XVO7WFV6G7FLR8NZW"',
+217 silly registry.get     'content-type': 'application/json',
+217 silly registry.get     'cache-control': 'max-age=60',
+217 silly registry.get     'content-length': '13275',
+217 silly registry.get     'accept-ranges': 'bytes',
+217 silly registry.get     via: '1.1 varnish',
+217 silly registry.get     age: '0',
+217 silly registry.get     'x-served-by': 'cache-ams4132-AMS',
+217 silly registry.get     'x-cache': 'MISS',
+217 silly registry.get     'x-cache-hits': '0',
+217 silly registry.get     'x-timer': 'S1428142361.048264,VS0,VE385',
+217 silly registry.get     vary: 'Accept',
+217 silly registry.get     'keep-alive': 'timeout=10, max=50',
+217 silly registry.get     connection: 'Keep-Alive' } ]
+218 silly addNameRange number 2 { name: 'fs-watch-tree',
+218 silly addNameRange   range: '>=0.2.5-0 <0.3.0-0',
+218 silly addNameRange   hasData: true }
+219 silly addNameRange versions [ 'fs-watch-tree',
+219 silly addNameRange   [ '0.1.0', '0.2.0', '0.2.1', '0.2.2', '0.2.3', '0.2.4', '0.2.5' ] ]
+220 verbose addNamed [ 'fs-watch-tree', '0.2.5' ]
+221 verbose addNamed [ '0.2.5', '0.2.5' ]
+222 silly lockFile 4aac7df7-fs-watch-tree-0-2-5 fs-watch-tree@0.2.5
+223 verbose lock fs-watch-tree@0.2.5 /Users/emile/.npm/4aac7df7-fs-watch-tree-0-2-5.lock
+224 warn deprecated fs-watch-tree@0.2.5: This package is outdated and not actively maintained.
+225 silly lockFile e2afef5f-tch-tree-fs-watch-tree-0-2-5-tgz https://registry.npmjs.org/fs-watch-tree/-/fs-watch-tree-0.2.5.tgz
+226 verbose lock https://registry.npmjs.org/fs-watch-tree/-/fs-watch-tree-0.2.5.tgz /Users/emile/.npm/e2afef5f-tch-tree-fs-watch-tree-0-2-5-tgz.lock
+227 verbose addRemoteTarball [ 'https://registry.npmjs.org/fs-watch-tree/-/fs-watch-tree-0.2.5.tgz',
+227 verbose addRemoteTarball   'b48a014c9830ff53e52356ea23056c1c0d6cb92d' ]
+228 info retry fetch attempt 1 at 12:12:43
+229 verbose fetch to= /var/folders/_8/51xyzn912rg84_0pdxb01yjw0000gn/T/npm-17720-gXzgrq4A/registry.npmjs.org/fs-watch-tree/-/fs-watch-tree-0.2.5.tgz
+230 http GET https://registry.npmjs.org/fs-watch-tree/-/fs-watch-tree-0.2.5.tgz
+231 http 200 https://registry.npmjs.org/open
+232 silly registry.get cb [ 200,
+232 silly registry.get   { date: 'Sat, 04 Apr 2015 10:12:41 GMT',
+232 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+232 silly registry.get     etag: '"4GMD3T7CXKTNEV8S24BRQP6TN"',
+232 silly registry.get     'content-type': 'application/json',
+232 silly registry.get     'cache-control': 'max-age=60',
+232 silly registry.get     'content-length': '6903',
+232 silly registry.get     'accept-ranges': 'bytes',
+232 silly registry.get     via: '1.1 varnish',
+232 silly registry.get     age: '0',
+232 silly registry.get     'x-served-by': 'cache-ams4145-AMS',
+232 silly registry.get     'x-cache': 'HIT',
+232 silly registry.get     'x-cache-hits': '1',
+232 silly registry.get     'x-timer': 'S1428142361.043727,VS0,VE657',
+232 silly registry.get     vary: 'Accept',
+232 silly registry.get     'keep-alive': 'timeout=10, max=50',
+232 silly registry.get     connection: 'Keep-Alive' } ]
+233 silly lockFile 4dbee10d-ry-npmjs-org-open-open-0-0-5-tgz https://registry.npmjs.org/open/-/open-0.0.5.tgz
+234 verbose lock https://registry.npmjs.org/open/-/open-0.0.5.tgz /Users/emile/.npm/4dbee10d-ry-npmjs-org-open-open-0-0-5-tgz.lock
+235 verbose addRemoteTarball [ 'https://registry.npmjs.org/open/-/open-0.0.5.tgz',
+235 verbose addRemoteTarball   '42c3e18ec95466b6bf0dc42f3a2945c3f0cad8fc' ]
+236 info retry fetch attempt 1 at 12:12:44
+237 verbose fetch to= /var/folders/_8/51xyzn912rg84_0pdxb01yjw0000gn/T/npm-17720-gXzgrq4A/registry.npmjs.org/open/-/open-0.0.5.tgz
+238 http GET https://registry.npmjs.org/open/-/open-0.0.5.tgz
+239 http 200 https://registry.npmjs.org/trash
+240 silly registry.get cb [ 200,
+240 silly registry.get   { date: 'Sat, 04 Apr 2015 10:12:41 GMT',
+240 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+240 silly registry.get     etag: '"6DRYA4GHCTKZ2ABOCOEWICW8P"',
+240 silly registry.get     'content-type': 'application/json',
+240 silly registry.get     'cache-control': 'max-age=60',
+240 silly registry.get     'content-length': '22303',
+240 silly registry.get     'accept-ranges': 'bytes',
+240 silly registry.get     via: '1.1 varnish',
+240 silly registry.get     age: '0',
+240 silly registry.get     'x-served-by': 'cache-ams4137-AMS',
+240 silly registry.get     'x-cache': 'MISS',
+240 silly registry.get     'x-cache-hits': '0',
+240 silly registry.get     'x-timer': 'S1428142361.032787,VS0,VE668',
+240 silly registry.get     vary: 'Accept',
+240 silly registry.get     'keep-alive': 'timeout=10, max=50',
+240 silly registry.get     connection: 'Keep-Alive' } ]
+241 silly addNameRange number 2 { name: 'trash', range: '>=1.4.1-0 <2.0.0-0', hasData: true }
+242 silly addNameRange versions [ 'trash',
+242 silly addNameRange   [ '0.1.0',
+242 silly addNameRange     '0.1.1',
+242 silly addNameRange     '0.1.2',
+242 silly addNameRange     '1.0.0',
+242 silly addNameRange     '1.1.0',
+242 silly addNameRange     '1.1.1',
+242 silly addNameRange     '1.1.2',
+242 silly addNameRange     '1.1.3',
+242 silly addNameRange     '1.2.0',
+242 silly addNameRange     '1.3.0',
+242 silly addNameRange     '1.3.1',
+242 silly addNameRange     '1.4.0',
+242 silly addNameRange     '1.4.1' ] ]
+243 verbose addNamed [ 'trash', '1.4.1' ]
+244 verbose addNamed [ '1.4.1', '1.4.1' ]
+245 silly lockFile 960b1140-trash-1-4-1 trash@1.4.1
+246 verbose lock trash@1.4.1 /Users/emile/.npm/960b1140-trash-1-4-1.lock
+247 silly lockFile bac3ccca--npmjs-org-trash-trash-1-4-1-tgz https://registry.npmjs.org/trash/-/trash-1.4.1.tgz
+248 verbose lock https://registry.npmjs.org/trash/-/trash-1.4.1.tgz /Users/emile/.npm/bac3ccca--npmjs-org-trash-trash-1-4-1-tgz.lock
+249 verbose addRemoteTarball [ 'https://registry.npmjs.org/trash/-/trash-1.4.1.tgz',
+249 verbose addRemoteTarball   'aa8e0ae39c9764ea1b2dcb9ebc324cbcd8d1a928' ]
+250 info retry fetch attempt 1 at 12:12:44
+251 verbose fetch to= /var/folders/_8/51xyzn912rg84_0pdxb01yjw0000gn/T/npm-17720-gXzgrq4A/registry.npmjs.org/trash/-/trash-1.4.1.tgz
+252 http GET https://registry.npmjs.org/trash/-/trash-1.4.1.tgz
+253 http 200 https://registry.npmjs.org/open/-/open-0.0.5.tgz
+254 silly lockFile 4dbee10d-ry-npmjs-org-open-open-0-0-5-tgz https://registry.npmjs.org/open/-/open-0.0.5.tgz
+255 silly lockFile 4dbee10d-ry-npmjs-org-open-open-0-0-5-tgz https://registry.npmjs.org/open/-/open-0.0.5.tgz
+256 silly lockFile c6d41519-open-0-0-5 open@0.0.5
+257 silly lockFile c6d41519-open-0-0-5 open@0.0.5
+258 http 304 https://registry.npmjs.org/archiver
+259 silly registry.get cb [ 304,
+259 silly registry.get   { date: 'Sat, 04 Apr 2015 10:12:41 GMT',
+259 silly registry.get     server: 'Apache',
+259 silly registry.get     via: '1.1 varnish',
+259 silly registry.get     'last-modified': 'Sat, 04 Apr 2015 10:12:41 GMT',
+259 silly registry.get     'cache-control': 'max-age=60',
+259 silly registry.get     etag: '"3FFYM10E3M7S3T84WG24OJ87I"',
+259 silly registry.get     age: '0',
+259 silly registry.get     'x-served-by': 'cache-ams4123-AMS',
+259 silly registry.get     'x-cache': 'HIT',
+259 silly registry.get     'x-cache-hits': '1',
+259 silly registry.get     'x-timer': 'S1428142361.202093,VS0,VE659',
+259 silly registry.get     vary: 'Accept',
+259 silly registry.get     'content-length': '0',
+259 silly registry.get     'keep-alive': 'timeout=10, max=48',
+259 silly registry.get     connection: 'Keep-Alive' } ]
+260 verbose etag https://registry.npmjs.org/archiver from cache
+261 silly addNameRange number 2 { name: 'archiver',
+261 silly addNameRange   range: '>=0.14.3-0 <0.15.0-0',
+261 silly addNameRange   hasData: true }
+262 silly addNameRange versions [ 'archiver',
+262 silly addNameRange   [ '0.1.0',
+262 silly addNameRange     '0.1.1',
+262 silly addNameRange     '0.2.0',
+262 silly addNameRange     '0.2.1',
+262 silly addNameRange     '0.2.2',
+262 silly addNameRange     '0.3.0',
+262 silly addNameRange     '0.4.0',
+262 silly addNameRange     '0.4.1',
+262 silly addNameRange     '0.4.2',
+262 silly addNameRange     '0.4.3',
+262 silly addNameRange     '0.4.4',
+262 silly addNameRange     '0.4.5',
+262 silly addNameRange     '0.4.6',
+262 silly addNameRange     '0.4.7',
+262 silly addNameRange     '0.4.8',
+262 silly addNameRange     '0.4.9',
+262 silly addNameRange     '0.4.10',
+262 silly addNameRange     '0.5.0-alpha',
+262 silly addNameRange     '0.5.0',
+262 silly addNameRange     '0.5.1',
+262 silly addNameRange     '0.5.2',
+262 silly addNameRange     '0.6.0',
+262 silly addNameRange     '0.6.1',
+262 silly addNameRange     '0.7.0',
+262 silly addNameRange     '0.7.1',
+262 silly addNameRange     '0.8.0',
+262 silly addNameRange     '0.8.1',
+262 silly addNameRange     '0.9.0',
+262 silly addNameRange     '0.9.1',
+262 silly addNameRange     '0.10.0-alpha',
+262 silly addNameRange     '0.10.0',
+262 silly addNameRange     '0.10.1',
+262 silly addNameRange     '0.11.0-alpha',
+262 silly addNameRange     '0.11.0',
+262 silly addNameRange     '0.12.0',
+262 silly addNameRange     '0.13.0',
+262 silly addNameRange     '0.13.1',
+262 silly addNameRange     '0.14.0',
+262 silly addNameRange     '0.14.1',
+262 silly addNameRange     '0.14.2',
+262 silly addNameRange     '0.14.3' ] ]
+263 verbose addNamed [ 'archiver', '0.14.3' ]
+264 verbose addNamed [ '0.14.3', '0.14.3' ]
+265 silly lockFile 73b9459b-archiver-0-14-3 archiver@0.14.3
+266 verbose lock archiver@0.14.3 /Users/emile/.npm/73b9459b-archiver-0-14-3.lock
+267 silly lockFile a05a4c5e-org-archiver-archiver-0-14-3-tgz https://registry.npmjs.org/archiver/-/archiver-0.14.3.tgz
+268 verbose lock https://registry.npmjs.org/archiver/-/archiver-0.14.3.tgz /Users/emile/.npm/a05a4c5e-org-archiver-archiver-0-14-3-tgz.lock
+269 verbose addRemoteTarball [ 'https://registry.npmjs.org/archiver/-/archiver-0.14.3.tgz',
+269 verbose addRemoteTarball   'e265f2af74df8f24124c01cecccc0772f57f36fc' ]
+270 info retry fetch attempt 1 at 12:12:44
+271 verbose fetch to= /var/folders/_8/51xyzn912rg84_0pdxb01yjw0000gn/T/npm-17720-gXzgrq4A/registry.npmjs.org/archiver/-/archiver-0.14.3.tgz
+272 http GET https://registry.npmjs.org/archiver/-/archiver-0.14.3.tgz
+273 http 200 https://registry.npmjs.org/archiver/-/archiver-0.14.3.tgz
+274 silly lockFile a05a4c5e-org-archiver-archiver-0-14-3-tgz https://registry.npmjs.org/archiver/-/archiver-0.14.3.tgz
+275 silly lockFile a05a4c5e-org-archiver-archiver-0-14-3-tgz https://registry.npmjs.org/archiver/-/archiver-0.14.3.tgz
+276 silly lockFile 73b9459b-archiver-0-14-3 archiver@0.14.3
+277 silly lockFile 73b9459b-archiver-0-14-3 archiver@0.14.3
+278 silly lockFile 319abca3-archiver-0-14-3 archiver@^0.14.3
+279 silly lockFile 319abca3-archiver-0-14-3 archiver@^0.14.3
+280 http 200 https://registry.npmjs.org/trash/-/trash-1.4.1.tgz
+281 http 200 https://registry.npmjs.org/fs-watch-tree/-/fs-watch-tree-0.2.5.tgz
+282 silly lockFile bac3ccca--npmjs-org-trash-trash-1-4-1-tgz https://registry.npmjs.org/trash/-/trash-1.4.1.tgz
+283 silly lockFile bac3ccca--npmjs-org-trash-trash-1-4-1-tgz https://registry.npmjs.org/trash/-/trash-1.4.1.tgz
+284 silly lockFile 960b1140-trash-1-4-1 trash@1.4.1
+285 silly lockFile 960b1140-trash-1-4-1 trash@1.4.1
+286 silly lockFile 414ca931-trash-1-4-1 trash@^1.4.1
+287 silly lockFile 414ca931-trash-1-4-1 trash@^1.4.1
+288 silly lockFile e2afef5f-tch-tree-fs-watch-tree-0-2-5-tgz https://registry.npmjs.org/fs-watch-tree/-/fs-watch-tree-0.2.5.tgz
+289 silly lockFile e2afef5f-tch-tree-fs-watch-tree-0-2-5-tgz https://registry.npmjs.org/fs-watch-tree/-/fs-watch-tree-0.2.5.tgz
+290 silly lockFile 4aac7df7-fs-watch-tree-0-2-5 fs-watch-tree@0.2.5
+291 silly lockFile 4aac7df7-fs-watch-tree-0-2-5 fs-watch-tree@0.2.5
+292 silly lockFile 719fa03d-fs-watch-tree-0-2-5 fs-watch-tree@^0.2.5
+293 silly lockFile 719fa03d-fs-watch-tree-0-2-5 fs-watch-tree@^0.2.5
+294 error Error: EACCES, mkdir '/Users/emile/.npm/fs-extra/0.18.0'
+294 error  { [Error: EACCES, mkdir '/Users/emile/.npm/fs-extra/0.18.0']
+294 error   errno: 3,
+294 error   code: 'EACCES',
+294 error   path: '/Users/emile/.npm/fs-extra/0.18.0',
+294 error   parent: 'devkit' }
+295 error Please try running this command again as root/Administrator.
+296 error System Darwin 14.1.0
+297 error command "node" "/usr/local/bin/npm" "install"
+298 error cwd /Users/emile/Bitbucket/homey-devkit
+299 error node -v v0.10.33
+300 error npm -v 1.4.28
+301 error path /Users/emile/.npm/fs-extra/0.18.0
+302 error code EACCES
+303 error errno 3
+304 error stack Error: EACCES, mkdir '/Users/emile/.npm/fs-extra/0.18.0'
+305 verbose exit [ 3, true ]

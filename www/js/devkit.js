@@ -28,3 +28,37 @@ app.run(['$rootScope', '$injector', function($rootScope,$injector) {
         }
     };
 }]);
+
+
+// prevent bounce on trackpads
+window.onload = function(){
+	var keysToDisable = [37, 38, 39, 40, 33, 34, 35, 36];
+ 
+	function preventDefault(e) {
+		e = e || window.event;
+		if (e.preventDefault) {
+			e.preventDefault();
+		}
+		e.returnValue = false;
+	}
+	 
+	function keydown(e) {
+		for (i = 0; i < keysToDisable.length; i++) {
+			if (e.keyCode === keysToDisable[i]) {
+				preventDefault(e);
+				return;
+			}
+		}
+	}
+	 
+	function wheel(e) {
+		preventDefault(e);
+	}
+	 
+	function noScroll() {
+		window.onmousewheel = document.onmousewheel = wheel;
+		document.onkeydown = keydown;
+	}
+	 
+	noScroll(); 
+}
