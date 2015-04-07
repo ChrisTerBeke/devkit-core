@@ -33,7 +33,7 @@ app.run(['$rootScope', '$injector', function($rootScope,$injector) {
 // prevent bounce on trackpads
 window.onload = function(){
 	var keysToDisable = [37, 38, 39, 40, 33, 34, 35, 36];
- 
+	
 	function preventDefault(e) {
 		e = e || window.event;
 		if (e.preventDefault) {
