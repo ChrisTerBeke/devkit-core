@@ -1,14 +1,28 @@
-app.controller("authCtrl", function($scope, $rootScope, $http) {
+app.controller("authCtrl", function($scope, $rootScope, $http, $filter) {
 	
 	$scope.url = '';
 	$scope.visible = false;
+	
+	$rootScope.sharedVars = {
+		activeHomey: false
+	}
+	
+	$rootScope.$watch('sharedVars.activeHomey', function() {
+		if( $rootScope.sharedVars.activeHomey !== false ) {
+			window.localStorage.activeHomey = $rootScope.sharedVars.activeHomey
+		}
+	});
+	
+	$scope.change = function( data ) {
+		alert('data')
+		alert(data)
+	}
 	
 	$rootScope.$on('auth.login', function(){
 		$scope.login();
 	});
 	
 	$rootScope.$on('auth.logout', function(){
-		alert('logout')
 		$scope.logout();
 	});
 	
@@ -22,6 +36,11 @@ app.controller("authCtrl", function($scope, $rootScope, $http) {
 	
 	$scope.logout = function(){
 		$rootScope.user = {};
+		
+		delete window.localStorage.access_token;
+		delete window.localStorage.refresh_token;
+		delete window.localStorage.activeHomey;
+		
 		$scope.login();		
 	}
 	
@@ -49,8 +68,30 @@ app.controller("authCtrl", function($scope, $rootScope, $http) {
 		
 		$http
 			.get('https://api.athom.nl/homey')
-			.success(function( data ){
-				$rootScope.user.homeys = data;				
+			.success(function( homeys ){
+				$rootScope.user.homeys = homeys;
+				
+				if( homeys.length > 0 ) {
+				
+					// if we have a prefered active homey, set it
+					if( typeof window.localStorage.activeHomey == 'string' ) {
+						
+						// find if we still have access to that homey
+						if( $filter('filter')( $rootScope.user.homeys, { _id: window.localStorage.activeHomey }, true ).length > 0 ) {
+							$rootScope.sharedVars.activeHomey = window.localStorage.activeHomey;							
+						} else {
+							// select first Homey as active by default	
+							$rootScope.sharedVars.activeHomey = homeys[0]._id;
+						}
+						
+					} else {
+						// select first Homey as active by default	
+						$rootScope.sharedVars.activeHomey = homeys[0]._id;
+					}
+				} else {
+					alert("You don't have access to any Homeys!");
+				}
+				
 			})
 			.error(function( data ){
 				console.log(data)
@@ -61,9 +102,10 @@ app.controller("authCtrl", function($scope, $rootScope, $http) {
 	window.addEventListener('message', function(e) {		
 		$scope.$apply(function(){
 			
-			$rootScope.user.access_token = e.data.accessToken;
-			$rootScope.user.refresh_token = e.data.refreshToken;
-			
+			// save tokens to localStorage
+			window.localStorage.access_token = e.data.accessToken;
+			window.localStorage.refresh_token = e.data.refreshToken;
+						
 			$rootScope.$emit('devkit.blur', false);
 			$scope.visible = false;
 			$scope.url = '';
@@ -75,27 +117,15 @@ app.controller("authCtrl", function($scope, $rootScope, $http) {
 	});
 			
 	if(	typeof $rootScope.user == 'undefined' ) {
-		$scope.logout();
+
+		$rootScope.user = {};
+				
+		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' ) {
+			$scope.login();
+		} else {
+			$scope.getUserInfo();
+			$scope.getHomeys();
+		}
 	}
 	
 });
-
-/*	
-
-	$rootScope.user = {
-		id: '8924ru79823rh2938y9025',
-		username: 'WeeJeWel',
-		name_first: 'Emile',
-		name_last: 'Nijssen',
-		avatar: {
-			small: 'https://avatars1.githubusercontent.com/u/319873?v=3&s=460'
-		},
-		homeys: [
-			{
-				"id": "28748901y412bn45iu2oh580",
-				"name": "Emile's Homey"
-			}
-		]
-	}
-	
-*/

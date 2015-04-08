@@ -4,17 +4,12 @@ var tmp 		= require('tmp');
 var request		= require('request');
 var archiver	= require('archiver');
 
-app.controller("homeyCtrl", function($scope, $rootScope) {
+app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 	
 	$scope.running = false;
 	$scope.uploading = false;
 	$scope.status = '';
 	$scope.debugwindow = undefined;
-	
-	$scope.homey = {
-		ssl: false,
-		address: 'localhost'
-	}
 	
 	$rootScope.$on('homey.run', function(){
 		$scope.run( false );
@@ -38,6 +33,8 @@ app.controller("homeyCtrl", function($scope, $rootScope) {
 	$scope.run = function( brk ){
 		$scope.uploading = true;
 		
+		var homey = $filter('filter')( $rootScope.user.homeys, { _id: $rootScope.sharedVars.activeHomey }, true )[0];
+						
 		// create zip
 		$scope.status = 'Creating archive...';
 		$scope.$apply();
@@ -47,7 +44,7 @@ app.controller("homeyCtrl", function($scope, $rootScope) {
 			// send to homey
 			$scope.status = 'Uploading to Homey...';
 			$scope.$apply();
-			upload( tmppath, brk, function( response ){
+			upload( homey, tmppath, brk, function( response ){
 				
 				$scope.uploading = false;
 								
@@ -115,11 +112,13 @@ function pack( app_path, callback ){
 	});
 }
 
-function upload( tmppath, brk, callback ) {
+function upload( homey, tmppath, brk, callback ) {
 	
+	console.log( tmppath )
+			
 	// POST the tmp file to Homey
 	request.post({
-		url: 'http://localhost:8000/api/manager/devkit/run/',
+		url: 'http://' + homey.ip_internal + ':8000/api/manager/devkit/run/',
 		headers: {
     		'Authorization': 'Bearer acediaacedia'
 		},

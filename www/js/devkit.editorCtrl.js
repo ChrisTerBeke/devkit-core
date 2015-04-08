@@ -76,7 +76,7 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 	    
 	    // check for unsaved changes
 	    if( activeFile._changed ) {
-		    if( confirm("There are unsaved changes, close " + activeFile.name + " anyway?" ) ) {
+			    if( confirm("There are unsaved changes, close " + activeFile.name + " anyway?" ) ) {
 			    delete $scope.files[ file_path ];
 		    }
 	    } else {
