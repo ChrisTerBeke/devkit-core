@@ -26,13 +26,9 @@ app.controller("ledringWidgetCtrl", function( $scope, $rootScope, $http, $interv
 		var oneColorPath = path.join( dirname, 'editor', 'widgets', 'ledring', 'one-color-all.js' );
 		var homeyCode = 'global.Homey = { color: require("' + oneColorPath + '") }; ';
 		var code = homeyCode + $scope.$parent.files[ $scope.$parent.active ].code;
-		
-		console.log( code );
-		
+				
 		var animation = requireFromString( code );
-		
-		console.log(animation)
-		
+				
 		try {
 			animation = animation();	
 			console.log(animation)

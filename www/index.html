@@ -11,7 +11,7 @@
 		<script type="text/javascript" src="./bower_components/angular/angular.js"></script>
 		
 		<!-- angular-resource -->
-		<script type="text/javascript" src="./bower_components/angular-resource/angular-resource.js"></script>
+<!--		<script type="text/javascript" src="./bower_components/angular-resource/angular-resource.js"></script>-->
 
 		<!-- angular-codemirror -->
 		<link rel="stylesheet" type="text/css" href="bower_components/codemirror/lib/codemirror.css" />
@@ -54,6 +54,7 @@
 				
 		<wrap
 			ng-class="{ 'blurred': blurred }"
+			ng-click="blurred && emit('closePopup')"
 		>
 		
 			<header>
@@ -72,7 +73,7 @@
 				<div
 					id="play"
 					ng-controller="homeyCtrl"
-					ng-class="{ 'running': running, 'uploading': uploading }"
+					ng-class="{ 'active': status.length > 0, 'enabled': sharedVars.activeHomey }"
 				>
 					<div id="play-button" ng-click="playstop()">
 						<div id="play-button-inner"></div>
@@ -82,14 +83,21 @@
 					
 				</div>
 				
-				<div id="user">
+				<div
+					id="user"
+					ng-class="{ 'logging-in': user.status == 'logging-in' }"
+				>
 					
 					<div ng-click="emit('auth.login')">
-						<div class="name">{{user.firstname || 'Log in'}}</div>
+						<div class="name">
+							<span ng-show="user.status == 'logged-in'">{{user.firstname}}</span>
+							<span ng-show="user.status == 'logged-out'">Log in</span>
+							<span ng-show="user.status == 'logging-in'">Logging in...</span>
+						</div>
 						<img ng-src="{{user.avatar || './img/avatar-fallback.jpg'}}?size=30" />
 					</div>
 					
-					<ul class="dropdown" ng-show="user.logged_in">
+					<ul class="dropdown" ng-show="user.status == 'logged-in'">
 						<li>
 							<span class="label">
 								<span class="icon" style="-webkit-mask-image: url(./img/icon/homey.svg)"></span>
@@ -255,11 +263,11 @@
 			
 		<auth
 			id="login"
-			ng-controller="authCtrl"
-			ng-class="{ 'visible': visible }"
+			ng-controller="authCtrl as auth"
+			ng-class="{ 'visible': popupVisible }"
 		>
 			
-			<iframe id="auth-iframe" ng-src="{{url}}"></iframe>
+			<iframe id="auth-iframe" ng-src="{{popupUrl}}"></iframe>
 			
 		</auth>
 		

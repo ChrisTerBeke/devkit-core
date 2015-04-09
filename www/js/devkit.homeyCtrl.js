@@ -21,38 +21,50 @@ app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 	});
 	
 	$scope.playstop = function(){
-		if( $scope.running ) {
-			$scope.stopRunning();
-		} else if( $scope.uploading ) {
+		if( $scope.statusCode == 'zipping' ) {
+			$scope.stopZipping();
+		} else if( $scope.statusCode == 'uploading' ) {
 			$scope.stopUploading();
-		} else {
-			$scope.run();
+		} else if( $scope.statusCode == 'running' ) {
+			$scope.stopRunning();
+		} else if( $scope.statusCode == 'error' ) {
+			$scope.stopError();
+		} else if( $scope.statusCode == 'idle' ) {
+			$scope.run( false );
 		}
 	}
 	
 	$scope.run = function( brk ){
-		$scope.uploading = true;
+				
+		if( ! $rootScope.sharedVars.activeHomey ) return;
 		
 		var homey = $filter('filter')( $rootScope.user.homeys, { _id: $rootScope.sharedVars.activeHomey }, true )[0];
-						
+		
 		// create zip
 		$scope.status = 'Creating archive...';
+		$scope.statusCode = 'zipping';
 		$scope.$apply();
 		
 		pack( $rootScope.project.path, function( tmppath ){
 			
 			// send to homey
 			$scope.status = 'Uploading to Homey...';
+			$scope.uploading = true;
 			$scope.$apply();
-			upload( homey, tmppath, brk, function( response ){
+			
+			upload( homey, tmppath, brk, function( err, response ){
 				
-				$scope.uploading = false;
+				if( err ) {
+					$scope.statusCode = 'error';
+					$scope.status = err.toString();
+					return;
+				}
 								
 				if( response instanceof Error ) {
 					$scope.status = response.message;
-					$scope.running = false;
 				} else {
 					$scope.status = 'Running...';
+					$scope.statusCode = 'running';
 					
 					// show devtools	
 					var url = ( $scope.homey.ssl ? 'https' : 'http' ) + 
@@ -76,12 +88,24 @@ app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 		});
 	}
 	
-	$scope.stopRunning = function(){
-		$scope.running = false;
+	$scope.stopZipping = function(){
+		$scope.statusCode = 'idle';
+		$scope.status = '';
 	}
 	
 	$scope.stopUploading = function(){
-		$scope.uploading = false;		
+		$scope.statusCode = 'idle';
+		$scope.status = '';
+	}
+	
+	$scope.stopRunning = function(){
+		$scope.statusCode = 'idle';
+		$scope.status = '';
+	}
+	
+	$scope.stopError = function(){
+		$scope.statusCode = 'idle';
+		$scope.status = '';
 	}
 	
 });
@@ -113,9 +137,7 @@ function pack( app_path, callback ){
 }
 
 function upload( homey, tmppath, brk, callback ) {
-	
-	console.log( tmppath )
-			
+					
 	// POST the tmp file to Homey
 	request.post({
 		url: 'http://' + homey.ip_internal + ':8000/api/manager/devkit/run/',
@@ -128,10 +150,12 @@ function upload( homey, tmppath, brk, callback ) {
 	    }
 	}, function( err, data, response ){
 				
-		if( err ) return callback( new Error(err) );
+		if( err ) {
+			return callback(err);
+		}
 					    			
 		response = JSON.parse(response);
-		callback( response );
+		callback( null, response );
 		
 		/*
 	    */

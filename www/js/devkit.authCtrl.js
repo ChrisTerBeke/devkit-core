@@ -1,7 +1,7 @@
-app.controller("authCtrl", function($scope, $rootScope, $http, $filter) {
+app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout) {
 	
-	$scope.url = '';
-	$scope.visible = false;
+	$scope.popupUrl = '';
+	$scope.popupVisible = false;
 	
 	$rootScope.sharedVars = {
 		activeHomey: false
@@ -13,11 +13,6 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter) {
 		}
 	});
 	
-	$scope.change = function( data ) {
-		alert('data')
-		alert(data)
-	}
-	
 	$rootScope.$on('auth.login', function(){
 		$scope.login();
 	});
@@ -26,11 +21,21 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter) {
 		$scope.logout();
 	});
 	
+	$rootScope.$on('closePopup', function(){
+		$rootScope.$emit('devkit.blur', false);
+		$scope.popupVisible = false;
+		$scope.popupUrl = '';
+		$rootScope.user.status = 'logged-out';
+	});
+	
 	$scope.login = function(){
-		$scope.url = 'https://devkit.athom.nl/auth';
-		$scope.visible = true;
+		$scope.popupUrl = 'https://devkit.athom.nl/auth';
+		$scope.popupVisible = true;
+		$rootScope.user.status = 'logging-in';
 		
-		$rootScope.$emit('devkit.blur', true);
+		$timeout(function(){
+			$rootScope.$emit('devkit.blur', true);
+		}, 1);
 		
 	}
 	
@@ -40,26 +45,30 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter) {
 		delete window.localStorage.access_token;
 		delete window.localStorage.refresh_token;
 		delete window.localStorage.activeHomey;
-		
-		$scope.login();		
 	}
 	
 	$scope.getUserInfo = function(){
+
+		$rootScope.user.status = 'logging-in';
 		
 		$http
 			.get('https://api.athom.nl/user/me')
 			.success(function( data ){
+				
+				console.log( data );
 												
-				$rootScope.user.logged_in = true;
+				$rootScope.user.status = 'logged-in';
 				
 				$rootScope.user.firstname 	= data.firstname;
 				$rootScope.user.lastname 	= data.lastname;
 				$rootScope.user.email 		= data.email;
 				$rootScope.user.avatar 		= data.avatar;
 				
+				$scope.getHomeys();
+				
 			})
-			.error(function( data ){
-				console.log(data)
+			.error(function( data ){				
+				console.log(arguments)
 			});
 		
 	}
@@ -107,11 +116,10 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter) {
 			window.localStorage.refresh_token = e.data.refreshToken;
 						
 			$rootScope.$emit('devkit.blur', false);
-			$scope.visible = false;
-			$scope.url = '';
+			$scope.popupVisible = false;
+			$scope.popupUrl = '';
 			
 			$scope.getUserInfo();
-			$scope.getHomeys();
 			
 		});
 	});
@@ -121,10 +129,10 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter) {
 		$rootScope.user = {};
 				
 		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' ) {
-			$scope.login();
+			//$scope.login();
+			$rootScope.user.status = 'logged-out';
 		} else {
 			$scope.getUserInfo();
-			$scope.getHomeys();
 		}
 	}
 	

@@ -55,8 +55,8 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFac
 	});
 	
 	// methods
-	$scope.emit = function( event ){
-		$rootScope.$emit( event );
+	$scope.emit = function( event, data ){
+		$rootScope.$emit( event, data );
 	}
 	
 	$scope.load = function( project_dir ){
