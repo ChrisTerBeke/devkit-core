@@ -14,8 +14,19 @@ app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q ){
 		$scope.file._changed = true;
 	}, true);
 	
-    $rootScope.$on('editor.saveRequest.' + $scope.file.path, function(){	    	    
-		$scope.file.code = angular.toJson( $scope.manifest, true );
+    $rootScope.$on('editor.saveRequest.' + $scope.file.path, function(){
+	    
+	    var manifest = angular.copy( $scope.manifest );
+		
+		manifest.permissions = manifest.permissions.map(function(tag) { console.log(tag); return tag.text; });
+		
+		manifest.interfaces.speech.triggers.forEach(function( trigger ){
+			for( var synonym_lang in trigger.synonyms ) {
+				trigger.synonyms[synonym_lang] = trigger.synonyms[synonym_lang].map(function(tag) { console.log(tag); return tag.text; });
+			}
+		});
+	     	    
+		$scope.file.code = angular.toJson( manifest, true );
 		$rootScope.$emit('editor.performSave');
     });
     

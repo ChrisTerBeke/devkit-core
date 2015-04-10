@@ -12,6 +12,10 @@ app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 	$scope.statusCode = 'idle';
 	$scope.debugwindow = undefined;
 	
+	$scope.homey_ip = '0.0.0.0';
+	$scope.request = undefined;
+	$scope.running_app = undefined;
+	
 	$rootScope.$on('homey.run', function(){
 		$scope.run( false );
 		$scope.$apply();
@@ -40,53 +44,56 @@ app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 		if( ! $rootScope.sharedVars.activeHomey ) return;
 				
 		var homey = $filter('filter')( $rootScope.user.homeys, { _id: $rootScope.sharedVars.activeHomey }, true )[0];
+		$scope.homey_ip = homey.ip_internal;
 		
 		// create zip
 		$scope.status = 'Creating archive...';
 		$scope.statusCode = 'zipping';
 		$scope.$apply();
 		
-		pack( $rootScope.project.path, function( tmppath ){
+		$scope.pack( $rootScope.project.path, function( tmppath ){
 			
 			// send to homey
 			$scope.status = 'Uploading to Homey...';
 			$scope.uploading = true;
 			$scope.$apply();
 			
-			upload( homey, tmppath, brk, function( err, response ){
-				
-				if( err ) {
-					$scope.statusCode = 'error';
-					$scope.status = err.toString();
-					return;
-				}
+			$scope.upload( tmppath, brk, function( err, response ){
+				$scope.$apply(function(){
 								
-				if( response instanceof Error ) {
-					$scope.status = response.message;
-				} else {
+					if( err ) {
+						$scope.statusCode = 'error';
+						$scope.status = err.toString();
+						return;
+					}
+					
+					if( response.status != 200 ) {
+						$scope.statusCode = 'error';
+						$scope.status = response.result.toString();
+						return;					
+					}
+									
+					if( response instanceof Error ) {
+						$scope.statusCode = 'error';
+						$scope.status = response.message;
+						return;
+					}
+						
 					$scope.status = 'Running...';
 					$scope.statusCode = 'running';
+					$scope.running_app = response.result.id;
 					
 					// show devtools	
 					var url = ( false ? 'https' : 'http' ) + 
 						'://' +	homey.ip_internal + ':' + response.result.webport + 
 						'/debug?port=' + response.result.appport
-						
-					console.log(url)
-					
-					if(typeof debugwindow != 'undefined' ) {
-						debugwindow.close();					
-					}
 					
 					var gui = require('nw.gui');	
-				    $scope.debugwindow = gui.Window.open( url,{
+				    $scope.debugwindow = gui.Window.open( url, {
 					    toolbar: false,
-					    frame: true					    
+					    frame: true				    
 				    });
-					
-				}
-				$scope.$apply();
-				
+			    });				
 			});
 		});
 	}
@@ -97,6 +104,7 @@ app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 	}
 	
 	$scope.stopUploading = function(){
+		$scope.request.abort();		
 		$scope.statusCode = 'idle';
 		$scope.status = '';
 	}
@@ -104,6 +112,19 @@ app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 	$scope.stopRunning = function(){
 		$scope.statusCode = 'idle';
 		$scope.status = '';
+					
+		if(typeof $scope.debugwindow != 'undefined' ) {
+			$scope.debugwindow.close();					
+		}
+		
+		$scope.request = request.del({
+			url: 'http://' + $scope.homey_ip + ':8000/api/manager/devkit/' + $scope.running_app,
+			headers: {
+	    		'Authorization': 'Bearer acediaacedia'// + window.localStorage.access_token
+			}
+		});
+		
+		
 	}
 	
 	$scope.stopError = function(){
@@ -111,57 +132,49 @@ app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 		$scope.status = '';
 	}
 	
-});
-
-function pack( app_path, callback ){
+	$scope.pack = function( app_path, callback ){
 	
-	// create a temporary file
-	tmp.file(function(err, tmppath, fd, cleanupCallback) {
-					
-		var output = fs.createWriteStream(tmppath);
-		
-		output.on('close', function() {
-    		callback( tmppath );
-		});
-		
-		var archive = archiver('zip');
-		
-		archive.on('error', function(err) {
-			throw err;
-		});
-		
-		archive.pipe(output);
-		
-		archive
-			.directory( app_path, '' )
-			.finalize();
-			
-	});
-}
-
-function upload( homey, tmppath, brk, callback ) {
+		// create a temporary file
+		tmp.file(function(err, tmppath, fd, cleanupCallback) {
 						
-	// POST the tmp file to Homey
-	var r = request.post({
-		url: 'http://' + homey.ip_internal + ':8000/api/manager/devkit/run/',
-		headers: {
-    		'Authorization': 'Bearer acediaacedia'
-		}
-	}, function( err, data, response ){
-		
-		console.log( err, data, response );
+			var output = fs.createWriteStream(tmppath);
+			
+			output.on('close', function() {
+	    		callback( tmppath );
+			});
+			
+			var archive = archiver('zip');
+			
+			archive.on('error', function(err) {
+				throw err;
+			});
+			
+			archive.pipe(output);
+			
+			archive
+				.directory( app_path, '' )
+				.finalize();
 				
-		if( err ) {
-			return callback(err);
-		}
-					    			
-		response = JSON.parse(response);
-		callback( null, response );
-	    
-	});
+		});
+	}
 	
-	var form = r.form();
-	form.append('app', fs.createReadStream(tmppath));
-	form.append('brk', brk.toString());
+	$scope.upload = function( tmppath, brk, callback ) {
+							
+		// POST the tmp file to Homey
+		$scope.request = request.post({
+			url: 'http://' + $scope.homey_ip + ':8000/api/manager/devkit/',
+			headers: {
+	    		'Authorization': 'Bearer acediaacedia'// + window.localStorage.access_token
+			}
+		}, function( err, data, response ){
+			if( err ) return callback(err);
+			callback( null, JSON.parse(response) );
+		});
+		
+		var form = $scope.request.form();
+		form.append('app', fs.createReadStream(tmppath));
+		form.append('brk', brk.toString());
+		
+	}
 	
-}
+});
