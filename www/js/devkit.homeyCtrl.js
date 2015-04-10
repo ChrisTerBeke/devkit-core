@@ -9,6 +9,7 @@ app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 	$scope.running = false;
 	$scope.uploading = false;
 	$scope.status = '';
+	$scope.statusCode = 'idle';
 	$scope.debugwindow = undefined;
 	
 	$rootScope.$on('homey.run', function(){
@@ -35,9 +36,9 @@ app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 	}
 	
 	$scope.run = function( brk ){
-				
+						
 		if( ! $rootScope.sharedVars.activeHomey ) return;
-		
+				
 		var homey = $filter('filter')( $rootScope.user.homeys, { _id: $rootScope.sharedVars.activeHomey }, true )[0];
 		
 		// create zip
@@ -67,9 +68,11 @@ app.controller("homeyCtrl", function($scope, $rootScope, $filter) {
 					$scope.statusCode = 'running';
 					
 					// show devtools	
-					var url = ( $scope.homey.ssl ? 'https' : 'http' ) + 
-						'://' +	$scope.homey.address + ':' + response.result.webport + 
+					var url = ( false ? 'https' : 'http' ) + 
+						'://' +	homey.ip_internal + ':' + response.result.webport + 
 						'/debug?port=' + response.result.appport
+						
+					console.log(url)
 					
 					if(typeof debugwindow != 'undefined' ) {
 						debugwindow.close();					
@@ -137,18 +140,16 @@ function pack( app_path, callback ){
 }
 
 function upload( homey, tmppath, brk, callback ) {
-					
+						
 	// POST the tmp file to Homey
-	request.post({
+	var r = request.post({
 		url: 'http://' + homey.ip_internal + ':8000/api/manager/devkit/run/',
 		headers: {
     		'Authorization': 'Bearer acediaacedia'
-		},
-		formData: {
-		    app: fs.createReadStream(tmppath),
-		    brk: brk
-	    }
+		}
 	}, function( err, data, response ){
+		
+		console.log( err, data, response );
 				
 		if( err ) {
 			return callback(err);
@@ -156,10 +157,11 @@ function upload( homey, tmppath, brk, callback ) {
 					    			
 		response = JSON.parse(response);
 		callback( null, response );
-		
-		/*
-	    */
 	    
 	});
+	
+	var form = r.form();
+	form.append('app', fs.createReadStream(tmppath));
+	form.append('brk', brk.toString());
 	
 }
