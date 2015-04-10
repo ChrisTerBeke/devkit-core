@@ -20,7 +20,7 @@ app.config(function($sceDelegateProvider) {
 });
 
 // add Bearer token to $http requests
-app.run(['$rootScope', '$injector', function($rootScope,$injector) {
+app.run(['$rootScope', '$injector', function($rootScope, $injector) {
     $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
         if ($rootScope.user) headersGetter()['Authorization'] = "Bearer " + window.localStorage.access_token;
         if (data) {
@@ -30,6 +30,7 @@ app.run(['$rootScope', '$injector', function($rootScope,$injector) {
 }]);
 
 
+/*
 // prevent bounce on trackpads
 window.onload = function(){
 	var keysToDisable = [37, 38, 39, 40, 33, 34, 35, 36];
@@ -62,3 +63,4 @@ window.onload = function(){
 	 
 	noScroll(); 
 }
+*/

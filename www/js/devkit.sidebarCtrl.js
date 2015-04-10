@@ -74,15 +74,6 @@ app.controller("sidebarCtrl", function($scope, $rootScope) {
 	}
 	
 	$scope.showCtxmenu = function( item, event ){
-		
-		// multiple selection
-		if( $scope.selected.indexOf(item.path) < 0 ) {
-			if( event.metaKey || event.ctrlKey ) {
-				$scope.selected.push( item.path );
-			} else {
-				$scope.selected = [ item.path ];
-			}
-		}
 				
 		// create context menu	
 		var gui = require('nw.gui');
@@ -92,6 +83,16 @@ app.controller("sidebarCtrl", function($scope, $rootScope) {
 		
 		// Add some items
 		if( item ) {
+		
+			// multiple selection
+			if( $scope.selected.indexOf(item.path) < 0 ) {
+				if( event.metaKey || event.ctrlKey ) {
+					$scope.selected.push( item.path );
+				} else {
+					$scope.selected = [ item.path ];
+				}
+			}
+			
 			ctxmenu.append(new gui.MenuItem({ label: 'Open', click: function(){
 				
 				$scope.selected.forEach(function( item_path ){

@@ -1,4 +1,15 @@
-<form ng-controller="manifestViewCtrl">
+<form ng-controller="manifestViewCtrl as manifestView">
+
+	<ul class="languages">
+		<li
+			ng-repeat="language in languages"
+			ng-class="{ 'active': $parent.activeLanguage == language.code }"
+			ng-click=" $parent.activeLanguage = language.code"
+		>
+			<img ng-src="./img/flag/{{language.code}}.png" />
+			<span class="tooltip">{{language.name}} translation</span>
+		</li>
+	</ul>
 
 	<fieldset>
 		<legend>General</legend>
@@ -8,12 +19,12 @@
 			<img id="manifest-icon" ng-src="{{iconUrl}}" file-drop="received($event, file)" />
 		<row>
 			<label>Name</label>
-			<input type="text" ng-model="manifest.name.en" />
+			<input type="text" ng-model="manifest.name[activeLanguage]" placeholder="{{ activeLanguage == 'en' ? '' : 'English: ' + manifest.name.en }}" />
 		</row>
 		
 		<row>
 			<label>Description</label>
-			<textarea ng-model="manifest.description.en"></textarea>
+			<textarea ng-model="manifest.description[activeLanguage]" placeholder="{{ activeLanguage == 'en' ? '' : 'English: ' + manifest.description.en }}" ></textarea>
 		</row>
 		
 		<row>
@@ -44,7 +55,116 @@
 		<row>
 			<label>Permissions</label>
 			<tags-input ng-model="manifest.permissions" placeholder="Add a permission">
-				<auto-complete source="autocompletePermissionTags($query)"></auto-complete>
+				<auto-complete
+					source="autocompletePermissionTags($query)"
+					min-length="0"
+					load-on-down-arrow="true"
+					load-on-empty="true"
+					load-on-focus="true"
+				></auto-complete>
+			</tags-input>
+		</row>
+		
+	</fieldset>
+	
+	<fieldset>
+		<legend>Flow</legend>
+		
+		<p><strong>Triggers</strong>		
+		<row>
+			<ul class="list">
+				<li ng-repeat="trigger in manifest.flow.triggers">
+					
+					<div class="remove" ng-click="removeFlowTrigger(trigger)">✕</div>
+					
+					<row>
+						<label>Method ID</label>
+						<input type="text" ng-model="trigger.method" />
+					</row>
+					
+					<row>
+						<label>Title</label>
+						<input type="text" ng-model="trigger.title[ activeLanguage ]" placeholder="{{ activeLanguage == 'en' ? '' : 'English: ' + trigger.title.en }}" />
+					</row>
+					
+					<p><strong>Input fields</strong> <em>(optional)</em></p>
+					<ul class="list">
+						<li ng-repeat="arg in trigger.args">
+					
+							<div class="remove" ng-click="removeFlowArg(arg)">✕</div>
+							
+							<row>
+								<label>ID</label>
+								<input type="text" ng-model="arg.name" />
+							</row>
+							<row>
+								<label>Type</label>
+								<select ng-model="arg.type" >
+									<option value="autocomplete">AutoComplete</option>
+									<option value="color">Color</option>
+									<option value="date">Date</option>
+									<option value="device">Device</option>
+									<option value="droptoken">Drop-token</option>
+									<option value="text">Text</option>
+									<option value="time">Time</option>
+								</select>
+							</row>
+							<row>
+								<label>Placeholder</label>
+								<input type="text" ng-model="arg.placeholder[ activeLanguage ]" placeholder="{{ activeLanguage == 'en' ? '' : 'English: ' + arg.placeholder.en }}" />
+							</row>
+							
+						</li>
+						<li class="add" ng-click="addFlowArg()">
+							<button>
+								<span class="icon icon-add"></span>
+								<span class="label">Add input field</span>
+							</button>					
+						</li>
+					</ul>
+					
+				</li>
+				<li class="add" ng-click="addFlowTrigger()">
+					<button>
+						<span class="icon icon-add"></span>
+						<span class="label">Add trigger</span>
+					</button>
+				</li>
+			</ul>
+		</row>
+		
+	</fieldset>
+	
+	<fieldset>
+		<legend>Mobile</legend>
+		
+		<p>
+			<em>Select which files to load for the mobile interface. Files are loaded in sequential order.</em>
+		</p>
+		
+		<row>
+			<label>CSS</label>
+			<tags-input ng-model="manifest.interfaces.mobile.css" placeholder="Add a CSS file">
+				<auto-complete
+					source="autocompleteInterfacesMobileFiles($query, 'css')"
+					min-length="0"
+					load-on-down-arrow="true"
+					load-on-empty="true"
+					load-on-focus="true"
+				></auto-complete>
+			</tags-input>
+		</row>
+		
+		<row>
+			<label>JavaScript</label>
+			<tags-input ng-model="manifest.interfaces.mobile.js" placeholder="Add a JavaScript file">
+				<auto-complete
+					source="autocompleteInterfacesMobileFiles($query, 'js')"
+					min-length="0"
+					load-on-down-arrow="true"
+					load-on-empty="true"
+					load-on-focus="true"
+				></auto-complete>
 			</tags-input>
 		</row>
 		
@@ -55,10 +175,10 @@
 		
 		<div class="row">
 			
-			<ul class="triggers">
-				<li class="trigger" ng-repeat="trigger in manifest.interfaces.speech.triggers">
+			<ul class="list">
+				<li ng-repeat="trigger in manifest.interfaces.speech.triggers">
 				
-					<div class="remove" ng-click="removeTrigger(trigger)">✕</div>
+					<div class="remove" ng-click="removeSpeechTrigger(trigger)">✕</div>
 				
 					<row>
 						<label>Trigger ID</label>
@@ -70,7 +190,7 @@
 					</row>
 					<row>
 						<label>Synonyms</label>
-						<tags-input ng-model="trigger.synonyms.en" placeholder="Add a synonym">
+						<tags-input ng-model="trigger.synonyms[activeLanguage]" placeholder="Add a synonym">
 							<auto-complete
 								class="reversed"
 								source="autocompleteSynonyms(trigger.id)"
@@ -82,7 +202,7 @@
 						</tags-input>
 					</row>
 				</li>
-				<li class="addTrigger" ng-click="addTrigger()">
+				<li class="add" ng-click="addSpeechTrigger()">
 					<button>
 						<span class="icon icon-add"></span>
 						<span class="label">Add trigger</span>

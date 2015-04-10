@@ -1,6 +1,6 @@
 {
-  "name": "devkit",
-  "version": "1.0.0",
+  "name": "Homey Devkit",
+  "version": "0.1.0",
   "description": "Homey Development Kit",
   "private": true,
   "dependencies": {

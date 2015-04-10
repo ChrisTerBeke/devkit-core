@@ -10,6 +10,29 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFac
 	$scope.platform = os.platform();
 	$scope.focus = true;
 	$scope.blurred = false;
+	
+	$rootScope.languages = [
+		{
+			code: 'en',
+			name: 'English'
+		},
+		{
+			code: 'nl',
+			name: 'Dutch'
+		},
+		{
+			code: 'fr',
+			name: 'French'
+		},
+		{
+			code: 'de',
+			name: 'German'
+		},
+		{
+			code: 'es',
+			name: 'Spanish'
+		}
+	];
 
 	// window focus/blurring	
 	var gui = require('nw.gui');

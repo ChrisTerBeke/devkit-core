@@ -15,7 +15,7 @@
 
 		<!-- angular-codemirror -->
 		<link rel="stylesheet" type="text/css" href="bower_components/codemirror/lib/codemirror.css" />
-		<link rel="stylesheet" type="text/css" href="./bower_components/codemirror/theme/monokai.css" />
+<!--		<link rel="stylesheet" type="text/css" href="./bower_components/codemirror/theme/monokai.css" />-->
 		<script type="text/javascript" src="./bower_components/codemirror/lib/codemirror.js"></script>
 		<script type="text/javascript" src="./bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
 		<script type="text/javascript" src="./bower_components/codemirror/mode/javascript/javascript.js"></script>
@@ -86,10 +86,10 @@
 					ng-class="{ 'logging-in': user.status == 'logging-in' }"
 				>
 					
-					<div ng-click="emit('auth.login')">
+					<div>
 						<div class="name">
 							<span ng-show="user.status == 'logged-in'">{{user.firstname}}</span>
-							<span ng-show="user.status == 'logged-out'">Log in</span>
+							<span ng-show="user.status == 'logged-out'" ng-click="emit('auth.login')">Log in</span>
 							<span ng-show="user.status == 'logging-in'">Logging in...</span>
 						</div>
 						<img ng-src="{{user.avatar || './img/avatar-fallback.jpg'}}?size=30" />
