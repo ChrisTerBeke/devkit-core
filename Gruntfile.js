@@ -16,44 +16,23 @@ module.exports = function(grunt) {
 	window = {};
 
 	require("./app/config/environment.js");
-	var dependencies = require('./dependencies.json')
 
 	var json = {
-		pkg: grunt.file.readJSON('package.json'),
-
 		/*
 		 *	Clean folders before copying.
 		 */
 		clean: {
-		  tmp: ["./public/tmp/*"],
 		  assets: ["./public/assets/javascripts/*", "./public/assets/stylesheets/*"],
 		  config: ["./public/config.js"]
 		},
 
-		/*
-		 * Concatenate Javascript files
-		 */
 		concat: {
 			options: {
 				separator: ';\n'
 			},
-			tmp: {
+			files: {
 				src: [
-					/*
-					 *	Include main files
-					 */
-					'./app/filters/**/*.js',
-					'./app/services/**/*.js',
-					'./app/directives/**/*.js',
-					'./app/functions/**/*.js',
-					'./app/app.js',
-					'./app/routes.js',
-					'./app/controllers/**/*.js'
-				],
-				dest: './public/tmp/tmp-js.js'
-			},
-			config: {
-				src: [
+
 					/*
 					 *	Include configs
 					 */
@@ -62,58 +41,48 @@ module.exports = function(grunt) {
 					'./app/config/auth.js',
 					'./app/config/path.js',
 					'./app/config/include.js',
-					'./app/config/debug.js'
-				],
-				dest: './public/tmp/tmp-config.js'
-			},
-			application_dependencies: {
-				src: [
-
-				],
-				dest: './public/tmp/tmp-dependencies.js'
-			},
-			application_devDependencies: {
-				src: [
-
-				],
-				dest: './public/tmp/tmp-devDependencies.js'
-			},
-			application_src: {
-				src: [
-					/*
-					 *	Include configs
-					 */
-					'./public/tmp/tmp-config.js',
+					'./app/config/debug.js',
 
 					/*
-					 *	Include Application
+					 *	Angular and its main dependencies.
 					 */
-					'./public/tmp/tmp-js.js',
+					'./bower_components/angular/angular.js',
+					'./bower_components/angular-resource/angular-resource.js',
+					'./bower_components/angular-animate/angular-animate.js',
+					'./bower_components/angular-sanitize/angular-sanitize.js',
 
 					/*
-					 *	Include Dependencies
+					 *	Angular vendor dependencies.
 					 */
-					'./public/tmp/tmp-dependencies.js',
-					'./public/tmp/tmp-devDependencies.js'
-				],
-				dest: './public/assets/javascripts/application.js'
-			},
-			application_dist: {
-				src: [
-					/*
-					 *	Include configs
-					 */
-					'./public/tmp/tmp-config.min.js',
+					'./bower_components/angular-ui-codemirror/ui-codemirror.js',
+					'./bower_components/angular-hotkeys/build/hotkeys.js',
+					'./bower_components/ng-tags-input/ng-tags-input.js',
 
 					/*
-					 *	Include Application
+					 *	Load modules.
 					 */
-					'./public/tmp/tmp-js.min.js',
+					'./app/modules/angular.js',
+					'./app/modules/vendor.js',
+					'./app/modules/filters.js',
+					'./app/modules/services.js',
+					'./app/modules/core.js',
 
 					/*
-					 *	Include Dependencies
+					 *	Include source files 
 					 */
-					'./public/tmp/tmp-dependencies.js'
+					'./app/dependencies/**/*.js',
+					'./app/filters/**/*.js',
+					'./app/services/**/*.js',
+					'./app/directives/**/*.js',
+
+					/*
+					 *	Include main files
+					 */
+					'./bower_components/codemirror/lib/codemirror.js',
+					'./bower_components/codemirror/mode/javascript/javascript.js',
+
+					'./app/app.js',
+					'./app/controllers/**/*.js'
 				],
 				dest: './public/assets/javascripts/application.js'
 			}
@@ -128,9 +97,7 @@ module.exports = function(grunt) {
 			},
 			main: {
 				files: {
-					'./public/tmp/tmp-js.min.js': './public/tmp/tmp-js.js',
-					'./public/tmp/tmp-config.min.js': './public/tmp/tmp-config.js',
-					'./public/tmp/tmp-dependencies.min.js': './public/tmp/tmp-dependencies.js'
+					'./public/assets/javascripts/application.js': './public/assets/javascripts/application.js'
 				}
 			}
 		},
@@ -153,7 +120,7 @@ module.exports = function(grunt) {
 		watch: {
 			javascripts: {
 				files: ['./public/tmp/**/*.js', './app/**/*.js'],
-				tasks: ['js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist'), 'clean:tmp']
+				tasks: ['js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist')]
 			},
 			sass: {
 				files: ['./sass/**/*.scss', './css-base/dist/**/*.scss'],
@@ -182,7 +149,6 @@ module.exports = function(grunt) {
 	}
 
 	grunt.initConfig();
-	grunt.config.merge(dependencies);
 	grunt.config.merge(json);
 
 	/*
@@ -199,11 +165,11 @@ module.exports = function(grunt) {
 	/*
 	 * Register Tasks
 	 */
-	grunt.registerTask('build:config', ['clean:config', 'concat:config']);
+	grunt.registerTask('build:config', ['clean:config']);
 
-	grunt.registerTask('js:dist', ['build:config', 'concat:tmp', 'concat:application_dependencies', 'uglify:main', 'concat:application_dist']);
-	grunt.registerTask('js:dev', ['build:config', 'concat:tmp', 'concat:application_dependencies', 'concat:application_devDependencies', 'concat:application_src']);
+	grunt.registerTask('js:dist', ['build:config', 'concat:', 'uglify']);
+	grunt.registerTask('js:dev', ['build:config', 'concat']);
 
-  	grunt.registerTask('default', ['clean:assets', 'compass', 'js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist'), 'compass', 'clean:tmp']);
+  	grunt.registerTask('default', ['clean:assets', 'compass', 'js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist'), 'compass']);
 
 };
