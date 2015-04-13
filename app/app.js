@@ -10,25 +10,26 @@ window.ondrop = function(e) { e.preventDefault(); return false };
 var app = angular.module('app', ['module.core']);
 
 // whitelist for iframe and assets
-app.config(function($sceDelegateProvider) 
+app.config(function($sceDelegateProvider)
 {
 	$sceDelegateProvider.resourceUrlWhitelist([
 		'self',
+		'http://localhost:8080/**',
 		'http://*.athom.nl/**',
 		'https://*.athom.nl/**'
 	]);
 });
 
 // add Bearer token to $http requests
-app.run(['$rootScope', '$injector', function($rootScope, $injector) 
+app.run(['$rootScope', '$injector', function($rootScope, $injector)
 {
-    $injector.get("$http").defaults.transformRequest = function(data, headersGetter) 
+    $injector.get("$http").defaults.transformRequest = function(data, headersGetter)
     {
-        if ($rootScope.user) 
+        if ($rootScope.user)
         {
         	headersGetter()['Authorization'] = "Bearer " + window.localStorage.access_token;
         }
-        if (data) 
+        if (data)
         {
             return angular.toJson(data);
         }
@@ -36,7 +37,7 @@ app.run(['$rootScope', '$injector', function($rootScope, $injector)
 }]);
 
 
-if(typeof angular !== 'undefined' && window.DEBUG) 
+if(typeof angular !== 'undefined' && window.DEBUG)
 {
   console.timeEnd("Angular loaded");
 }

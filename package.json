@@ -2,7 +2,7 @@
   "name": "devkit",
   "version": "0.0.1",
   "description": "Athom BV and PRINTR Development Kit",
-  "main": "app/views/index.html",
+  "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -31,7 +31,7 @@
       "email": "emile@athom.nl"
     },
     {
-      "name": "Chris Ter Beke",
+      "name": "Chris ter Beke",
       "email": "chris@printr.nl"
     },
     {
