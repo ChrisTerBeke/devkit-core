@@ -3,11 +3,13 @@
     <head>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
 
-        <base href="/" />
-        
         <!-- Include Resources -->
         <link rel="stylesheet" href="./public/assets/stylesheets/application.css" id="stylesheets" />
         <script src="./public/assets/javascripts/application.js" id="javascripts"></script>
+
+        <script>
+	    	require('nw.gui').Window.get().showDevTools();
+	    </script>
     </head>
     <body
 		class="os-{{platform}}"
@@ -52,13 +54,13 @@
 						<div class="name">
 							<span ng-click="emit('auth.login')">{{user.statusMessage}}</span>
 						</div>
-						<img ng-src="{{user.avatar || './public/assets/images/avatar-fallback.jpg'}}?size=30" />
+						<img ng-src="{{user.avatar || '../../public/assets/images/avatar-fallback.jpg'}}?size=30" />
 					</div>
 
 					<ul class="dropdown" ng-show="user.status == 'logged-in'">
 						<li>
 							<span class="label">
-								<span class="icon" style="-webkit-mask-image: url(./public/assets/images/icon/homey.svg)"></span>
+								<span class="icon" style="-webkit-mask-image: url(../../public/assets/images/icon/homey.svg)"></span>
 								<span class="title">Homey</span>
 							</span>
 							<ul class="homeys">
@@ -72,19 +74,19 @@
 						</li>
 						<li>
 							<span class="label">
-								<span class="icon" style="-webkit-mask-image: url(./public/assets/images/icon/user.svg)"></span>
+								<span class="icon" style="-webkit-mask-image: url(../../public/assets/images/icon/user.svg)"></span>
 								<span class="title">Account</span>
 							</span>
 						</li>
 						<li>
 							<span class="label">
-								<span class="icon" style="-webkit-mask-image: url(./public/assets/images/icon/settings.svg)"></span>
+								<span class="icon" style="-webkit-mask-image: url(../../public/assets/images/icon/settings.svg)"></span>
 								<span class="title">Settings</span>
 							</span>
 						</li>
 						<li>
 							<span class="label" ng-click="emit('auth.logout')">
-								<span class="icon" style="-webkit-mask-image: url(./public/assets/images/icon/logout.svg)"></span>
+								<span class="icon" style="-webkit-mask-image: url(../../public/assets/images/icon/logout.svg)"></span>
 								<span class="title">Logout</span>
 							</span>
 						</li>
@@ -186,7 +188,7 @@
 									<div class="tablecell">
 
 										<p>
-											<img src="./public/assets/images/icon/tools.svg" width="12%" style="opacity: 0.25;" />
+											<img src="../../public/assets/images/icon/tools.svg" width="12%" style="opacity: 0.25;" />
 										</p>
 
 										<h1>Welcome, Homey Developer!</h1>
