@@ -1,4 +1,5 @@
-app.factory('windowEventsFactory', [function(){
+angular.module('service.windowEventsFactory', [])
+	.factory('windowEventsFactory', [function () {
 	
 	var result = {};
 	var queue = {};
