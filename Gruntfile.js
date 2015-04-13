@@ -26,29 +26,8 @@ module.exports = function(grunt) {
 		 */
 		clean: {
 		  tmp: ["./public/tmp/*"],
-		  fonts: ["./public/assets/fonts/*"],
 		  assets: ["./public/assets/javascripts/*", "./public/assets/stylesheets/*"],
 		  config: ["./public/config.js"]
-		},
-
-		copy: {
-			options: {
-				noProcess: ['**/*.{eot,woff2,woff,ttf,svg}']
-			},
-			fonts: {
-				files: [
-					/*
-					 *	Copy Fonts
-					 */
-				    {
-				    	expand: true,
-				    	cwd: './bower_components/css-base/dist/fonts/',
-				    	src: ['**/*.{eot,woff2,woff,ttf,svg}'],
-				    	dest: './public/assets/fonts/',
-				    	filter: 'isFile'
-				    },
-				]
-			}
 		},
 
 		/*
@@ -107,11 +86,6 @@ module.exports = function(grunt) {
 					'./public/tmp/tmp-config.js',
 
 					/*
-					 *	Include JS base
-					 */
-					'./bower_components/js-base/dist/base.js',
-
-					/*
 					 *	Include Application
 					 */
 					'./public/tmp/tmp-js.js',
@@ -130,11 +104,6 @@ module.exports = function(grunt) {
 					 *	Include configs
 					 */
 					'./public/tmp/tmp-config.min.js',
-
-					/*
-					 *	Include JS base
-					 */
-					'./bower_components/js-base/dist/base.min.js',
 
 					/*
 					 *	Include Application
@@ -230,12 +199,11 @@ module.exports = function(grunt) {
 	/*
 	 * Register Tasks
 	 */
-	grunt.registerTask('build:fonts', ['clean:fonts', 'copy:fonts']);
 	grunt.registerTask('build:config', ['clean:config', 'concat:config']);
 
 	grunt.registerTask('js:dist', ['build:config', 'concat:tmp', 'concat:application_dependencies', 'uglify:main', 'concat:application_dist']);
 	grunt.registerTask('js:dev', ['build:config', 'concat:tmp', 'concat:application_dependencies', 'concat:application_devDependencies', 'concat:application_src']);
 
-  	grunt.registerTask('default', ['clean:assets', 'build:fonts', 'compass', 'js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist'), 'compass', 'clean:tmp']);
+  	grunt.registerTask('default', ['clean:assets', 'compass', 'js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist'), 'compass', 'clean:tmp']);
 
 };
