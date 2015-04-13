@@ -1,7 +1,6 @@
 # General
 relative_assets = true
 project_path = File.dirname(__FILE__) + '/'
-add_import_path './bower_components/css-base/dist/'
 add_import_path './bower_components/'
 
 # Sass Paths
