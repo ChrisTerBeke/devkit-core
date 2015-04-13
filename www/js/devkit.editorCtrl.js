@@ -120,6 +120,7 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 		activeFile._changed = false;
 		
 		$rootScope.$emit('editor.saved');
+		$rootScope.$emit('editor.saved.' + activeFile.path);
     }
     
     // get info (which views & widgets)
@@ -145,6 +146,12 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 	    if( file.ext == '.js' && file.dir == '/animations' ) {
 		    view = 'codemirror';
 		    widgets = [ 'ledring' ];
+		}
+		
+		// "*.svg"
+	    if( file.ext == '.svg' ) {
+		    view = 'codemirror';
+		    widgets = [ 'svg' ];
 		}
 		
 	    return {

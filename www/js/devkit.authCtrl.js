@@ -41,6 +41,8 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 	
 	$scope.logout = function(){
 		$rootScope.user = {};
+		$rootScope.user.status = 'logged-out';
+		$rootScope.user.statusMessage = 'Log in';
 		
 		delete window.localStorage.access_token;
 		delete window.localStorage.refresh_token;
@@ -50,14 +52,14 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 	$scope.getUserInfo = function(){
 
 		$rootScope.user.status = 'logging-in';
+		$rootScope.user.statusMessage = 'Logging in...';
 		
 		$http
 			.get('https://api.athom.nl/user/me')
 			.success(function( data ){
-				
-				console.log( data );
 												
 				$rootScope.user.status = 'logged-in';
+				$rootScope.user.statusMessage = data.firstname;
 				
 				$rootScope.user.firstname 	= data.firstname;
 				$rootScope.user.lastname 	= data.lastname;
@@ -67,7 +69,9 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 				$scope.getHomeys();
 				
 			})
-			.error(function( data ){				
+			.error(function( data ){
+				$rootScope.user.status = 'logged-out';
+				$rootScope.user.statusMessage = 'Error logging in!';
 				console.log(arguments)
 			});
 		
@@ -131,6 +135,7 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' ) {
 			//$scope.login();
 			$rootScope.user.status = 'logged-out';
+			$rootScope.user.statusMessage = 'Log in';
 		} else {
 			$scope.getUserInfo();
 		}

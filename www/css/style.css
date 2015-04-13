@@ -18,7 +18,7 @@
 
 html {
 	height: 100%;
-	background: transparent;
+	background: white;
 }
 
 body {
@@ -28,88 +28,12 @@ body {
 	font-family: "Roboto";
 	font-weight: 300;
 	background: transparent;
-	-webkit-filter: grayscale(10%);
 	transition: all 0.3s;
 	
 	-webkit-user-select: none;
 	cursor: default;
 	
 	-webkit-perspective: 1500px;
-}
-body.focus {
-	-webkit-filter: grayscale(0%);
-}
-
-wrap {
-	display: block;
-	position: absolute;
-	top: 10px;
-	bottom: 10px;
-	left: 10px;
-	right: 10px;
-	border-radius: 5px;
-	overflow: hidden;
-	box-shadow: 0 0 20px rgba(0,0,0,0.15);
-	
-	border: 1px solid rgba(0,0,0,0.25);
-	
-	-webkit-transform: scale(0.95);
-	opacity: 0;
-	
-	transition: all 0.25s;
-}
-body.focus wrap {
-	box-shadow: 0 5px 20px rgba(0,0,0,0.35);
-}
-wrap:before {
-	display: block;
-	content: "";
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	background: url(../img/body-bg.jpg) center center no-repeat;
-/*	opacity: 0.95;*/
-	
-	transition: all 0.3s;
-}
-body.focus wrap:before {
-	opacity: 1;
-}
-body.loaded wrap {
-	opacity: 1;
-	-webkit-transform: scale(1);
-}
-
-@media (min-width: 1500px), (min-height: 1042px){
-	wrap {
-		background-size: cover;
-	}
-}
-
-body.maximized wrap {
-	left: 0;
-	right: 0;
-	bottom: 0;
-	top: 0;
-	box-shadow: none;
-	border-radius: 0;
-	border-width: 0;
-}
-
-wrap.blurred {
-	-webkit-filter: blur(2px) grayscale(30%)
-}
-wrap.blurred:after {
-	content: "";
-	display: block;
-	position: absolute;
-	z-index: 100;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	top: 0;
 }
 
 header {
@@ -118,7 +42,6 @@ header {
 	left: 0;
 	right: 0;
 	height: 40px;
-	background: rgba(0,0,0,.15);
 }
 	header:before {
 		content: "";
@@ -440,9 +363,6 @@ content {
 		top: 0;
 		bottom: 0;
 		width: 220px;
-		background: rgba(255,255,255,0.05);
-		box-sizing: border-box;
-		background: rgba(0,0,0,.15);
 	}
 	sidebar {
 	}
@@ -550,7 +470,26 @@ content {
 			height: 30px;
 			background: rgba(255,255,255,0.05);
 		}
-		
+			#sidebar-helper .button {
+				float: left;
+				margin: 2px;
+				width: 26px;
+				height: 26px;
+				border-radius: 2px;
+				text-align: center;
+				line-height: 26px;
+				border: 1px solid rgba(0,0,0,0.05);
+				color: white;
+				font-size: 14px;
+				box-sizing: border-box;
+			}
+			#sidebar-helper .button:hover {
+				background: rgba(255,255,255,0.05);
+			}
+			#sidebar-helper .button:active {
+				background: rgba(0,0,0,0.05);				
+			}
+			
 	editor {
 		position: absolute;
 		top: 0;

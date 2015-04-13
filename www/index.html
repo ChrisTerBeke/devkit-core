@@ -10,12 +10,8 @@
 		<!-- angular -->
 		<script type="text/javascript" src="./bower_components/angular/angular.js"></script>
 		
-		<!-- angular-resource -->
-<!--		<script type="text/javascript" src="./bower_components/angular-resource/angular-resource.js"></script>-->
-
 		<!-- angular-codemirror -->
 		<link rel="stylesheet" type="text/css" href="bower_components/codemirror/lib/codemirror.css" />
-<!--		<link rel="stylesheet" type="text/css" href="./bower_components/codemirror/theme/monokai.css" />-->
 		<script type="text/javascript" src="./bower_components/codemirror/lib/codemirror.js"></script>
 		<script type="text/javascript" src="./bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
 		<script type="text/javascript" src="./bower_components/codemirror/mode/javascript/javascript.js"></script>
@@ -29,6 +25,7 @@
 		
 		<!-- devkit -->
 		<link rel="stylesheet" href="./css/style.css" type="text/css" />
+		<link rel="stylesheet" href="./css/themes/homey/theme.css" type="text/css" />
 		<link rel="stylesheet" href="./css/font.css" type="text/css" />
 		
 		<script type="text/javascript" src="./js/devkit.js"></script>
@@ -43,6 +40,7 @@
 		<script type="text/javascript" src="./js/devkit.services.js"></script>
 		
 		<script type="text/javascript" src="editor/widgets/ledring/widget.js"></script>
+		<script type="text/javascript" src="editor/widgets/svg/widget.js"></script>
 		<script type="text/javascript" src="editor/views/codemirror/view.js"></script>
 		<script type="text/javascript" src="editor/views/manifest/view.js"></script>
 		
@@ -88,9 +86,7 @@
 					
 					<div>
 						<div class="name">
-							<span ng-show="user.status == 'logged-in'">{{user.firstname}}</span>
-							<span ng-show="user.status == 'logged-out'" ng-click="emit('auth.login')">Log in</span>
-							<span ng-show="user.status == 'logging-in'">Logging in...</span>
+							<span ng-click="emit('auth.login')">{{user.statusMessage}}</span>
 						</div>
 						<img ng-src="{{user.avatar || './img/avatar-fallback.jpg'}}?size=30" />
 					</div>
@@ -145,7 +141,7 @@
 					<script type="text/ng-template" id="filetreeTmpl">
 						<span
 							ng-click="select( $event, item.path )"
-							ng-dblclick="open( item.path )"
+							ng-dblclick="open( item )"
 							ng-right-click="showCtxmenu(item, $event)"
 							ng-class="{ 'selected': isSelected( item.path ) }"
 							file-drop="dropped( $event, file, item.path )"
@@ -154,8 +150,9 @@
 							<span class="expand" ng-click="item.expanded = !item.expanded || false;" stop-event></span>
 							<span class="icon"></span>
 							<span class="name" ng-show="!item.renaming">{{item.name}}</span>
-							<form ng-show="item.renaming" ng-submit="alert('SUBMIT')">
-								<input class="name-renaming" type="text" ng-model="item.name" />
+							<form ng-show="item.renaming" ng-submit="submitRename( item )" style="display: inline-block;">
+								<input class="name-renaming" type="text" ng-model="item.name" ng-blur="submitRename( item )" />
+								<input type="submit" style="display: none;" />
 							</form>
 						</span>
 					    <ul ng-if="item.children" ng-show="item.expanded">
@@ -179,7 +176,9 @@
 						></li>
 					</ul>
 					
-					<div id="sidebar-helper"></div>
+					<div id="sidebar-helper">
+						<div class="button button-add">+</div>
+					</div>
 					
 				</sidebar>
 				

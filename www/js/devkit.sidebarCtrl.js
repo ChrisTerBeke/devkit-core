@@ -39,13 +39,35 @@ app.controller("sidebarCtrl", function($scope, $rootScope) {
 		
 	}
 	
+	// rename a file
+	$scope.submitRename = function( item ){
+		
+		var currentPath = item.path;
+		var itemFolder = path.dirname( item.path );
+		var newPath = path.join( itemFolder, item.name );
+		
+		fs.rename( currentPath, newPath );
+		
+		item.renaming = false;
+		
+	}
+	
 	$scope.isSelected = function( path ) {
 		return $scope.selected.indexOf(path) > -1;
 	}
 	
 	// open a new file on sidebar click
-	$scope.open = function( file_path ){
-		$rootScope.$emit('editor.open', file_path );
+	$scope.open = function( item ){
+		
+		if( fs.lstatSync( item.path ).isDirectory() ) {
+			item.expanded = !item.expanded;
+		} else {
+			$rootScope.$emit('editor.open', item.path );
+		}
+	}
+	
+	$scope.keyPress = function( event, item ) {
+		console.log( event, item );
 	}
 	
 	$scope.update = function(){
@@ -127,8 +149,9 @@ app.controller("sidebarCtrl", function($scope, $rootScope) {
 			}}));
 			if( $scope.selected.length == 1 ) {
 				ctxmenu.append(new gui.MenuItem({ label: 'Rename...', click: function(){
-					console.log(item)
-					item.renaming = true;
+					$scope.$apply(function(){
+						item.renaming = true;
+					});
 				}}));
 			}
 			ctxmenu.append(new gui.MenuItem({ label: 'Duplicate', click: function(){

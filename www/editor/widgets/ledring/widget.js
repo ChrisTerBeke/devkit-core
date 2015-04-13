@@ -11,7 +11,7 @@ app.controller("ledringWidgetCtrl", function( $scope, $rootScope, $http, $interv
 	}, 1000 / $scope.fps);
 
 	// animate on filechange
-	$rootScope.$on('editor.saved', function(){
+	$rootScope.$on('editor.saved.' + $scope.file_path, function(){
 		$scope.animate();
 	});
 		
