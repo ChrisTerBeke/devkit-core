@@ -37,4 +37,8 @@ bower_components
 *.lock
 
 #Ignore Public Assets
-public/assets
+public/assets/stylesheets
+public/assets/javascripts
+
+#Ignore WWW (temporary)
+www
