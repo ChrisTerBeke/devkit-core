@@ -31,7 +31,6 @@ app.controller("ledringWidgetCtrl", function( $scope, $rootScope, $http, $interv
 				
 		try {
 			animation = animation();	
-			console.log(animation)
 			$scope.animation = animation;
 		} catch( e ) {
 			// TODO: display nicely

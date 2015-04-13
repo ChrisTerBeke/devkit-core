@@ -111,21 +111,6 @@ app.controller("sidebarCtrl", function($scope, $rootScope) {
 				});
 			}}));
 			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
-			ctxmenu.append(new gui.MenuItem({ label: 'Duplicate', click: function(){
-				
-				$scope.selected.forEach(function( item_path ){
-					var new_path = newPath( item_path );
-					
-					var i = 2;
-					while( fs.existsSync( new_path ) ) {
-						new_path = newPath( item_path, i++ );
-					}
-									
-					fs.copySync( item_path, new_path );
-				});
-				
-			}}));
-			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
 			ctxmenu.append(new gui.MenuItem({ label: 'Move to Trash...', click: function(){
 				
 				if( $scope.selected.length > 1 ) {
@@ -139,6 +124,26 @@ app.controller("sidebarCtrl", function($scope, $rootScope) {
 						trash([ item.path ]);
 					}
 				}
+			}}));
+			if( $scope.selected.length == 1 ) {
+				ctxmenu.append(new gui.MenuItem({ label: 'Rename...', click: function(){
+					console.log(item)
+					item.renaming = true;
+				}}));
+			}
+			ctxmenu.append(new gui.MenuItem({ label: 'Duplicate', click: function(){
+				
+				$scope.selected.forEach(function( item_path ){
+					var new_path = newPath( item_path );
+					
+					var i = 2;
+					while( fs.existsSync( new_path ) ) {
+						new_path = newPath( item_path, i++ );
+					}
+									
+					fs.copySync( item_path, new_path );
+				});
+				
 			}}));
 			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
 		}

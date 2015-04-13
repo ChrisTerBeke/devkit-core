@@ -502,13 +502,22 @@ content {
 					#filetree li.type-folder > .label .expand:before {
 						visibility: visible;
 					}
-					#filetree li .label .name {
+					#filetree li .label .name,
+					#filetree li .label .name-renaming {
 						color: white;
 						font-weight: 300;
 						font-size: 12px;
 						display: inline-block;
 						vertical-align: middle;
 						text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+					}
+					#filetree li .label .name-renaming {
+						border: 1px solid rgba(0,0,0,0.1);
+						background: rgba(0,0,0,0.1);
+						font-family: inherit;
+						padding: 2px 4px;
+						margin: -4px;
+						position: relative;
 					}
 					#filetree li .label .icon {
 						-webkit-mask-position: center center;

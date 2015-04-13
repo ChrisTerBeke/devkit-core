@@ -6,8 +6,9 @@ widget.ledring {
 		position: relative;
 		display: inline-block;
 		-webkit-perspective: 1500px;
-		width: 260px;
-		height: 260px;
+		width: 240px;
+		height: 240px;
+		margin: 5px 10px;
 		margin-bottom: 20px;
 	}
 		widget.ledring .ledring-sketch {

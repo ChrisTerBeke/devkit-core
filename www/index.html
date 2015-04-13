@@ -151,16 +151,19 @@
 							file-drop="dropped( $event, file, item.path )"
 							class="label"
 						>
-							<span class="expand" ng-click="expanded = !expanded || false;" stop-event></span>
+							<span class="expand" ng-click="item.expanded = !item.expanded || false;" stop-event></span>
 							<span class="icon"></span>
-							<span class="name">{{item.name}}</span>
+							<span class="name" ng-show="!item.renaming">{{item.name}}</span>
+							<form ng-show="item.renaming" ng-submit="alert('SUBMIT')">
+								<input class="name-renaming" type="text" ng-model="item.name" />
+							</form>
 						</span>
-					    <ul ng-if="item.children" ng-show="expanded">
+					    <ul ng-if="item.children" ng-show="item.expanded">
 					        <li
 					        	ng-repeat="item in item.children"
 					        	ng-include="'filetreeTmpl'"
-					        	ng-class="{ 'expanded': expanded }"
-					        	ng-init="selected = false; expanded = false;"
+					        	ng-class="{ 'expanded': item.expanded }"
+					        	ng-init="selected = false; item.expanded = false;"
 					        	class="type-{{item.type}}"
 					        ></li>
 					    </ul>
@@ -170,8 +173,8 @@
 						<li
 							ng-repeat="item in filetree"
 							ng-include="'filetreeTmpl'"
-							ng-class="{ 'expanded': expanded }"
-							ng-init="expanded=true"
+							ng-class="{ 'expanded': item.expanded }"
+							ng-init="item.expanded=true"
 							class="type-{{item.type}}"
 						></li>
 					</ul>
