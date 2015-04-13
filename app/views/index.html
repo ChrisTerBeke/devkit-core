@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="devkitCtrl as devkit">
+    <head>
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+        <base href="/" />
+        
+        <!-- Include Resources -->
+        <link rel="stylesheet" href="./public/assets/stylesheets/application.css" id="stylesheets" />
+        <script src="./public/assets/javascripts/application.js" id="javascripts"></script>
+    </head>
+    <body
+		class="os-{{platform}}"
+		ng-class="{ 'maximized': maximized, 'loaded': loaded, 'focus': focus }"
+	>
+
+		<wrap
+			ng-class="{ 'blurred': blurred }"
+			ng-click="blurred && emit('closePopup')"
+		>
+
+			<header>
+
+				<div id="chrome-stoplight">
+					<div id="chrome-stoplight-close" ng-click="close()"></div>
+					<div id="chrome-stoplight-minimize" ng-click="minimize()"></div>
+					<div id="chrome-stoplight-zoom" ng-click="zoom()"></div>
+				</div>
+
+				<div id="chrome-title">
+					<span class="name">{{project.metadata.name.en}}</span>
+					<span class="id">{{project.metadata.id}}</span>
+				</div>
+
+				<div
+					id="play"
+					ng-controller="homeyCtrl"
+					ng-class="{ 'active': status.length > 0, 'enabled': sharedVars.activeHomey }"
+				>
+					<div id="play-button" ng-click="playstop()"></div>
+
+					<div id="play-status" title="{{status}}">{{status}}</div>
+
+				</div>
+
+				<div
+					id="user"
+					ng-class="{ 'logging-in': user.status == 'logging-in' }"
+				>
+
+					<div>
+						<div class="name">
+							<span ng-click="emit('auth.login')">{{user.statusMessage}}</span>
+						</div>
+						<img ng-src="{{user.avatar || './public/assets/images/avatar-fallback.jpg'}}?size=30" />
+					</div>
+
+					<ul class="dropdown" ng-show="user.status == 'logged-in'">
+						<li>
+							<span class="label">
+								<span class="icon" style="-webkit-mask-image: url(./public/assets/images/icon/homey.svg)"></span>
+								<span class="title">Homey</span>
+							</span>
+							<ul class="homeys">
+								<li ng-repeat="homey in user.homeys">
+									<label class="label" for="activeHomey-{{homey._id}}" title="ID: {{homey._id}} LAN IP: {{homey.ip_internal}}">
+										<input type="radio" id="activeHomey-{{homey._id}}" name="activeHomey" ng-model="sharedVars.activeHomey" value="{{homey._id}}" ng-change="change(homey._id)" />
+										<span class="title">{{homey.name}}</span>
+									</label>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<span class="label">
+								<span class="icon" style="-webkit-mask-image: url(./public/assets/images/icon/user.svg)"></span>
+								<span class="title">Account</span>
+							</span>
+						</li>
+						<li>
+							<span class="label">
+								<span class="icon" style="-webkit-mask-image: url(./public/assets/images/icon/settings.svg)"></span>
+								<span class="title">Settings</span>
+							</span>
+						</li>
+						<li>
+							<span class="label" ng-click="emit('auth.logout')">
+								<span class="icon" style="-webkit-mask-image: url(./public/assets/images/icon/logout.svg)"></span>
+								<span class="title">Logout</span>
+							</span>
+						</li>
+					</ul>
+
+				</div>
+
+			</header>
+
+			<content>
+
+				<sidebar
+					ng-controller="sidebarCtrl as sidebar"
+					ng-right-click="showCtxmenu(undefined, $event)"
+					file-drop="dropped( $event, file, project.path )"
+				>
+
+					<script type="text/ng-template" id="filetreeTmpl">
+						<span
+							ng-click="select( $event, item.path )"
+							ng-dblclick="open( item )"
+							ng-right-click="showCtxmenu(item, $event)"
+							ng-class="{ 'selected': isSelected( item.path ) }"
+							file-drop="dropped( $event, file, item.path )"
+							class="label"
+						>
+							<span class="expand" ng-click="item.expanded = !item.expanded || false;" stop-event></span>
+							<span class="icon"></span>
+							<span class="name" ng-show="!item.renaming">{{item.name}}</span>
+							<form ng-show="item.renaming" ng-submit="submitRename( item )" style="display: inline-block;">
+								<input class="name-renaming" type="text" ng-model="item.name" ng-blur="submitRename( item )" />
+								<input type="submit" style="display: none;" />
+							</form>
+						</span>
+					    <ul ng-if="item.children" ng-show="item.expanded">
+					        <li
+					        	ng-repeat="item in item.children"
+					        	ng-include="'filetreeTmpl'"
+					        	ng-class="{ 'expanded': item.expanded }"
+					        	ng-init="selected = false; item.expanded = false;"
+					        	class="type-{{item.type}}"
+					        ></li>
+					    </ul>
+					</script>
+
+					<ul id="filetree">
+						<li
+							ng-repeat="item in filetree"
+							ng-include="'filetreeTmpl'"
+							ng-class="{ 'expanded': item.expanded }"
+							ng-init="item.expanded=true"
+							class="type-{{item.type}}"
+						></li>
+					</ul>
+
+					<div id="sidebar-helper">
+						<div class="button button-add">+</div>
+					</div>
+
+				</sidebar>
+
+				<editor ng-controller="editorCtrl">
+
+					<editormain
+						ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }"
+					>
+
+						<tabs>
+							<tab
+								ng-repeat="file in files"
+								ng-init="active = false;"
+								ng-click="open(file.path)"
+								ng-class="{ 'active': $parent.active == file.path, 'changed': file._changed }"
+							>
+								<span class="close" ng-click="close(file.path)">
+									<span class="changed"></span>
+									<span class="cross">✕</span>
+								</span>
+								<span class="icon">{{file.icon}}</span>
+								<span class="name">{{file.name}}</span>
+							</tab>
+						</tabs>
+
+						<editorviews>
+
+							<editorview
+								class="{{file._view}}"
+								ng-repeat="file in files"
+								ng-include="'editor/views/' + file._view + '/view.html'"
+								ng-show="$parent.active == file.path"
+							>
+							</editorview>
+
+							<link rel="stylesheet" type="text/css" ng-href="./editor/views/{{file._view}}/view.css" ng-repeat="file in files" />
+
+							<noeditorview ng-show="!active">
+
+								<div class="table">
+									<div class="tablecell">
+
+										<p>
+											<img src="./public/assets/images/icon/tools.svg" width="12%" style="opacity: 0.25;" />
+										</p>
+
+										<h1>Welcome, Homey Developer!</h1>
+
+										<p>Let's get started. <a href="#">Build your first Homey App &raquo;</a></p>
+
+									</div>
+								</div>
+
+							</noeditorview>
+
+						</editorviews>
+
+					</editormain>
+
+					<widgets
+						ng-repeat="file in files"
+						ng-show="$parent.active == file.path && file._widgets.length > 0"
+					>
+						<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path">
+							<title>{{widget}}</title>
+							<link rel="stylesheet" type="text/css" ng-href="./editor/widgets/{{widget}}/widget.css" />
+							<widget class="{{widget}}" ng-include="'./editor/widgets/' + widget + '/widget.html'"></widget>
+						</widgetwrap>
+					</widgets>
+
+				</editor>
+
+			</content>
+
+			<!--
+			<devtools>
+				<iframe id="devtools" src=""></iframe>
+			</devtools>
+			-->
+
+		</wrap>
+
+		<auth
+			id="login"
+			ng-controller="authCtrl as auth"
+			ng-class="{ 'visible': popupVisible }"
+		>
+
+			<iframe id="auth-iframe" ng-src="{{popupUrl}}"></iframe>
+
+		</auth>
+
+		<!-- hidden things -->
+		<util>
+			<input id="directorychooser" type="file" webkitdirectory />
+		</util>
+
+	</body>
+</html>
