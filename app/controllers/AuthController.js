@@ -4,14 +4,16 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 	$scope.popupVisible = false;
 
 	$rootScope.sharedVars = {
-		activeHomey: false
+		//activeHomey: false
 	}
 
+/*
 	$rootScope.$watch('sharedVars.activeHomey', function() {
 		if( $rootScope.sharedVars.activeHomey !== false ) {
 			window.localStorage.activeHomey = $rootScope.sharedVars.activeHomey
 		}
 	});
+*/
 
 	$rootScope.$on('auth.login', function(){
 		$scope.login();
@@ -29,7 +31,7 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 	});
 
 	$scope.login = function(){
-		$scope.popupUrl = 'https://devkit.athom.nl/auth';
+		$scope.popupUrl = 'http://localhost:8080/login';
 		$scope.popupVisible = true;
 		$rootScope.user.status = 'logging-in';
 
@@ -46,7 +48,7 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 
 		delete window.localStorage.access_token;
 		delete window.localStorage.refresh_token;
-		delete window.localStorage.activeHomey;
+		//delete window.localStorage.activeHomey;
 	}
 
 	$scope.getUserInfo = function(){
@@ -55,28 +57,32 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 		$rootScope.user.statusMessage = 'Logging in...';
 
 		$http
-			.get('https://api.athom.nl/user/me')
+			.get('http://api.formide.local/userdata/v1/me?access_token=' + window.localStorage.access_token)
+			//.get('https://api.athom.nl/user/me')
 			.success(function( data ){
 
+				console.log(data);
+
 				$rootScope.user.status = 'logged-in';
-				$rootScope.user.statusMessage = data.firstname;
+				$rootScope.user.statusMessage = data.firstName;
 
-				$rootScope.user.firstname 	= data.firstname;
-				$rootScope.user.lastname 	= data.lastname;
+				$rootScope.user.firstname 	= data.firstName;
+				$rootScope.user.lastname 	= data.lastName;
 				$rootScope.user.email 		= data.email;
-				$rootScope.user.avatar 		= data.avatar;
+				$rootScope.user.avatar 		= data.profileImage;
 
-				$scope.getHomeys();
+				//$scope.getHomeys();
 
 			})
 			.error(function( data ){
+				console.log(data);
 				$rootScope.user.status = 'logged-out';
 				$rootScope.user.statusMessage = 'Error logging in!';
-				console.log(arguments)
 			});
 
 	}
 
+/*
 	$scope.getHomeys = function(){
 
 		$http
@@ -110,6 +116,7 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 				console.log(data)
 			});
 	}
+*/
 
 	// listen for a message from the iframe
 	window.addEventListener('message', function(e) {
