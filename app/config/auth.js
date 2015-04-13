@@ -1,0 +1,1 @@
+window.AUTH = window.AUTH || {};

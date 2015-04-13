@@ -1,5 +1,5 @@
 {
-  "name": "Homey Devkit",
+  "name": "devkit",
   "version": "0.1.0",
   "description": "Homey Development Kit",
   "private": true,
@@ -16,7 +16,7 @@
   },
   "main": "www/index.html",
   "window": {
-    "title": "Homey Development Kit",
+    "title": "Development Kit",
     "show": true,
     "toolbar": false,
     "frame": false,
