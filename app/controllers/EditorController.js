@@ -6,23 +6,28 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 	$scope.Object = Object;
 	
 	// open a new file
-    $rootScope.$on('editor.open', function( event, file_path ) {
+    $rootScope.$on('editor.open', function( event, file_path ) 
+    {
 		$scope.open( file_path )
     });
     
-    $rootScope.$on('editor.saveRequest', function(){
+    $rootScope.$on('editor.saveRequest', function()
+    {
 		$rootScope.$emit('editor.saveRequest.' + $scope.active);
     });
     
-    $rootScope.$on('editor.performSave', function(){
+    $rootScope.$on('editor.performSave', function()
+    {
 		$scope.save();
     });
     
-    $rootScope.$on('editor.close', function(){
+    $rootScope.$on('editor.close', function()
+    {
 		$scope.close( $scope.active );
     });
     
-    windowEventsFactory.addToQueue('close', function(){
+    windowEventsFactory.addToQueue('close', function()
+    {
 	    
 		window.localStorage.files_open = '';
 		
@@ -36,133 +41,133 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 						
     });
 	    
-    $scope.open = function( file_path ){
+//     $scope.open = function( file_path ){
 	    
-	    // add the file if it's not already open
-	    if( typeof $scope.files[ file_path ] == 'undefined' ) {
+// 	    // add the file if it's not already open
+// 	    if( typeof $scope.files[ file_path ] == 'undefined' ) {
 		    
-		    var info = $scope.getInfo( file_path );
+// 		    var info = $scope.getInfo( file_path );
 		    		    		    
-		    // create a file entry
-		    $scope.files[ file_path ] = {
-			    name		: path.basename( file_path ),
-			    icon		: $scope.icon( file_path ),
-			    path		: file_path,
-			    code		: fs.readFileSync( file_path ).toString(),
-			    _changed	: false,
-			    _view		: info.view,
-			    _widgets	: info.widgets
-		    }
+// 		    // create a file entry
+// 		    $scope.files[ file_path ] = {
+// 			    name		: path.basename( file_path ),
+// 			    icon		: $scope.icon( file_path ),
+// 			    path		: file_path,
+// 			    code		: fs.readFileSync( file_path ).toString(),
+// 			    _changed	: false,
+// 			    _view		: info.view,
+// 			    _widgets	: info.widgets
+// 		    }
 		    
-	    }
+// 	    }
 	    
-	    $scope.active = file_path;
+// 	    $scope.active = file_path;
 	    
-		$scope.fileHistory =  $scope.fileHistory.filter(function( file_path_history ){
-			return file_path_history != file_path;
-		});
-	    $scope.fileHistory.push( file_path );
+// 		$scope.fileHistory =  $scope.fileHistory.filter(function( file_path_history ){
+// 			return file_path_history != file_path;
+// 		});
+// 	    $scope.fileHistory.push( file_path );
 	    	    
-	    $rootScope.$emit('editor.focus.' + file_path );
+// 	    $rootScope.$emit('editor.focus.' + file_path );
 	    
-//	    $scope.$apply();
+// //	    $scope.$apply();
 	    
-	}
+// 	}
     
-    // close an item
-    $scope.close = function( file_path ) {
+//     // close an item
+//     $scope.close = function( file_path ) {
 	    	    
-	    var activeFile = $scope.files[ file_path ];
+// 	    var activeFile = $scope.files[ file_path ];
 	    
-	    // check for unsaved changes
-	    if( activeFile._changed ) {
-			    if( confirm("There are unsaved changes, close " + activeFile.name + " anyway?" ) ) {
-			    delete $scope.files[ file_path ];
-		    }
-	    } else {
-		    delete $scope.files[ file_path ];
-	    }
+// 	    // check for unsaved changes
+// 	    if( activeFile._changed ) {
+// 			    if( confirm("There are unsaved changes, close " + activeFile.name + " anyway?" ) ) {
+// 			    delete $scope.files[ file_path ];
+// 		    }
+// 	    } else {
+// 		    delete $scope.files[ file_path ];
+// 	    }
 		
-		// set last tab as active
-		// TODO: set last viewed tab as active
-		/*
-		if( Object.keys($scope.files).length > 0 ) {			
-			$scope.open( $scope.files[Object.keys($scope.files)[Object.keys($scope.files).length - 1]].path );
-		} else {
-			$scope.active = undefined;
-		}
-		*/
+// 		// set last tab as active
+// 		// TODO: set last viewed tab as active
+// 		/*
+// 		if( Object.keys($scope.files).length > 0 ) {			
+// 			$scope.open( $scope.files[Object.keys($scope.files)[Object.keys($scope.files).length - 1]].path );
+// 		} else {
+// 			$scope.active = undefined;
+// 		}
+// 		*/
 		
-		// remove from file history
-		$scope.fileHistory =  $scope.fileHistory.filter(function( file_path_history ){
-			return file_path_history != file_path;
-		});
+// 		// remove from file history
+// 		$scope.fileHistory =  $scope.fileHistory.filter(function( file_path_history ){
+// 			return file_path_history != file_path;
+// 		});
 						
-		// set last tab as active
-		if( $scope.fileHistory.length > 0 ) {
-			var lastFile = $scope.fileHistory[ $scope.fileHistory.length-1 ];
-			$scope.open( lastFile )
-		} else {
-			$scope.active = undefined;
-		}
+// 		// set last tab as active
+// 		if( $scope.fileHistory.length > 0 ) {
+// 			var lastFile = $scope.fileHistory[ $scope.fileHistory.length-1 ];
+// 			$scope.open( lastFile )
+// 		} else {
+// 			$scope.active = undefined;
+// 		}
 		
-    }
+//     }
 
-    // write the file to disk	    
-    $scope.save = function(){
+//     // write the file to disk	    
+//     $scope.save = function(){
 	    
-	    if( typeof $scope.active == 'undefined' ) return;
+// 	    if( typeof $scope.active == 'undefined' ) return;
 	   
-	    var activeFile = $scope.files[ $scope.active ];
+// 	    var activeFile = $scope.files[ $scope.active ];
 	    
-	    fs.writeFileSync( activeFile.path, activeFile.code );
+// 	    fs.writeFileSync( activeFile.path, activeFile.code );
 				
-		activeFile._changed = false;
+// 		activeFile._changed = false;
 		
-		$rootScope.$emit('editor.saved');
-		$rootScope.$emit('editor.saved.' + activeFile.path);
-    }
+// 		$rootScope.$emit('editor.saved');
+// 		$rootScope.$emit('editor.saved.' + activeFile.path);
+//     }
     
-    // get info (which views & widgets)
-    $scope.getInfo = function( file_path ) {
+//     // get info (which views & widgets)
+//     $scope.getInfo = function( file_path ) {
 	    
-	    file_path = file_path.replace($rootScope.project.path, '');
+// 	    file_path = file_path.replace($rootScope.project.path, '');
 	    
-	    // determine the view.
-	    var file = path.parse( file_path );
+// 	    // determine the view.
+// 	    var file = path.parse( file_path );
 	    
-	    // default to codemirror
-	    var view = 'codemirror';
-	    var widgets = [];
+// 	    // default to codemirror
+// 	    var view = 'codemirror';
+// 	    var widgets = [];
 		
-		// find a specific one
-		// "/app.json"
-	    if( file.base == 'app.json' && file.dir == '/' ) {
-		    view = 'manifest';
-		    widgets = [];
-		}
+// 		// find a specific one
+// 		// "/app.json"
+// 	    if( file.base == 'app.json' && file.dir == '/' ) {
+// 		    view = 'manifest';
+// 		    widgets = [];
+// 		}
 		
-		// "/animations/*.js"
-	    if( file.ext == '.js' && file.dir == '/animations' ) {
-		    view = 'codemirror';
-		    widgets = [ 'ledring' ];
-		}
+// 		// "/animations/*.js"
+// 	    if( file.ext == '.js' && file.dir == '/animations' ) {
+// 		    view = 'codemirror';
+// 		    widgets = [ 'ledring' ];
+// 		}
 		
-		// "*.svg"
-	    if( file.ext == '.svg' ) {
-		    view = 'codemirror';
-		    widgets = [ 'svg' ];
-		}
+// 		// "*.svg"
+// 	    if( file.ext == '.svg' ) {
+// 		    view = 'codemirror';
+// 		    widgets = [ 'svg' ];
+// 		}
 		
-	    return {
-		    view: view,
-		    widgets: widgets
-		}
+// 	    return {
+// 		    view: view,
+// 		    widgets: widgets
+// 		}
 	    
-    }
+//     }
     
-    $scope.icon = function( file_path ){
-	    return '';
-    }
+//     $scope.icon = function( file_path ){
+// 	    return '';
+//     }
     
 });

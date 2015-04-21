@@ -2,6 +2,18 @@ var os 			= require('os');
 var fs 			= require('os');
 var path		= require('path');
 
+var DevkitController = function($scope, $file, $q) {
+	$rootScope.project = {};
+	$scope.loaded = false;
+	$scope.platform = os.platform();
+	$scope.focus = true;
+	$scope.blurred = false;
+}
+
+DevkitController.$inject = ['$scope', '$sidebar', '$q'];
+
+app.controller("DevkitController", DevkitController);
+
 app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFactory) {
 	
 	// variables
@@ -82,29 +94,29 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFac
 		$rootScope.$emit( event, data );
 	}
 	
-	$scope.load = function( project_dir ){
+	// $scope.load = function( project_dir ){
 		
-		$rootScope.project.path = project_dir;
+	// 	$rootScope.project.path = project_dir;
 		
-		// load metadata
-		var metadata = fs.readFileSync( path.join( project_dir, 'app.json' ) ).toString();
-			metadata = JSON.parse( metadata );			
-		$rootScope.project.metadata = metadata;
+	// 	// load metadata
+	// 	var metadata = fs.readFileSync( path.join( project_dir, 'app.json' ) ).toString();
+	// 		metadata = JSON.parse( metadata );			
+	// 	$rootScope.project.metadata = metadata;
 		
-		$rootScope.$emit('project.loaded');
+	// 	$rootScope.$emit('project.loaded');
 				
-		// save for restart
-		window.localStorage.project_dir = project_dir;
+	// 	// save for restart
+	// 	window.localStorage.project_dir = project_dir;
 		
-	}
+	// }
 	
-	$scope.open = function(){	
-		var directorychooser = document.getElementById('directorychooser');
-		directorychooser.addEventListener("change", function(evt) {
-			$scope.load( this.value );
-		}, false)
-		directorychooser.click();
-	}
+	// $scope.open = function(){	
+	// 	var directorychooser = document.getElementById('directorychooser');
+	// 	directorychooser.addEventListener("change", function(evt) {
+	// 		$scope.load( this.value );
+	// 	}, false)
+	// 	directorychooser.click();
+	// }
 	
 	window.addEventListener('load', function(){
 		$scope.loaded = true;
@@ -134,27 +146,27 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFac
 	});
 		
 	// stoplight button methods
-	$scope.minimize = function(){
-		var gui = require('nw.gui');
-		var win = gui.Window.get();
-		win.minimize();
-	}
-	$scope.close = function(){
-		var gui = require('nw.gui');
-		var win = gui.Window.get();
-		win.close();
-	}
-	$scope.zoom = function(){
-		var gui = require('nw.gui');
-		var win = gui.Window.get();
-		win.maximize();
+	// $scope.minimize = function(){
+	// 	var gui = require('nw.gui');
+	// 	var win = gui.Window.get();
+	// 	win.minimize();
+	// }
+	// $scope.close = function(){
+	// 	var gui = require('nw.gui');
+	// 	var win = gui.Window.get();
+	// 	win.close();
+	// }
+	// $scope.zoom = function(){
+	// 	var gui = require('nw.gui');
+	// 	var win = gui.Window.get();
+	// 	win.maximize();
 		
-		if( typeof $rootScope.maximized == 'undefined' ) {
-			$rootScope.maximized = true;
-		} else {
-			$rootScope.maximized = !$rootScope.maximized;
-		}
-	}
+	// 	if( typeof $rootScope.maximized == 'undefined' ) {
+	// 		$rootScope.maximized = true;
+	// 	} else {
+	// 		$rootScope.maximized = !$rootScope.maximized;
+	// 	}
+	// }
 	
 	
 	// menu
