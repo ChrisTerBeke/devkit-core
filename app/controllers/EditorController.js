@@ -40,6 +40,11 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 		window.localStorage.files_open = files_open.join(',');
 						
     });
+
+    $scope.open = function(file_path) 
+    {
+    	$file.open(file, file_path, fileHistory, file_path_history);
+    }
 	    
 //     $scope.open = function( file_path ){
 	    
@@ -72,7 +77,11 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 	    
 // //	    $scope.$apply();
 	    
-// 	}
+// 	}	
+	$scope.close = function(file_path) 
+    {
+    	$file.close(file, file_path, fileHistory, file_path_history);
+    }
     
 //     // close an item
 //     $scope.close = function( file_path ) {
@@ -113,6 +122,11 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 		
 //     }
 
+	$scope.save = function() 
+    {
+    	$file.close(files, active);
+    }
+
 //     // write the file to disk	    
 //     $scope.save = function(){
 	    
@@ -127,6 +141,11 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 // 		$rootScope.$emit('editor.saved');
 // 		$rootScope.$emit('editor.saved.' + activeFile.path);
 //     }
+
+	$scope.getInfo = function(file_path) 
+    {
+    	$file.getInfo(file_path);
+    }
     
 //     // get info (which views & widgets)
 //     $scope.getInfo = function( file_path ) {
@@ -165,6 +184,11 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 // 		}
 	    
 //     }
+
+	$scope.icon = function(file_path) 
+    {
+    	$file.icon(file_path);
+    }
     
 //     $scope.icon = function( file_path ){
 // 	    return '';

@@ -57,6 +57,92 @@ app.controller("sidebarCtrl", function($scope, $rootScope) {
 		
 	// }
 
+	$scope.select = function(event, path)
+	{
+		$scope.selected = $sidebar.selected($scope.selected, event, path);
+	}
+	
+	// // rename a file
+	// $scope.submitRename = function( item ){
+		
+	// 	var currentPath = item.path;
+	// 	var itemFolder = path.dirname( item.path );
+	// 	var newPath = path.join( itemFolder, item.name );
+		
+	// 	fs.rename( currentPath, newPath );
+		
+	// 	item.renaming = false;
+		
+	// }
+
+	$scope.submitRename = function() 
+	{
+		$sidebar.submitRename(item);
+	}
+
+	// $scope.isSelected = function( path ) {
+	// 	return $scope.selected.indexOf(path) > -1;
+	// }
+
+	$scope.isSelected = function() 
+	{
+		$sidebar.isSelected(path);
+	}
+	
+	// // open a new file on sidebar click
+	// $scope.open = function( item ){
+		
+	// 	if( fs.lstatSync( item.path ).isDirectory() ) {
+	// 		item.expanded = !item.expanded;
+	// 	} else {
+	// 		$rootScope.$emit('editor.open', item.path );
+	// 	}
+	// }
+	
+	$scope.open = function()
+	{
+		$sidebar.open(item);
+	} 
+
+	// $scope.keyPress = function( event, item ) {
+	// 	console.log( event, item );
+	// }
+
+	$scope.update = function() 
+	{
+		$sidebar.update();
+	}  
+	
+	// $scope.update = function(){
+	// 	$scope.filetree = readdirSyncRecursive( $rootScope.project.path, true );
+	// 	$scope.$apply();
+	// }
+	
+	$scope.dropped = function( event, file, dropped_path )
+	{
+		$sidebar.dropped(event, file, dropped_path);
+	}
+
+	// $scope.dropped = function( event, file, dropped_path ){
+		
+	// 	var filename = path.basename( file.path );
+		
+	// 	// if dropped on a file, get the file's parent folder
+	// 	if( fs.lstatSync(dropped_path).isFile() ) {
+	// 		var new_path = path.dirname( dropped_path );
+	// 	} else {
+	// 		var new_path = path.join( dropped_path, filename );
+	// 	}
+		
+	// 	// prevent overwriting
+	// 	if( fs.existsSync( new_path ) ) {
+	// 		if( !confirm('Overwrite `' + filename + '`?') ) return;
+	// 	}
+		
+	// 	fs.copy( file.path, new_path, {}, function(err){});
+				
+	// }
+
 	//TODO: Update this function
     $scope.showCtxmenu = function( item, event )
     {
@@ -172,62 +258,6 @@ app.controller("sidebarCtrl", function($scope, $rootScope) {
         // Popup as context menu
         ctxmenu.popup( event.clientX, event.clientY );
     }
-	
-	// // rename a file
-	// $scope.submitRename = function( item ){
-		
-	// 	var currentPath = item.path;
-	// 	var itemFolder = path.dirname( item.path );
-	// 	var newPath = path.join( itemFolder, item.name );
-		
-	// 	fs.rename( currentPath, newPath );
-		
-	// 	item.renaming = false;
-		
-	// }
-	
-	// $scope.isSelected = function( path ) {
-	// 	return $scope.selected.indexOf(path) > -1;
-	// }
-	
-	// // open a new file on sidebar click
-	// $scope.open = function( item ){
-		
-	// 	if( fs.lstatSync( item.path ).isDirectory() ) {
-	// 		item.expanded = !item.expanded;
-	// 	} else {
-	// 		$rootScope.$emit('editor.open', item.path );
-	// 	}
-	// }
-	
-	// $scope.keyPress = function( event, item ) {
-	// 	console.log( event, item );
-	// }
-	
-	// $scope.update = function(){
-	// 	$scope.filetree = readdirSyncRecursive( $rootScope.project.path, true );
-	// 	$scope.$apply();
-	// }
-	
-	// $scope.dropped = function( event, file, dropped_path ){
-		
-	// 	var filename = path.basename( file.path );
-		
-	// 	// if dropped on a file, get the file's parent folder
-	// 	if( fs.lstatSync(dropped_path).isFile() ) {
-	// 		var new_path = path.dirname( dropped_path );
-	// 	} else {
-	// 		var new_path = path.join( dropped_path, filename );
-	// 	}
-		
-	// 	// prevent overwriting
-	// 	if( fs.existsSync( new_path ) ) {
-	// 		if( !confirm('Overwrite `' + filename + '`?') ) return;
-	// 	}
-		
-	// 	fs.copy( file.path, new_path, {}, function(err){});
-				
-	// }
 	
 	// $scope.showCtxmenu = function( item, event ){
 				
