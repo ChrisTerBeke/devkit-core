@@ -15,8 +15,8 @@ app.config(function($sceDelegateProvider)
 	$sceDelegateProvider.resourceUrlWhitelist([
 		'self',
 		'http://localhost:8080/**',
-		'http://*.athom.nl/**',
-		'https://*.athom.nl/**'
+		'http://*.formide.com/**',
+		'https://*.formide.com/**'
 	]);
 });
 

@@ -1,11 +1,12 @@
 angular.module('sdk.auth', [])
-    .factory('$auth', ['$rootScope', '$state', '$q', function ($rootScope, $state, $q) {   
+    .factory('$auth', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {   
 	var factory = {};
 
    factory.login = function()
    {
-		$scope.popupUrl = 'http://localhost:8080/login';
-		$scope.popupVisible = true;
+   		$rootScope.user = $rootScope.user || {};
+		// $scope.popupUrl = 'http://localhost:8080/login';
+		// $scope.popupVisible = true;
 		$rootScope.user.status = 'logging-in';
 
 		$timeout(function()
@@ -29,11 +30,12 @@ angular.module('sdk.auth', [])
 	factory.getUserInfo = function()
 	{
 
+		$rootScope.user = $rootScope.user || {};
 		$rootScope.user.status = 'logging-in';
 		$rootScope.user.statusMessage = 'Logging in...';
 
 		$http
-			.get('http://api.formide.local/userdata/v1/me?access_token=' + window.localStorage.access_token)
+			.get('https://api2.formide.com/auth/me')
 			//.get('https://api.athom.nl/user/me')
 			.success(function( data )
 			{

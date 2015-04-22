@@ -1,5 +1,5 @@
 angular.module('sdk.stoplight', [])
-    .factory('$stoplight', ['$rootScope', '$state', '$q', function ($rootScope, $state, $q) {   
+    .factory('$stoplight', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {   
 	var factory = {};
 
     factory.minimize = function(){

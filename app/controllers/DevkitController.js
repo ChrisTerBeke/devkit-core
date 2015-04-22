@@ -2,19 +2,19 @@ var os 			= require('os');
 var fs 			= require('os');
 var path		= require('path');
 
-var DevkitController = function($scope, $file, $q) {
-	$rootScope.project = {};
-	$scope.loaded = false;
-	$scope.platform = os.platform();
-	$scope.focus = true;
-	$scope.blurred = false;
-}
+// var DevkitController = function($scope, $file, $q) {
+// 	$rootScope.project = {};
+// 	$scope.loaded = false;
+// 	$scope.platform = os.platform();
+// 	$scope.focus = true;
+// 	$scope.blurred = false;
+// }
 
-DevkitController.$inject = ['$scope', '$sidebar', '$q'];
+// DevkitController.$inject = ['$scope', '$sidebar', '$q'];
 
-app.controller("DevkitController", DevkitController);
+// app.controller("DevkitController", DevkitController);
 
-app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFactory) {
+app.controller("devkitCtrl", function($scope, $rootScope, $http, $stoplight, windowEventsFactory) {
 	
 	// variables
 	$rootScope.project = {};
@@ -164,7 +164,10 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFac
 		
 	});
 
-	$scope.minimize = $stoplight.minimize();
+	$scope.minimize = function() 
+    {
+    	$stoplight.minimize();
+    }
 		
 	// stoplight button methods
 	// $scope.minimize = function(){
@@ -173,7 +176,10 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFac
 	// 	win.minimize();
 	// }
 
-	$scope.close = $stoplight.close();
+	$scope.close = function() 
+    {
+    	$stoplight.close();
+    } 
 
 	// $scope.close = function(){
 	// 	var gui = require('nw.gui');
@@ -181,7 +187,10 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, windowEventsFac
 	// 	win.close();
 	// }
 
-	$scope.zoom = $stoplight.zoom();
+	$scope.zoom = function() 
+    {
+    	$stoplight.zoom();
+    } 
 	
 	// $scope.zoom = function(){
 	// 	var gui = require('nw.gui');

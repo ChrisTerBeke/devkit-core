@@ -1,4 +1,4 @@
-app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout) {
+app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout, $auth) {
 
 	$scope.popupUrl = '';
 	$scope.popupVisible = false;
@@ -16,7 +16,9 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 */
 
 	$rootScope.$on('auth.login', function(){
+		console.log('login this');
 		$scope.login();
+
 	});
 
 	$rootScope.$on('auth.logout', function(){
@@ -30,7 +32,13 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 		$rootScope.user.status = 'logged-out';
 	});
 
-	$scope.login = $auth.login();
+	$scope.login  = function()
+	{
+		$scope.popupUrl = 'https://sdk.formide.com';
+		$scope.popupVisible = true;
+
+		$auth.login();
+	}
 
 	// $scope.login = function(){
 	// 	$scope.popupUrl = 'http://localhost:8080/login';
@@ -43,7 +51,10 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 
 	// }
 
-	$scope.logout = $auth.logout();
+	$scope.logout  = function()
+	{
+		$auth.logout();
+	}
 
 	// $scope.logout = function(){
 	// 	$rootScope.user = {};
@@ -55,7 +66,10 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 	// 	//delete window.localStorage.activeHomey;
 	// }
 
-	$scope.getUserInfo = $auth.getUserInfo();
+	$scope.getUserInfo  = function()
+	{
+		$auth.getUserInfo();
+	}
 
 	// $scope.getUserInfo = function(){
 

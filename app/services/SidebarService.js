@@ -1,5 +1,5 @@
 angular.module('sdk.sidebar', [])
-    .factory('$sidebar', ['$rootScope', '$state', '$q', function ($rootScope, $state, $q) {   
+    .factory('$sidebar', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {   
 	var factory = {};
 
     factory.select = function(selected, event, path)

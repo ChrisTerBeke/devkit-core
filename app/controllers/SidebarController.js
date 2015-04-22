@@ -5,16 +5,16 @@ var fs			= require('fs-extra')
 var watchTree 	= require("fs-watch-tree").watchTree;
 var trash		= require('trash');
 
-var SidebarController = function($scope, $sidebar, $q) {
-	$scope.filetree = {};
-	$scope.selected = [];
-}
+// var SidebarController = function($scope, $sidebar, $q) {
+// 	$scope.filetree = {};
+// 	$scope.selected = [];
+// }
 
-SidebarController.$inject = ['$scope', '$sidebar', '$q'];
+// SidebarController.$inject = ['$scope', '$sidebar', '$q'];
 
-app.controller("SidebarController", SidebarController);
+// app.controller("SidebarController", SidebarController);
 
-app.controller("sidebarCtrl", function($scope, $rootScope) {
+app.controller("sidebarCtrl", function($scope, $rootScope, $sidebar) {
 	
 	$scope.filetree = {};
 	$scope.selected = [];
@@ -444,4 +444,4 @@ app.controller("sidebarCtrl", function($scope, $rootScope) {
 	
 // 	var new_path = path.join( folder, new_filename );
 // 	return new_path;					
-}
+// }

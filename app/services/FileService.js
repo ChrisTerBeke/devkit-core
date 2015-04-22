@@ -1,5 +1,5 @@
 angular.module('sdk.file', [])
-    .factory('$file', ['$rootScope', '$state', '$q', function ($rootScope, $state, $q) {   
+    .factory('$file', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {   
 	var factory = {};
 
     factory.open = function(file, file_path, fileHistory, file_path_history)
@@ -33,12 +33,14 @@ angular.module('sdk.file', [])
 	    $rootScope.$emit('editor.focus.' + file_path );
 
 
-	    return 
+	    var json = 
 	    {
-		    active: file_path,
-	    	files: files,
-	    	fileHistory: fileHistory
+		    'active': file_path,
+	    	'files': files,
+	    	'fileHistory': fileHistory
 	    }
+
+	    return json;
 	    
 //	    $scope.$apply();
 	    

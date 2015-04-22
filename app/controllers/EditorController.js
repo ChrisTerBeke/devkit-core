@@ -1,4 +1,4 @@
-app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
+app.controller("editorCtrl", function($scope, $rootScope, $file, windowEventsFactory) {
     
 	$scope.files = {}; // files open
 	$scope.active = undefined; // currently viewing
@@ -43,7 +43,12 @@ app.controller("editorCtrl", function($scope, $rootScope, windowEventsFactory) {
 
     $scope.open = function(file_path) 
     {
-    	$file.open(file, file_path, fileHistory, file_path_history);
+    	var open = $file.open(file, file_path, fileHistory, file_path_history);
+
+    	$scope.active = open.active;
+
+    	$scope.files = open.files;
+    	$scope.fileHistory = open.fileHistory;
     }
 	    
 //     $scope.open = function( file_path ){
