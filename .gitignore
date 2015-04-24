@@ -19,9 +19,7 @@ coverage
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
 
-# Dependency directory
-# Commenting this out is preferred by some people, see
-# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
+# Dependency directories
 node_modules
 bower_components
 
@@ -36,9 +34,11 @@ bower_components
 .DS_Store
 *.lock
 
-#Ignore Public Assets
-public/assets/stylesheets
-public/assets/javascripts
+# Ignore Public Assets
+public/assets
 
-#Ignore WWW (temporary)
+# Ignore WWW (temporary)
 www
+
+# Ignore app folder
+app

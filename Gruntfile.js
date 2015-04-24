@@ -2,7 +2,7 @@
 module.exports = function(grunt) {
 	window = {};
 
-	require("./app/config/environment.js");
+	require("./core/config/environment.js");
 
 	var json = {
 		/*
@@ -19,16 +19,6 @@ module.exports = function(grunt) {
 			},
 			files: {
 				src: [
-
-					/*
-					 *	Include configs
-					 */
-					'./app/config/helpers.js',
-					'./app/config/environment.js',
-					'./app/config/auth.js',
-					'./app/config/path.js',
-					'./app/config/include.js',
-					'./app/config/debug.js',
 
 					/*
 					 *	Angular and its main dependencies.
@@ -48,19 +38,19 @@ module.exports = function(grunt) {
 					/*
 					 *	Load modules.
 					 */
-					'./app/modules/angular.js',
-					'./app/modules/vendor.js',
-					'./app/modules/filters.js',
-					'./app/modules/services.js',
-					'./app/modules/core.js',
+					'./core/modules/angular.js',
+					'./core/modules/vendor.js',
+					'./core/modules/filters.js',
+					'./core/modules/services.js',
+					'./core/modules/core.js',
 
 					/*
-					 *	Include source files 
+					 *	Include source files
 					 */
-					'./app/dependencies/**/*.js',
-					'./app/filters/**/*.js',
-					'./app/services/**/*.js',
-					'./app/directives/**/*.js',
+					'./core/dependencies/**/*.js',
+					'./core/filters/**/*.js',
+					'./core/services/**/*.js',
+					'./core/directives/**/*.js',
 
 					/*
 					 *	Include main files
@@ -68,8 +58,13 @@ module.exports = function(grunt) {
 					'./bower_components/codemirror/lib/codemirror.js',
 					'./bower_components/codemirror/mode/javascript/javascript.js',
 
-					'./app/app.js',
-					'./app/controllers/**/*.js'
+					'./core/app.js',
+					'./core/controllers/**/*.js',
+
+					/*
+					 *	Include app specific files
+					 */
+					'./app/**/*.js'
 				],
 				dest: './public/assets/javascripts/application.js'
 			}
@@ -106,7 +101,7 @@ module.exports = function(grunt) {
 		 */
 		watch: {
 			javascripts: {
-				files: ['./public/tmp/**/*.js', './app/**/*.js'],
+				files: ['./public/tmp/**/*.js', './core/**/*.js', './app/**/*.js'],
 				tasks: ['js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist')]
 			},
 			sass: {
