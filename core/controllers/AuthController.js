@@ -4,16 +4,7 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 	$scope.popupVisible = false;
 
 	$rootScope.sharedVars = {
-		//activeHomey: false
 	}
-
-/*
-	$rootScope.$watch('sharedVars.activeHomey', function() {
-		if( $rootScope.sharedVars.activeHomey !== false ) {
-			window.localStorage.activeHomey = $rootScope.sharedVars.activeHomey
-		}
-	});
-*/
 
 	$rootScope.$on('auth.login', function(){
 		console.log('login this');
