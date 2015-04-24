@@ -2,13 +2,15 @@ angular.module('sdk.sidebar', [])
     .factory('$sidebar', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
 	var factory = {};
 
+	factory.selected = [];
+
     factory.select = function(selected, event, path) {
         var selected = selected || {};
 
         // multiple selection
         if( event.metaKey || event.ctrlKey ) {
             if( selected.indexOf(path) > -1 ) {
-                selected = $scope.selected.filter(function(path_) {
+                selected = factory.selected.filter(function(path_) {
                     return path_ != path;
                 });
             }
@@ -63,7 +65,7 @@ angular.module('sdk.sidebar', [])
     }
 
     factory.isSelected = function( path ) {
-        return $scope.selected.indexOf(path) > -1;
+        return factory.selected.indexOf(path) > -1;
     }
 
     //TODO rewrite this function
@@ -83,6 +85,15 @@ angular.module('sdk.sidebar', [])
         }
     }
 */
+
+	factory.openFile = function(item) {
+		if( fs.lstatSync( item.path ).isDirectory() ) {
+            item.expanded = !item.expanded;
+        }
+        else {
+            $rootScope.$emit('editor.open', item.path );
+        }
+	}
 
     factory.keyPress = function( event, item ) {
         console.log( event, item );

@@ -25,7 +25,7 @@ app.controller("sidebarCtrl", function($scope, $rootScope, $sidebar) {
 			$scope.filetree = $sidebar.update();
 		});
 
-		$scope.filetree = $scope.update();
+		$scope.update();
 	});
 
 	// $scope.select = function( event, path )
@@ -56,7 +56,7 @@ app.controller("sidebarCtrl", function($scope, $rootScope, $sidebar) {
 
 	$scope.select = function(event, path)
 	{
-		$scope.selected = $sidebar.selected($scope.selected, event, path);
+		$scope.selected = $sidebar.select($scope.selected, event, path);
 	}
 
 	// // rename a file
@@ -96,9 +96,9 @@ app.controller("sidebarCtrl", function($scope, $rootScope, $sidebar) {
 	// 	}
 	// }
 
-	$scope.open = function()
+	$scope.open = function(item)
 	{
-		$sidebar.open(item);
+		$sidebar.openFile(item);
 	}
 
 	// $scope.keyPress = function( event, item ) {
@@ -107,7 +107,7 @@ app.controller("sidebarCtrl", function($scope, $rootScope, $sidebar) {
 
 	$scope.update = function()
 	{
-		return $sidebar.update();
+		$scope.filetree = $sidebar.update();
 	}
 
 	// $scope.update = function(){
