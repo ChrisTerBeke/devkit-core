@@ -1,9 +1,8 @@
-app.controller("playCtrl", function($scope, $rootScope, $filter)
-{
+app.controller("playCtrl", function($scope, $rootScope, $filter) {
 	$scope.status = '';
-	$scope.shouldBeEnabled;
+	$scope.shouldBeEnabled = false;
 
-	$scope.playstop = function(){
+	$scope.playstop = function() {
 		$rootScope.$emit('play.playstop', $scope.status); // listen to this in your custom play controller
 	}
 
@@ -15,7 +14,8 @@ app.controller("playCtrl", function($scope, $rootScope, $filter)
 		$scope.shouldBeEnabled = false;
 	});
 
-	$rootScope.$on('play.status', function(status) { // listen to status event (trigger in your custom play controller
-		$scope.status = status;
+	$rootScope.$on('play.status', function(e, data) { // listen to status event (trigger in your custom play controller
+		console.log(data);
+		$scope.status = data.status;
 	});
 });
