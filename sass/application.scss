@@ -16,7 +16,7 @@
 
 	Site-wide frameworks like (e.g. Github Octicons).
  */
-	
+
 	@import "CSS:codemirror/lib/codemirror";
 	@import "CSS:ng-tags-input/ng-tags-input";
 
@@ -43,7 +43,7 @@
 
 	Unclassed HTML elements (e.g. a {}, blockquote {}, address {}).
  */
-	
+
 
 
 
@@ -62,7 +62,7 @@
 
     High-specificity, very explicit selectors. Overrides and helper classes (e.g. .hidden {}).
 */
-	
+
 
 
 
@@ -93,21 +93,21 @@
 
 html {
 	height: 100%;
-	background: white;
+	background: #3d83ad;
 }
 
 body {
 	height: 100%;
 	-webkit-user-select: none;
-	
+
 	font-family: "Roboto";
 	font-weight: 300;
 	background: transparent;
 	transition: all 0.3s;
-	
+
 	-webkit-user-select: none;
 	cursor: default;
-	
+
 	-webkit-perspective: 1500px;
 }
 
@@ -154,22 +154,22 @@ header {
 			float: left;
 		}
 		#chrome-stoplight-close {
-			background-image: url(../images/chrome-stoplight-close.png);
+			background-image: url(../../../core/assets/images/chrome-stoplight-close.png);
 		}
 		#chrome-stoplight:hover #chrome-stoplight-close {
-			background-image: url(../images/chrome-stoplight-close-hover.png);
+			background-image: url(../../../core/assets/images/chrome-stoplight-close-hover.png);
 		}
 		#chrome-stoplight-minimize {
-			background-image: url(../images/chrome-stoplight-minimize.png);
+			background-image: url(../../../core/assets/images/chrome-stoplight-minimize.png);
 		}
 		#chrome-stoplight:hover #chrome-stoplight-minimize {
-			background-image: url(../images/chrome-stoplight-minimize-hover.png);
+			background-image: url(../../../core/assets/images/chrome-stoplight-minimize-hover.png);
 		}
 		#chrome-stoplight-zoom {
-			background-image: url(../images/chrome-stoplight-zoom.png);
+			background-image: url(../../../core/assets/images/chrome-stoplight-zoom.png);
 		}
 		#chrome-stoplight:hover #chrome-stoplight-zoom {
-			background-image: url(../images/chrome-stoplight-zoom-hover.png);
+			background-image: url(../../../core/assets/images/chrome-stoplight-zoom-hover.png);
 		}
 	#chrome-title {
 		position: absolute;
@@ -236,8 +236,8 @@ header {
 			width: 24px;
 			height: 24px;
 			border-radius: 24px;
-			background: #DEDEDE url(../images/autocomplete-throbber.gif) no-repeat center center;
-			
+			background: #DEDEDE url(../../../core/assets/images/autocomplete-throbber.gif) no-repeat center center;
+
 			opacity: 0;
 			visibility: hidden;
 			transition: all 0.5s;
@@ -340,30 +340,30 @@ header {
 		z-index: 2;
 		left: 220px;
 		top: 8px;
-		
+
 		height: 24px;
-		
+
 		font-size: 0;
 		-webkit-app-region: no-drag;
-		
+
 		background: rgba(0,0,0,0.2);
-		
+
 		border: 1px solid white;
 		border-radius: 20px;
 		box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
 		box-sizing: border-box;
 		white-space: nowrap;
-		
+
 		padding: 0 7px;
 		max-width: 24px;
 		opacity: 0.5;
 
 		transition: all 0.5s;
-		
+
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		
+
 	}
 	#play.active {
 		max-width: 200px;
@@ -376,15 +376,15 @@ header {
 		#play-button {
 			display: inline-block;
 			vertical-align: middle;
-			
+
 			margin-top: -2px;
 			margin-left: 1px;
-			
+
 			border-left: 8px solid white;
 			border-top: 6px solid transparent;
 			border-bottom: 6px solid transparent;
 			transition: all 0.15s;
-			
+
 			height: 0;
 		}
 		#play-button:hover {
@@ -398,31 +398,31 @@ header {
 			height: 10px;
 			/*-webkit-transform: rotate(90deg);*/
 			border-radius: 1px;
-			
+
 		}
 		#play-status {
 			display: inline-block;
 			vertical-align: middle;
 			height: 24px;
-			
+
 			margin-left: 7px;
-		
+
 			font-size: 12px;
 			font-weight: 200;
 			color: white;
 			text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 			line-height: 24px;
-			
+
 			width: 0;
 			opacity: 0;
-			
+
 			transition: all 0.5s;
 		}
 		#play.active #play-status {
 			opacity: 1;
 			width: 170px;
 		}
-	
+
 content {
 	position: absolute;
 	top: 40px;
@@ -481,11 +481,11 @@ content {
 						border-left: 6px solid white;
 						border-top: 4px solid transparent;
 						border-bottom: 4px solid transparent;
-						
+
 						visibility: hidden;
-						
+
 						transition: transform 0.25s;
-						
+
 						opacity: 0.75;
 					}
 					#filetree li .label .expand:hover:before {
@@ -526,16 +526,16 @@ content {
 						margin-right: 6px;
 					}
 					#filetree li.type-folder .label .icon {
-						-webkit-mask-image: url(../images/ext/folder.svg);
+						-webkit-mask-image: url(../../../core/assets/images/ext/folder.svg);
 					}
 					#filetree li.type-file .label .icon {
-						-webkit-mask-image: url(../images/ext/file.svg);
+						-webkit-mask-image: url(../../../core/assets/images/ext/file.svg);
 					}
 				#filetree li ul {
 					list-style: none;
 				}
 					#filetree li ul li .label {
-						
+
 					}
 		#sidebar-helper {
 			position: absolute;
@@ -562,9 +562,9 @@ content {
 				background: rgba(255,255,255,0.05);
 			}
 			#sidebar-helper .button:active {
-				background: rgba(0,0,0,0.05);				
+				background: rgba(0,0,0,0.05);
 			}
-			
+
 	editor {
 		position: absolute;
 		top: 0;
@@ -572,7 +572,7 @@ content {
 		right: 0;
 		bottom: 0;
 	}
-		
+
 		tabs {
 			position: absolute;
 			left: 10px;
@@ -600,7 +600,7 @@ content {
 				border-left: 1px solid rgba(0,0,0,0.15);
 			}
 			tabs tab.active + tab {
-				border-left-color: white;				
+				border-left-color: white;
 			}
 			tabs tab:hover {
 				background: #f5f5f5;
@@ -693,7 +693,7 @@ content {
 				width: 100%;
 				height: 100%;
 			}
-			
+
 		noeditorview {
 			top: 10px;
 			padding: 20px;
@@ -719,7 +719,7 @@ content {
 				noeditorview p a:hover {
 					text-decoration: underline;
 				}
-	
+
 		widgets {
 			position: absolute;
 			top: 0;
@@ -749,7 +749,7 @@ content {
 					display: block;
 					padding: 8px;
 				}
-	
+
 /*
 devtools {
 	display: block;
@@ -758,7 +758,7 @@ devtools {
 	left: 0;
 	right: 0;
 	height: 300px;
-	
+
 	display: none;
 }
 	devtools iframe {
@@ -766,7 +766,7 @@ devtools {
 		width: 100%;
 		height: 100%;
 	}
-*/		
+*/
 util {
 	display: none;
 }
@@ -777,17 +777,17 @@ auth {
 	z-index: 1000;
 	top: 5vmin;
 	bottom: 5vmin;
-	
+
 	width: 400px;
 	left: 50%;
 	margin-left: -200px;
-	
+
 	background: white;
 	box-shadow: 0 0 20px rgba(0,0,0,0.5);
-	
+
 	visibility: hidden;
 	opacity: 0;
-	transform: scale(0.95) rotateX(-10deg);	
+	transform: scale(0.95) rotateX(-10deg);
 	transition: all 0.4s;
 }
 auth.visible {
@@ -799,7 +799,7 @@ auth.visible {
 		width: 100%;
 		height: 100%;
 	}
-	
+
 button {
 	display: inline-block;
 	background: #eee;
@@ -808,17 +808,17 @@ button {
 	padding: 4px 10px;
 }
 button:hover {
-	background: #f9f9f9;	
+	background: #f9f9f9;
 }
 button:active {
-	background: #e3e3e3;	
+	background: #e3e3e3;
 }
 
 button .label {
 	display: inline-block;
 	vertical-align: middle;
 	font-size: 13px;
-	color: #333;	
+	color: #333;
 }
 button .icon {
 	display: inline-block;
@@ -831,5 +831,5 @@ button .icon {
 	background: #333;
 	margin-right: 3px;
 }
-button .icon-add { -webkit-mask-image: url(../images/icon/add.svg); }
- 
+button .icon-add { -webkit-mask-image: url(../../../core/assets/images/icon/add.svg); }
+

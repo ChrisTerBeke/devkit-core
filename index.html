@@ -45,53 +45,8 @@
 
 				</div>
 
-				<div
-					id="user"
-					ng-class="{ 'logging-in': user.status == 'logging-in' }"
-				>
-
-					<div>
-						<div class="name">
-							<span ng-click="emit('auth.login')">{{user.statusMessage}}</span>
-						</div>
-						<img ng-src="{{user.avatar || '../../public/assets/images/avatar-fallback.jpg'}}?size=30" />
-					</div>
-
-					<ul class="dropdown" ng-show="user.status == 'logged-in'">
-						<li>
-							<span class="label">
-								<span class="icon" style="-webkit-mask-image: url(../../public/assets/images/icon/homey.svg)"></span>
-								<span class="title">Homey</span>
-							</span>
-							<ul class="homeys">
-								<li ng-repeat="homey in user.homeys">
-									<label class="label" for="activeHomey-{{homey._id}}" title="ID: {{homey._id}} LAN IP: {{homey.ip_internal}}">
-										<input type="radio" id="activeHomey-{{homey._id}}" name="activeHomey" ng-model="sharedVars.activeHomey" value="{{homey._id}}" ng-change="change(homey._id)" />
-										<span class="title">{{homey.name}}</span>
-									</label>
-								</li>
-							</ul>
-						</li>
-						<li>
-							<span class="label">
-								<span class="icon" style="-webkit-mask-image: url(../../public/assets/images/icon/user.svg)"></span>
-								<span class="title">Account</span>
-							</span>
-						</li>
-						<li>
-							<span class="label">
-								<span class="icon" style="-webkit-mask-image: url(../../public/assets/images/icon/settings.svg)"></span>
-								<span class="title">Settings</span>
-							</span>
-						</li>
-						<li>
-							<span class="label" ng-click="emit('auth.logout')">
-								<span class="icon" style="-webkit-mask-image: url(../../public/assets/images/icon/logout.svg)"></span>
-								<span class="title">Logout</span>
-							</span>
-						</li>
-					</ul>
-
+				<div id="user" ng-class="{ 'logging-in': user.status == 'logging-in' }">
+					<div ng-include="'app/views/header/account.html'"></div>
 				</div>
 
 			</header>
@@ -150,70 +105,7 @@
 
 				<editor ng-controller="editorCtrl">
 
-					<editormain
-						ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }"
-					>
-
-						<tabs>
-							<tab
-								ng-repeat="file in files"
-								ng-init="active = false;"
-								ng-click="open(file.path)"
-								ng-class="{ 'active': $parent.active == file.path, 'changed': file._changed }"
-							>
-								<span class="close" ng-click="close(file.path)">
-									<span class="changed"></span>
-									<span class="cross">✕</span>
-								</span>
-								<span class="icon">{{file.icon}}</span>
-								<span class="name">{{file.name}}</span>
-							</tab>
-						</tabs>
-
-						<editorviews>
-
-							<editorview
-								class="{{file._view}}"
-								ng-repeat="file in files"
-								ng-include="'editor/views/' + file._view + '/view.html'"
-								ng-show="$parent.active == file.path"
-							>
-							</editorview>
-
-							<link rel="stylesheet" type="text/css" ng-href="./editor/views/{{file._view}}/view.css" ng-repeat="file in files" />
-
-							<noeditorview ng-show="!active">
-
-								<div class="table">
-									<div class="tablecell">
-
-										<p>
-											<img src="../../public/assets/images/icon/tools.svg" width="12%" style="opacity: 0.25;" />
-										</p>
-
-										<h1>Welcome, Homey Developer!</h1>
-
-										<p>Let's get started. <a href="#">Build your first Homey App &raquo;</a></p>
-
-									</div>
-								</div>
-
-							</noeditorview>
-
-						</editorviews>
-
-					</editormain>
-
-					<widgets
-						ng-repeat="file in files"
-						ng-show="$parent.active == file.path && file._widgets.length > 0"
-					>
-						<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path">
-							<title>{{widget}}</title>
-							<link rel="stylesheet" type="text/css" ng-href="./editor/widgets/{{widget}}/widget.css" />
-							<widget class="{{widget}}" ng-include="'./editor/widgets/' + widget + '/widget.html'"></widget>
-						</widgetwrap>
-					</widgets>
+					<div ng-include="'app/views/index.html'"></div>
 
 				</editor>
 
