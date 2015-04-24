@@ -2,7 +2,7 @@
 module.exports = function(grunt) {
 	window = {};
 
-	require("./core/config/environment.js");
+	require("./app/config/environment.js");
 
 	var json = {
 		/*
@@ -19,6 +19,16 @@ module.exports = function(grunt) {
 			},
 			files: {
 				src: [
+
+					/*
+					 *	Include configs
+					 */
+					'./app/config/helpers.js',
+					'./app/config/environment.js',
+					'./app/config/auth.js',
+					'./app/config/path.js',
+					'./app/config/include.js',
+					'./app/config/debug.js',
 
 					/*
 					 *	Angular and its main dependencies.

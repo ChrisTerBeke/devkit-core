@@ -11,7 +11,7 @@ var app = angular.module('app', ['module.core']);
 
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {
-	$sceDelegateProvider.resourceUrlWhitelist(windows.AUTH.whitelist);
+	$sceDelegateProvider.resourceUrlWhitelist(window.AUTH.whitelist);
 });
 
 // add Bearer token to $http requests
