@@ -49,41 +49,38 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, $stoplight, $si
 	// window focus/blurring
 	var gui = require('nw.gui');
     var win = gui.Window.get();
-    win.on('focus', function()
-    {
+
+    win.on('focus', function() {
 		$scope.$apply(function()
 		{
 		    $scope.focus = true;
 		});
     });
-    win.on('blur', function()
-    {
+
+    win.on('blur', function() {
 		$scope.$apply(function()
 		{
 		    $scope.focus = false;
 		});
     });
-	window.addEventListener('blur', function()
-	{
+
+	window.addEventListener('blur', function() {
 		$scope.$apply(function()
 		{
 		    $scope.focus = false;
 		});
 	});
-	window.addEventListener('focus', function()
-	{
+
+	window.addEventListener('focus', function() {
 		$scope.$apply(function()
 		{
 		    $scope.focus = true;
 		});
 	});
 
-	win.on('close', function()
-	{
-
+	win.on('close', function() {
 		// hide ourselves first
-		$scope.$apply(function()
-		{
+		$scope.$apply(function() {
 			$scope.loaded = false;
 		});
 
@@ -92,17 +89,14 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, $stoplight, $si
 
 		// close for real
 		this.close(true);
-
 	});
 
-	$rootScope.$on('devkit.blur', function( event, blur )
-	{
+	$rootScope.$on('devkit.blur', function( event, blur ) {
 		$scope.blurred = blur;
 	});
 
 	// methods
-	$scope.emit = function( event, data )
-	{
+	$scope.emit = function( event, data ) {
 		$rootScope.$emit( event, data );
 	}
 
@@ -130,79 +124,43 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, $stoplight, $si
 	// 	directorychooser.click();
 	// }
 
-	window.addEventListener('load', function()
-	{
+	window.addEventListener('load', function() {
 		$scope.loaded = true;
 
 		// load previous project, if available
-		if( typeof window.localStorage.project_dir == 'string' )
-		{
+		if( typeof window.localStorage.project_dir == 'string' ) {
 			$sidebar.load( window.localStorage.project_dir );
 		}
 
 		// load previous files, if available
-		if( typeof window.localStorage.files_open != 'undefined' )
-		{
-
+		if( typeof window.localStorage.files_open != 'undefined' ) {
 			var files_open = window.localStorage.files_open.split(',');
 
 			if( files_open.length < 1 ) return;
 
-			files_open.forEach(function( file_path )
-			{
-				if( fs.existsSync(file_path) )
-				{
+			files_open.forEach(function( file_path ) {
+				if( fs.existsSync(file_path) ) {
 					$rootScope.$emit('editor.open', file_path );
 				}
 			});
 
 		}
-		else
-		{
+		else {
 			window.localStorage.files_open = '';
 		}
-
 	});
 
-	$scope.minimize = function()
-    {
+	$scope.minimize = function() {
     	$stoplight.minimize();
     }
 
-	// stoplight button methods
-	// $scope.minimize = function(){
-	// 	var gui = require('nw.gui');
-	// 	var win = gui.Window.get();
-	// 	win.minimize();
-	// }
-
-	$scope.close = function()
-    {
+	$scope.close = function() {
     	$stoplight.close();
     }
 
-	// $scope.close = function(){
-	// 	var gui = require('nw.gui');
-	// 	var win = gui.Window.get();
-	// 	win.close();
-	// }
-
-	$scope.zoom = function()
-    {
+	$scope.zoom = function() {
     	$stoplight.zoom();
     }
-
-	// $scope.zoom = function(){
-	// 	var gui = require('nw.gui');
-	// 	var win = gui.Window.get();
-	// 	win.maximize();
-
-	// 	if( typeof $rootScope.maximized == 'undefined' ) {
-	// 		$rootScope.maximized = true;
-	// 	} else {
-	// 		$rootScope.maximized = !$rootScope.maximized;
-	// 	}
-	// }
 
 
 	// menu

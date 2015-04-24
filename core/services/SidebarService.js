@@ -32,13 +32,13 @@ angular.module('sdk.sidebar', [])
         $rootScope.project.metadata = metadata;
         $rootScope.$emit('project.loaded');
 
+        // save for restart
+        window.localStorage.project_dir = project_dir;
+
         return {
             path: project_dir,
             metadata: metadata
         };
-
-        // save for restart
-        window.localStorage.project_dir = project_dir;
     }
 
     factory.open = function(){
@@ -53,7 +53,6 @@ angular.module('sdk.sidebar', [])
     //TODO rewrite this function
     // rename a file
     factory.submitRename = function( item ) {
-
         var currentPath = item.path;
         var itemFolder = path.dirname( item.path );
         var newPath = path.join( itemFolder, item.name );
@@ -61,7 +60,6 @@ angular.module('sdk.sidebar', [])
         fs.rename( currentPath, newPath );
 
         item.renaming = false;
-
     }
 
     factory.isSelected = function( path ) {
@@ -93,7 +91,8 @@ angular.module('sdk.sidebar', [])
 
     //TODO: Update this function
     factory.update = function() {
-        return readdirSyncRecursive( $rootScope.project.path, true );
+        var dir = readdirSyncRecursive( $rootScope.project.path, true );
+        return dir;
         // $scope.$apply();
     }
 
