@@ -1,0 +1,13 @@
+<editormain ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }">
+	<tabs>
+		<div ng-include="'app/views/partials/tabs.html'"></div>
+	</tabs>
+
+	<editorviews>
+		<div ng-include="'app/views/partials/editor.html'"></div>
+	</editorviews>
+</editormain>
+
+<widgets ng-repeat="file in files" ng-show="$parent.active == file.path && file._widgets.length > 0">
+	<div ng-include="'app/views/partials/widget.html'"></div>
+</widgets>
