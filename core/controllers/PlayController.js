@@ -1,6 +1,6 @@
 app.controller("playCtrl", function($scope, $rootScope, $filter)
 {
-	$scope.status = 'idle';
+	$scope.status = '';
 	$scope.shouldBeEnabled;
 
 	$scope.playstop = function(){
