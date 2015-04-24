@@ -36,8 +36,8 @@
 
 				<div
 					id="play"
-					ng-controller="homeyCtrl"
-					ng-class="{ 'active': status.length > 0, 'enabled': sharedVars.activeHomey }"
+					ng-controller="playCtrl"
+					ng-class="{ 'active': status.length > 0, 'enabled': shouldBeEnabled }"
 				>
 					<div id="play-button" ng-click="playstop()"></div>
 
