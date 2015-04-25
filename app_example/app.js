@@ -1,5 +1,16 @@
-app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', function($rootScope, $timeout, $play, $ocLazyLoad) {
+app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($rootScope, $timeout, $play, $ocLazyLoad, $file) {
 	$timeout(function() {
+
+		$file.setConfig([
+			{
+				ext: ".js",
+				dir: "/animations",
+				config: {
+					view: "codemirror",
+					widgets: [ 'ledring' ]
+				}
+			}
+		]);
 
 		// lazy load codemirror
 		$ocLazyLoad.load([

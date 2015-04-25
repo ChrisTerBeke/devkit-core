@@ -2,6 +2,8 @@ angular.module('sdk.file', [])
     .factory('$file', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
 	var factory = {};
 
+	$rootScope.editorConfig = [];
+
     factory.open = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
     {
 
@@ -126,7 +128,6 @@ angular.module('sdk.file', [])
     // get info (which views & widgets)
     factory.getInfo = function( file_path )
     {
-
 	    file_path = file_path.replace($rootScope.project.path, '');
 
 	    // determine the view.
@@ -135,8 +136,8 @@ angular.module('sdk.file', [])
 	    // default to codemirror
 	    var view = 'codemirror';
 	    var widgets = [];
-
-		// find a specific one
+/*
+	    // find a specific one
 		// "/app.json"
 	    if( file.base == 'app.json' && file.dir == '/' ) {
 		    view = 'manifest';
@@ -154,13 +155,29 @@ angular.module('sdk.file', [])
 		    view = 'codemirror';
 		    widgets = [ 'svg' ];
 		}
+*/
+		for(var i in $rootScope.editorConfig) {
+			var configItem = $rootScope.editorConfig[i];
+			console.log(configItem);
+			console.log(file);
+			if(file.ext === configItem.ext && file.dir === configItem.dir) {
+				console.log('test');
+				return {
+				    view: configItem.config.view,
+				    widgets: configItem.config.widgets
+				}
+			}
+		}
 
-	    return {
+		return {
 		    view: view,
 		    widgets: widgets
 		}
-
     }
+
+    factory.setConfig = function(config) {
+	  	$rootScope.editorConfig = config;
+    };
 
     factory.icon = function( file_path )
     {
