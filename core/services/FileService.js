@@ -158,10 +158,38 @@ angular.module('sdk.file', [])
 */
 		for(var i in $rootScope.editorConfig) {
 			var configItem = $rootScope.editorConfig[i];
-			console.log(configItem);
-			console.log(file);
-			if(file.ext === configItem.ext && file.dir === configItem.dir) {
-				console.log('test');
+			var extMatch = false;
+			var dirMatch = false;
+			var baseMatch = false;
+
+			if(configItem.ext) {
+				if(file.ext === configItem.ext) {
+					extMatch = true;
+				}
+			}
+			else {
+				extMatch = true;
+			}
+
+			if(configItem.dir) {
+				if(file.dir === configItem.dir) {
+					dirMatch = true;
+				}
+			}
+			else {
+				dirMatch = true;
+			}
+
+			if(configItem.base) {
+				if(file.base === configItem.base) {
+					baseMatch = true;
+				}
+			}
+			else {
+				baseMatch = true;
+			}
+
+			if(extMatch && dirMatch && baseMatch) {
 				return {
 				    view: configItem.config.view,
 				    widgets: configItem.config.widgets
