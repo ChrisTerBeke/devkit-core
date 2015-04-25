@@ -1,4 +1,4 @@
-angular.module('module.modules', []).controller("svgWidgetCtrl", function( $scope, $rootScope ){
+angular.module('module.modules').controller("svgWidgetCtrl", function( $scope, $rootScope ){
 
 	$scope.src = $scope.file_path;
 

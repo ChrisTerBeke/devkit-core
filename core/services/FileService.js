@@ -136,26 +136,7 @@ angular.module('sdk.file', [])
 	    // default to codemirror
 	    var view = 'codemirror';
 	    var widgets = [];
-/*
-	    // find a specific one
-		// "/app.json"
-	    if( file.base == 'app.json' && file.dir == '/' ) {
-		    view = 'manifest';
-		    widgets = [];
-		}
 
-		// "/animations/*.js"
-	    if( file.ext == '.js' && file.dir == '/animations' ) {
-		    view = 'codemirror';
-		    widgets = [ 'ledring' ];
-		}
-
-		// "*.svg"
-	    if( file.ext == '.svg' ) {
-		    view = 'codemirror';
-		    widgets = [ 'svg' ];
-		}
-*/
 		for(var i in $rootScope.editorConfig) {
 			var configItem = $rootScope.editorConfig[i];
 			var extMatch = false;
@@ -191,8 +172,8 @@ angular.module('sdk.file', [])
 
 			if(extMatch && dirMatch && baseMatch) {
 				return {
-				    view: configItem.config.view,
-				    widgets: configItem.config.widgets
+				    view: configItem.config.view || view,
+				    widgets: configItem.config.widgets || widgets
 				}
 			}
 		}

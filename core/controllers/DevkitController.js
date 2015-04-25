@@ -14,7 +14,7 @@ var path		= require('path');
 
 // app.controller("DevkitController", DevkitController);
 
-app.controller("devkitCtrl", function($scope, $rootScope, $http, $stoplight, $sidebar, windowEventsFactory) {
+app.controller("devkitCtrl", function($scope, $rootScope, $http, $stoplight, $sidebar, windowEventsFactory, $timeout) {
 
 	// variables
 	$rootScope.project = {};
@@ -125,29 +125,31 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, $stoplight, $si
 	// }
 
 	window.addEventListener('load', function() {
-		$scope.loaded = true;
+		$timeout(function() {
+			$scope.loaded = true;
 
-		// load previous project, if available
-		if( typeof window.localStorage.project_dir == 'string' ) {
-			$sidebar.load( window.localStorage.project_dir );
-		}
+			// load previous project, if available
+			if( typeof window.localStorage.project_dir == 'string' ) {
+				$sidebar.load( window.localStorage.project_dir );
+			}
 
-		// load previous files, if available
-		if( typeof window.localStorage.files_open != 'undefined' ) {
-			var files_open = window.localStorage.files_open.split(',');
+			// load previous files, if available
+			if( typeof window.localStorage.files_open != 'undefined' ) {
+				var files_open = window.localStorage.files_open.split(',');
 
-			if( files_open.length < 1 ) return;
+				if( files_open.length < 1 ) return;
 
-			files_open.forEach(function( file_path ) {
-				if( fs.existsSync(file_path) ) {
-					$rootScope.$emit('editor.open', file_path );
-				}
-			});
+				files_open.forEach(function( file_path ) {
+					if( fs.existsSync(file_path) ) {
+						$rootScope.$emit('editor.open', file_path );
+					}
+				});
 
-		}
-		else {
-			window.localStorage.files_open = '';
-		}
+			}
+			else {
+				window.localStorage.files_open = '';
+			}
+		}, 100);
 	});
 
 	$scope.minimize = function() {
