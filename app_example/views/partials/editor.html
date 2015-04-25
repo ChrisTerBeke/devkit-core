@@ -1,12 +1,10 @@
 <editorview
 	class="{{file._view}}"
 	ng-repeat="file in files"
-	ng-include="'editor/views/' + file._view + '/view.html'"
-	ng-show="$parent.active == file.path"
+	ng-show="$parent.active == file.path",
+	ng-include="'devkit-editor-codemirror.html'"
 >
 </editorview>
-
-<link rel="stylesheet" type="text/css" ng-href="./editor/views/{{file._view}}/view.css" ng-repeat="file in files" />
 
 <noeditorview ng-show="!active">
 
