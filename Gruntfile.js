@@ -43,6 +43,7 @@ module.exports = function(grunt) {
 					 */
 					'./bower_components/angular-hotkeys/build/hotkeys.js',
 					'./bower_components/ng-tags-input/ng-tags-input.js',
+					'./bower_components/oclazyload/dist/ocLazyLoad.min.js',
 
 					/*
 					 *	Load modules.
@@ -52,6 +53,7 @@ module.exports = function(grunt) {
 					'./core/modules/filters.js',
 					'./core/modules/services.js',
 					'./core/modules/core.js',
+					'./core/modules/modules.js',
 
 					/*
 					 *	Include source files
@@ -70,15 +72,7 @@ module.exports = function(grunt) {
 					/*
 					 *	Include app specific files
 					 */
-					'./app/**/*.js',
-
-					/*
-					 *	Include module files (temporary)
-					 */
-					'./bower_components/devkit-editor-codemirror/js/codemirror/lib/codemirror.js',
-					'./bower_components/devkit-editor-codemirror/js/codemirror/mode/javascript/javascript.js',
-					'./bower_components/devkit-editor-codemirror/js/angular-ui-codemirror/ui-codemirror.js',
-					'./bower_components/devkit-editor-codemirror/js/CodemirrorController.js'
+					'./app/**/*.js'
 				],
 				dest: './public/assets/javascripts/application.js'
 			}
