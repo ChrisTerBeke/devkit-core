@@ -44,8 +44,6 @@ angular.module('sdk.file', [])
 	    	'fileHistory': fileHistory
 	    }
 
-	    factory.save();
-
 	    return json;
 
 //	    $scope.$apply();

@@ -1,17 +1,17 @@
 app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($rootScope, $timeout, $play, $ocLazyLoad, $file) {
 	$timeout(function() {
 
-		// lazy load markdown widget
-		$ocLazyLoad.load('markdown');
-
-		// lazy load svg widget
-		$ocLazyLoad.load('svg');
-
 		// lazy load codemirror
 		$ocLazyLoad.load('devkit-editor-codemirror');
 
 		// lazy load manifest
 		$ocLazyLoad.load('devkit-editor-manifest');
+
+		 // lazy load markdown widget
+		$ocLazyLoad.load('markdown');
+
+		// lazy load svg widget
+		$ocLazyLoad.load('svg');
 
 		$file.setConfig([
 			{
