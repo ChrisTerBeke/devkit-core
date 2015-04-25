@@ -1,5 +1,5 @@
-app.run(['$rootScope', '$timeout', function($rootScope, $timeout) {
+app.run(['$rootScope', '$timeout', '$play', function($rootScope, $timeout, $play) {
 	$timeout(function() {
-		$rootScope.$emit('play.status', 'loading...');
+		$play.status('loading...');
 	}, 100);
 }]);
