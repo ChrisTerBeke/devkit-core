@@ -1,23 +1,20 @@
-# Homey Development Kit
+# nw.js + angularjs devkit
 
-Create Homey apps without any effort!
+Built your own development kit as desktop app!
 
-### Usage
-*This is probably what you want when you want to make Homey apps.*
+### Installation
+1. Fork this repo and clone your fork locally
+2. duplicate app_example to app
+3. duplicate sass_example to sass
+4. run `npm install`
+5. run `bower install`
+6. run `grunt`
+7. run `nw .` to see your devkit for the first time!
 
-Download a pre-built version from https://developers.athom.nl
-
-### Run instructions (for editor development only)
-Download a pre-built nw.js binary from http://nwjs.io, and execute `run.sh` in you're on OS X. Otherwise, you're on your own ;)
+### Develop
+You can use app/app.js to configure your application. You can also install editor views and widgets via bower or just place them in a folder and use app/app.js to load them (see examples in app_example). To style your devkit, use the sass folder. You can check `https://github.com/printhom` to see examples of views and widgets. Basically, they contain an angularjs html template, a controller and some styling.
 
 ### Build instructions
 
 1. install node-webkit-builder ```npm install node-webkit-builder -g```
 2. run ```nwbuild .``` in the directory of this repository
-
-### Docs
-_this will be improved over time_
-
-The editor can load a **project** (directory), and reads the **app.json** file from it. When a file is opened, the file path (directory names + filename + extension) is parsed, and **custom views** will be opened accordingly. A view can be an **editor** (defaults to CodeMirror) or **one or more widgets** (defaults to none).
-
-These views make editing easier. For example, when a .svg file is loaded, a preview widget is shown. When a LED ring animation is opened, a LED ring simulator is shown.
