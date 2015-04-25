@@ -2,7 +2,7 @@
 	class="{{file._view}}"
 	ng-repeat="file in files"
 	ng-show="$parent.active == file.path",
-	ng-include="'devkit-editor-codemirror.html'"
+	ng-include="'devkit-editor-'+file._view+'.html'"
 >
 </editorview>
 

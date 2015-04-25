@@ -10,6 +10,9 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($ro
 		// lazy load codemirror
 		$ocLazyLoad.load('devkit-editor-codemirror');
 
+		// lazy load manifest
+		$ocLazyLoad.load('devkit-editor-manifest');
+
 		$file.setConfig([
 			{
 				ext: ".js",
@@ -24,6 +27,15 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($ro
 				config: {
 					view: "codemirror",
 					widgets: [ 'svg' ]
+				}
+			},
+			{
+				ext: ".json",
+				dir: "/",
+				base: "app.json",
+				config: {
+					view: "manifest",
+					widgets: []
 				}
 			}
 		]);
@@ -66,6 +78,15 @@ app.config(function($ocLazyLoadProvider) {
 					'./bower_components/devkit-editor-codemirror/js/CodemirrorController.js',
 					'./bower_components/devkit-editor-codemirror/css/codemirror.css',
 					'./bower_components/devkit-editor-codemirror/codemirror.html'
+				]
+			},
+			{
+				name: 'devkit-editor-manifest',
+				serie: true,
+				files: [
+					'./bower_components/devkit-editor-manifest/ManifestController.js',
+					'./bower_components/devkit-editor-manifest/manifest.css',
+					'./bower_components/devkit-editor-manifest/manifest.html'
 				]
 			}
 		]
