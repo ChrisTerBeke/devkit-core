@@ -129,7 +129,7 @@ app.controller("editorCtrl", function($scope, $rootScope, $file, windowEventsFac
 
 	$scope.save = function()
     {
-    	$file.close(files, active);
+    	$file.save($scope.files, $scope.active);
     }
 
 //     // write the file to disk
