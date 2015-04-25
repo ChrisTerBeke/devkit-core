@@ -4,6 +4,9 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($ro
 		// lazy load markdown widget
 		$ocLazyLoad.load('markdown');
 
+		// lazy load svg widget
+		$ocLazyLoad.load('svg');
+
 		// lazy load codemirror
 		$ocLazyLoad.load('devkit-editor-codemirror');
 
@@ -14,6 +17,13 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($ro
 				config: {
 					view: "codemirror",
 					widgets: [ 'markdown' ]
+				}
+			},
+			{
+				ext: ".svg",
+				config: {
+					view: "codemirror",
+					widgets: [ 'svg' ]
 				}
 			}
 		]);
