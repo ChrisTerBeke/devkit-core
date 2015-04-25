@@ -1,5 +1,7 @@
 app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', function($rootScope, $timeout, $play, $ocLazyLoad) {
 	$timeout(function() {
+
+		// lazy load codemirror
 		$ocLazyLoad.load([
 			'./bower_components/devkit-editor-codemirror/js/codemirror/lib/codemirror.js',
 			'./bower_components/devkit-editor-codemirror/js/codemirror/mode/javascript/javascript.js',
@@ -8,6 +10,8 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', function($rootScope, 
 			'./bower_components/devkit-editor-codemirror/css/codemirror.css',
 			'./bower_components/devkit-editor-codemirror/codemirror.html'
 		]);
+
 		$play.status('loading...');
+
 	}, 100);
 }]);
