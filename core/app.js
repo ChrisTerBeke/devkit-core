@@ -7,7 +7,7 @@
 window.ondragover = function(e) { e.preventDefault(); return false };
 window.ondrop = function(e) { e.preventDefault(); return false };
 
-var app = angular.module('app', ['module.core', 'module.app']);
+var app = angular.module('app', ['module.core']);
 
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {
@@ -25,7 +25,6 @@ app.run(['$rootScope', '$injector', function($rootScope, $injector) {
         }
     };
 }]);
-
 
 if(typeof angular !== 'undefined' && window.DEBUG) {
 	console.timeEnd("Angular loaded");

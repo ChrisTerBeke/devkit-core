@@ -35,7 +35,6 @@ angular.module('sdk.auth', [])
 			.error(function(data) {
 				$rootScope.user.status = 'logged-out';
 				$rootScope.user.statusMessage = 'Error logging in!';
-				alert('Error logging in');
 			});
 	}
 

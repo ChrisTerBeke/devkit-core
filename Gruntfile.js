@@ -68,13 +68,16 @@ module.exports = function(grunt) {
 					'./bower_components/codemirror/lib/codemirror.js',
 					'./bower_components/codemirror/mode/javascript/javascript.js',
 
+					/*
+					 *	Include core
+					 */
 					'./core/app.js',
 					'./core/controllers/**/*.js',
 
 					/*
 					 *	Include app specific files
 					 */
-					'./app/**/*.js'
+					'./app/**/*.js',
 				],
 				dest: './public/assets/javascripts/application.js'
 			}
