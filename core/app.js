@@ -7,7 +7,7 @@
 window.ondragover = function(e) { e.preventDefault(); return false };
 window.ondrop = function(e) { e.preventDefault(); return false };
 
-var app = angular.module('app', ['module.core']);
+var app = angular.module('app', ['module.core', 'module.modules']);
 
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {

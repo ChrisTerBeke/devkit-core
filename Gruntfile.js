@@ -71,6 +71,14 @@ module.exports = function(grunt) {
 					 *	Include app specific files
 					 */
 					'./app/**/*.js',
+
+					/*
+					 *	Include module files (temporary)
+					 */
+					'./bower_components/devkit-editor-codemirror/js/codemirror/lib/codemirror.js',
+					'./bower_components/devkit-editor-codemirror/js/codemirror/mode/javascript/javascript.js',
+					'./bower_components/devkit-editor-codemirror/js/angular-ui-codemirror/ui-codemirror.js',
+					'./bower_components/devkit-editor-codemirror/js/CodemirrorController.js'
 				],
 				dest: './public/assets/javascripts/application.js'
 			}
@@ -107,11 +115,11 @@ module.exports = function(grunt) {
 		 */
 		watch: {
 			javascripts: {
-				files: ['./public/tmp/**/*.js', './core/**/*.js', './app/**/*.js'],
+				files: ['./public/tmp/**/*.js', './core/**/*.js', './app/**/*.js', './bower_components/**/*.js'],
 				tasks: ['js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist')]
 			},
 			sass: {
-				files: ['./sass/**/*.scss', './css-base/dist/**/*.scss'],
+				files: ['./sass/**/*.scss', './css-base/dist/**/*.scss', './bower_components/**/*.scss'],
 				tasks: ['compass']
 			}
 		},
