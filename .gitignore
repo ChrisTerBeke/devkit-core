@@ -33,12 +33,3 @@ bower_components
 *.DS_Store
 .DS_Store
 *.lock
-
-# Ignore Public Assets
-public/assets
-
-# Ignore WWW (temporary)
-www
-
-# Ignore app folder
-app
