@@ -5,6 +5,5 @@ module.services = angular.module('module.services', [
 	'sdk.file',
 	'sdk.sidebar',
 	'sdk.stoplight',
-	'sdk.play',
 	'service.windowEventsFactory'
 ]);

@@ -1,14 +1,22 @@
-app.controller("playCtrl", ['$scope', '$rootScope', '$play', function($scope, $rootScope, $play) {
-
+app.controller("playCtrl", ['$scope', '$rootScope', function($scope, $rootScope) {
 	$scope.status = {};
-	$scope.shouldBeEnabled = [];
+	$scope.shouldBeEnabled = false;
+
+	$scope.playstop = function() {
+		console.log('playstop');
+		$rootScope.$emit('play.playstop', $scope.status);
+	};
+
+	$rootScope.$on('play.enable', function() {
+		$scope.shouldBeEnabled = true;
+	});
+
+	$rootScope.$on('play.disable', function() {
+		$scope.shouldBeEnabled = false;
+	});
 
 	$rootScope.$on('play.status', function(e, status) {
 		console.log(status);
 		$scope.status = status;
 	});
-
-	$scope.playstop = function() {
-		$play.playstop($scope.status);
-	};
 }]);
