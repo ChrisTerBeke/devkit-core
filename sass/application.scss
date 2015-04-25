@@ -17,7 +17,7 @@
 	Site-wide frameworks like (e.g. Github Octicons).
  */
 
-	@import "CSS:codemirror/lib/codemirror";
+	@import "CSS:devkit-editor-codemirror/js/codemirror/lib/codemirror";
 	@import "CSS:ng-tags-input/ng-tags-input";
 
 /**
@@ -832,18 +832,3 @@ button .icon {
 	margin-right: 3px;
 }
 button .icon-add { -webkit-mask-image: url(../../../core/assets/images/icon/add.svg); }
-
-editorview.codemirror .CodeMirror {
-	font-size: 11px;
-	line-height: 13px;
-	font-family: "Menlo", monospace !important;
-	height: 100% !important;
-	background: white !important;
-}
-	editorview.codemirror .CodeMirror-gutters {
-		background: transparent;
-		border-right: 1px solid #eee;
-	}
-	editorview.codemirror .CodeMirror-linenumber {
-		opacity: 0.5;
-	}

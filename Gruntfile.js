@@ -41,7 +41,6 @@ module.exports = function(grunt) {
 					/*
 					 *	Angular vendor dependencies.
 					 */
-					'./bower_components/angular-ui-codemirror/ui-codemirror.js',
 					'./bower_components/angular-hotkeys/build/hotkeys.js',
 					'./bower_components/ng-tags-input/ng-tags-input.js',
 
@@ -60,19 +59,13 @@ module.exports = function(grunt) {
 					'./core/dependencies/**/*.js',
 					'./core/filters/**/*.js',
 					'./core/services/**/*.js',
-					'./core/directives/**/*.js',
-
-					/*
-					 *	Include main files
-					 */
-					'./bower_components/codemirror/lib/codemirror.js',
-					'./bower_components/codemirror/mode/javascript/javascript.js',
 
 					/*
 					 *	Include core
 					 */
 					'./core/app.js',
 					'./core/controllers/**/*.js',
+					'./core/directives/**/*.js',
 
 					/*
 					 *	Include app specific files
