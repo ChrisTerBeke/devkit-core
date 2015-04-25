@@ -3,7 +3,7 @@ app.controller("editorCtrl", function($scope, $rootScope, $file, windowEventsFac
 	$scope.files = {}; // files open
 	$scope.active = undefined; // currently viewing
 	$scope.fileHistory = [];
-	$scope.Object = Object;
+	//$scope.Object = Object;
 
 	// open a new file
     $rootScope.$on('editor.open', function( event, file_path ) {
