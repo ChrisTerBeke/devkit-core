@@ -18,14 +18,12 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($ro
 				ext: ".js",
 				dir: "/animations",
 				config: {
-					view: "codemirror",
 					widgets: [ 'markdown' ]
 				}
 			},
 			{
 				ext: ".svg",
 				config: {
-					view: "codemirror",
 					widgets: [ 'svg' ]
 				}
 			},
@@ -34,8 +32,13 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($ro
 				dir: "/",
 				base: "app.json",
 				config: {
-					view: "manifest",
-					widgets: []
+					view: "manifest"
+				}
+			},
+			{
+				ext: ".md",
+				config: {
+					widgets: [ 'markdown' ]
 				}
 			}
 		]);
@@ -69,6 +72,15 @@ app.config(function($ocLazyLoadProvider) {
 				]
 			},
 			{
+				name: 'devkit-editor-manifest',
+				serie: true,
+				files: [
+					'./bower_components/devkit-editor-manifest/ManifestController.js',
+					'./bower_components/devkit-editor-manifest/manifest.css',
+					'./bower_components/devkit-editor-manifest/manifest.html'
+				]
+			},
+			{
 				name: 'devkit-editor-codemirror',
 				serie: true,
 				files: [
@@ -78,15 +90,6 @@ app.config(function($ocLazyLoadProvider) {
 					'./bower_components/devkit-editor-codemirror/js/CodemirrorController.js',
 					'./bower_components/devkit-editor-codemirror/css/codemirror.css',
 					'./bower_components/devkit-editor-codemirror/codemirror.html'
-				]
-			},
-			{
-				name: 'devkit-editor-manifest',
-				serie: true,
-				files: [
-					'./bower_components/devkit-editor-manifest/ManifestController.js',
-					'./bower_components/devkit-editor-manifest/manifest.css',
-					'./bower_components/devkit-editor-manifest/manifest.html'
 				]
 			}
 		]
