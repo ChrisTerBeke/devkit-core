@@ -28,14 +28,6 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($ro
 				}
 			},
 			{
-				ext: ".json",
-				dir: "/",
-				base: "app.json",
-				config: {
-					view: "manifest"
-				}
-			},
-			{
 				ext: ".md",
 				config: {
 					widgets: [ 'markdown' ]
