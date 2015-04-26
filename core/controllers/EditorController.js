@@ -1,8 +1,8 @@
 app.controller("editorCtrl", function($scope, $rootScope, $file, windowEventsFactory) {
 
-	$scope.files = {}; // files open
-	$scope.active = undefined; // currently viewing
-	$scope.fileHistory = [];
+	// $scope.files = {}; // files open
+	// $scope.active = undefined; // currently viewing
+	// $scope.fileHistory = [];
 	//$scope.Object = Object;
 
 	// open a new file
@@ -38,34 +38,34 @@ app.controller("editorCtrl", function($scope, $rootScope, $file, windowEventsFac
 		window.localStorage.files_open = files_open.join(',');
     });
 
-	// open file
-    $scope.open = function(file_path) {
-    	var open = $file.open(/* file,  */file_path, $scope.files, $scope.fileHistory/* , file_path_history */);
+	// // open file
+ //    $scope.open = function(file_path) {
+ //    	var open = $file.open(/* file,  */file_path, $scope.files, $scope.fileHistory/* , file_path_history */);
 
-    	$scope.active = open.active;
+ //    	$scope.active = open.active;
 
-    	$scope.files = open.files;
-    	$scope.fileHistory = open.fileHistory;
-    }
+ //    	$scope.files = open.files;
+ //    	$scope.fileHistory = open.fileHistory;
+ //    }
 
-	// close current file
-	$scope.close = function(file_path) {
-    	$file.close(/* file,  */file_path, $scope.files, $scope.fileHistory/* , file_path_history */);
-    }
+	// // close current file
+	// $scope.close = function(file_path) {
+ //    	$file.close( file,  file_path, $scope.files, $scope.fileHistory/* , file_path_history */);
+ //    }
 
-	// safe file
-	$scope.save = function() {
-    	$file.save($scope.files, $scope.active);
-    }
+	// // safe file
+	// $scope.save = function() {
+ //    	$file.save($scope.files, $scope.active);
+ //    }
 
-	// get file info
-	$scope.getInfo = function(file_path) {
-    	$file.getInfo(file_path);
-    }
+	// // get file info
+	// $scope.getInfo = function(file_path) {
+ //    	$file.getInfo(file_path);
+ //    }
 
-	// get file icon
-	$scope.icon = function(file_path) {
-    	$file.icon(file_path);
-    }
+	// // get file icon
+	// $scope.icon = function(file_path) {
+ //    	$file.icon(file_path);
+ //    }
 
 });

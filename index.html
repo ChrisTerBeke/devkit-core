@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app" ng-controller="devkitCtrl as devkit">
+<html ng-app="app" ng-controller="ApplicationController">
     <head>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
 
@@ -18,15 +18,15 @@
 
 		<wrap
 			ng-class="{ 'blurred': blurred }"
-			ng-click="blurred && emit('closePopup')"
+			ng-click="blurred && closePopup()"
 		>
 
 			<header>
 
 				<div id="chrome-stoplight">
-					<div id="chrome-stoplight-close" ng-click="close()"></div>
-					<div id="chrome-stoplight-minimize" ng-click="minimize()"></div>
-					<div id="chrome-stoplight-zoom" ng-click="zoom()"></div>
+					<div id="chrome-stoplight-close" ng-click="stoplight.close()"></div>
+					<div id="chrome-stoplight-minimize" ng-click="stoplight.minimize()"></div>
+					<div id="chrome-stoplight-zoom" ng-click="stoplight.zoom()"></div>
 				</div>
 
 				<div id="chrome-title">
@@ -158,7 +158,6 @@
 
 		<auth
 			id="login"
-			ng-controller="authCtrl as auth"
 			ng-class="{ 'visible': popupVisible }"
 		>
 
