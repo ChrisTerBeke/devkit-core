@@ -4,9 +4,6 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($ro
 		// lazy load codemirror
 		$ocLazyLoad.load('devkit-editor-codemirror');
 
-		// lazy load manifest
-		$ocLazyLoad.load('devkit-editor-manifest');
-
 		 // lazy load markdown widget
 		$ocLazyLoad.load('markdown');
 
@@ -61,15 +58,6 @@ app.config(function($ocLazyLoadProvider) {
 					'./widgets/svg/SvgController.js',
 					'./widgets/svg/svg.css',
 					'./widgets/svg/svg.html'
-				]
-			},
-			{
-				name: 'devkit-editor-manifest',
-				serie: true,
-				files: [
-					'./bower_components/devkit-editor-manifest/ManifestController.js',
-					'./bower_components/devkit-editor-manifest/manifest.css',
-					'./bower_components/devkit-editor-manifest/manifest.html'
 				]
 			},
 			{

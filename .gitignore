@@ -36,12 +36,3 @@ bower_components
 
 # Ignore Public Assets
 public/assets
-
-# Ignore WWW (temporary)
-www
-
-# Ignore app folder
-app
-
-# Ignore sass folder
-sass

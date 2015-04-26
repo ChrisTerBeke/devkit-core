@@ -4,8 +4,6 @@ Built your own development kit as desktop app!
 
 ### Installation
 1. Fork this repo and clone your fork locally
-2. duplicate app_example to app
-3. duplicate sass_example to sass
 4. run `npm install`
 5. run `bower install`
 6. run `grunt`
