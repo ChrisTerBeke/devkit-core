@@ -41,9 +41,9 @@ module.exports = function(grunt) {
 					/*
 					 *	Angular vendor dependencies.
 					 */
-					'./bower_components/angular-ui-codemirror/ui-codemirror.js',
 					'./bower_components/angular-hotkeys/build/hotkeys.js',
 					'./bower_components/ng-tags-input/ng-tags-input.js',
+					'./bower_components/oclazyload/dist/ocLazyLoad.min.js',
 
 					/*
 					 *	Load modules.
@@ -53,6 +53,7 @@ module.exports = function(grunt) {
 					'./core/modules/filters.js',
 					'./core/modules/services.js',
 					'./core/modules/core.js',
+					'./core/modules/modules.js',
 
 					/*
 					 *	Include source files
@@ -60,16 +61,13 @@ module.exports = function(grunt) {
 					'./core/dependencies/**/*.js',
 					'./core/filters/**/*.js',
 					'./core/services/**/*.js',
-					'./core/directives/**/*.js',
 
 					/*
-					 *	Include main files
+					 *	Include core
 					 */
-					'./bower_components/codemirror/lib/codemirror.js',
-					'./bower_components/codemirror/mode/javascript/javascript.js',
-
 					'./core/app.js',
 					'./core/controllers/**/*.js',
+					'./core/directives/**/*.js',
 
 					/*
 					 *	Include app specific files
@@ -111,11 +109,11 @@ module.exports = function(grunt) {
 		 */
 		watch: {
 			javascripts: {
-				files: ['./public/tmp/**/*.js', './core/**/*.js', './app/**/*.js'],
+				files: ['./public/tmp/**/*.js', './core/**/*.js', './app/**/*.js', './bower_components/**/*.js'],
 				tasks: ['js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist')]
 			},
 			sass: {
-				files: ['./sass/**/*.scss', './css-base/dist/**/*.scss'],
+				files: ['./sass/**/*.scss', './css-base/dist/**/*.scss', './bower_components/**/*.scss'],
 				tasks: ['compass']
 			}
 		},

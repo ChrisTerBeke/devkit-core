@@ -2,6 +2,8 @@ angular.module('sdk.file', [])
     .factory('$file', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
 	var factory = {};
 
+	$rootScope.editorConfig = [];
+
     factory.open = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
     {
 
@@ -126,7 +128,6 @@ angular.module('sdk.file', [])
     // get info (which views & widgets)
     factory.getInfo = function( file_path )
     {
-
 	    file_path = file_path.replace($rootScope.project.path, '');
 
 	    // determine the view.
@@ -136,31 +137,56 @@ angular.module('sdk.file', [])
 	    var view = 'codemirror';
 	    var widgets = [];
 
-		// find a specific one
-		// "/app.json"
-	    if( file.base == 'app.json' && file.dir == '/' ) {
-		    view = 'manifest';
-		    widgets = [];
+		for(var i in $rootScope.editorConfig) {
+			var configItem = $rootScope.editorConfig[i];
+			var extMatch = false;
+			var dirMatch = false;
+			var baseMatch = false;
+
+			if(configItem.ext) {
+				if(file.ext === configItem.ext) {
+					extMatch = true;
+				}
+			}
+			else {
+				extMatch = true;
+			}
+
+			if(configItem.dir) {
+				if(file.dir === configItem.dir) {
+					dirMatch = true;
+				}
+			}
+			else {
+				dirMatch = true;
+			}
+
+			if(configItem.base) {
+				if(file.base === configItem.base) {
+					baseMatch = true;
+				}
+			}
+			else {
+				baseMatch = true;
+			}
+
+			if(extMatch && dirMatch && baseMatch) {
+				return {
+				    view: configItem.config.view || view,
+				    widgets: configItem.config.widgets || widgets
+				}
+			}
 		}
 
-		// "/animations/*.js"
-	    if( file.ext == '.js' && file.dir == '/animations' ) {
-		    view = 'codemirror';
-		    widgets = [ 'ledring' ];
-		}
-
-		// "*.svg"
-	    if( file.ext == '.svg' ) {
-		    view = 'codemirror';
-		    widgets = [ 'svg' ];
-		}
-
-	    return {
+		return {
 		    view: view,
 		    widgets: widgets
 		}
-
     }
+
+    factory.setConfig = function(config) {
+	  	$rootScope.editorConfig = config;
+    };
 
     factory.icon = function( file_path )
     {

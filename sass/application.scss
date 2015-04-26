@@ -17,7 +17,7 @@
 	Site-wide frameworks like (e.g. Github Octicons).
  */
 
-	@import "CSS:codemirror/lib/codemirror";
+	@import "CSS:devkit-editor-codemirror/js/codemirror/lib/codemirror";
 	@import "CSS:ng-tags-input/ng-tags-input";
 
 /**
@@ -832,4 +832,3 @@ button .icon {
 	margin-right: 3px;
 }
 button .icon-add { -webkit-mask-image: url(../../../core/assets/images/icon/add.svg); }
-

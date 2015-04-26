@@ -105,7 +105,44 @@
 
 				<editor ng-controller="editorCtrl">
 
-					<div ng-include="'app/views/index.html'"></div>
+					<editormain ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }">
+						<tabs>
+							<tab
+								ng-repeat="file in files"
+								ng-init="active = false;"
+								ng-click="open(file.path)"
+								ng-class="{ 'active': $parent.active == file.path, 'changed': file._changed }"
+							>
+								<span class="close" ng-click="close(file.path)">
+									<span class="changed"></span>
+									<span class="cross">✕</span>
+								</span>
+								<span class="icon">{{file.icon}}</span>
+								<span class="name">{{file.name}}</span>
+							</tab>
+						</tabs>
+
+						<editorviews>
+							<editorview
+								class="{{file._view}}"
+								ng-repeat="file in files"
+								ng-show="$parent.active == file.path",
+								ng-include="'devkit-editor-'+file._view+'.html'"
+							>
+							</editorview>
+
+							<noeditorview ng-show="!active">
+								<div ng-include="'app/views/partials/noeditor.html'"></div>
+							</noeditorview>
+						</editorviews>
+					</editormain>
+
+					<widgets ng-repeat="file in files" ng-show="$parent.active == file.path && file._widgets.length > 0">
+						<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path">
+							<title>{{widget}}</title>
+							<widget class="{{widget}}" ng-include="'devkit-widget-' + widget + '.html'"></widget>
+						</widgetwrap>
+					</widgets>
 
 				</editor>
 

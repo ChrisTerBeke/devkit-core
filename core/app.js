@@ -7,7 +7,7 @@
 window.ondragover = function(e) { e.preventDefault(); return false };
 window.ondrop = function(e) { e.preventDefault(); return false };
 
-var app = angular.module('app', ['module.core']);
+var app = angular.module('app', ['module.core', 'module.modules']);
 
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {
@@ -16,6 +16,7 @@ app.config(function($sceDelegateProvider) {
 
 // add Bearer token to $http requests
 app.run(['$rootScope', '$injector', function($rootScope, $injector) {
+
     $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
         if ($rootScope.user) {
         	headersGetter()['Authorization'] = "Bearer " + window.localStorage.access_token;
@@ -26,8 +27,6 @@ app.run(['$rootScope', '$injector', function($rootScope, $injector) {
     };
 }]);
 
-
 if(typeof angular !== 'undefined' && window.DEBUG) {
 	console.timeEnd("Angular loaded");
 }
-
