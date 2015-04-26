@@ -1,11 +1,11 @@
 <div>
 	<div class="name">
-		<span ng-click="emit('auth.login')">{{user.statusMessage}}</span>
+		<span ng-click="$parent.logmein()">{{user.statusMessage}}</span>
 	</div>
-	<img ng-src="{{user.avatar || 'app/assets/images/avatar-fallback.jpg'}}?size=30" />
+	<img ng-src="{{$parent.user.avatar || 'app/assets/images/avatar-fallback.jpg'}}?size=30" />
 </div>
 
-<ul class="dropdown" ng-show="user.status == 'logged-in'">
+<ul class="dropdown" ng-show="$parent.user.status == 'logged-in'">
 	<li>
 		<span class="label">
 			<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/user.svg)"></span>
@@ -19,7 +19,7 @@
 		</span>
 	</li>
 	<li>
-		<span class="label" ng-click="emit('auth.logout')">
+		<span class="label" ng-click="$parent.auth.logout()">
 			<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/logout.svg)"></span>
 			<span class="title">Logout</span>
 		</span>
