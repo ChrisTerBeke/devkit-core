@@ -22,7 +22,6 @@
 		>
 
 			<header>
-
 				<div id="chrome-stoplight">
 					<div id="chrome-stoplight-close" ng-click="stoplight.close()"></div>
 					<div id="chrome-stoplight-minimize" ng-click="stoplight.minimize()"></div>
@@ -158,10 +157,10 @@
 
 		<auth
 			id="login"
-			ng-class="{ 'visible': popupVisible }"
+			ng-class="{ 'visible': popup.visible }"
 		>
 
-			<iframe id="auth-iframe" ng-src="{{popupUrl}}"></iframe>
+			<iframe id="auth-iframe" ng-src="{{popup.url}}"></iframe>
 
 		</auth>
 

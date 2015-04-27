@@ -51,29 +51,29 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		$scope.user.status = 'logged-out';
 	}
 
-	$scope.auth = {};
+	// $scope.auth = {};
 
-	$scope.auth.login = function()
-	{
-		console.log('debug login');
+	// $scope.auth.login = function()
+	// {
+	// 	console.log('debug login');
 
-		$scope.setPopup(window.PATH.auth.loginUrl, true);
+	// 	$scope.setPopup(window.PATH.auth.loginUrl, true);
 
-		// $scope.popupUrl = window.PATH.auth.loginUrl;
-		// $scope.popupVisible = true;
+	// 	// $scope.popupUrl = window.PATH.auth.loginUrl;
+	// 	// $scope.popupVisible = true;
 
-		$auth.login();
-	}
+	// 	$auth.login();
+	// }
 
-	$scope.auth.logout  = function()
-	{
-		$auth.logout();
-	}
+	// $scope.auth.logout  = function()
+	// {
+	// 	$auth.logout();
+	// }
 
-	$scope.auth.getUserInfo  = function()
-	{
-		$auth.getUserInfo();
-	}
+	// $scope.auth.getUserInfo  = function()
+	// {
+	// 	$auth.getUserInfo();
+	// }
 
 	$scope.stoplight = $stoplight;
 
@@ -177,7 +177,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 			// $scope.popupVisible = false;
 			// $scope.popupUrl = '';
 
-			$scope.auth.getUserInfo();
+			$auth.getUserInfo();
 
 		});
 	});
@@ -194,7 +194,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		}
 		else
 		{
-			$scope.auth.getUserInfo();
+			$auth.getUserInfo();
 		}
 	}
 

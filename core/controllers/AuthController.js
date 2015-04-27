@@ -1,4 +1,28 @@
-app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout, $auth) {
+// app.controller("AuthController", function($scope, $auth) 
+// {
+
+var AuthController = function($scope, $timeout, $auth)
+{
+
+	$scope.login = function()
+	{
+		$scope.$parent.$parent.setPopup(window.PATH.auth.loginUrl, true);
+
+		// $scope.popupUrl = window.PATH.auth.loginUrl;
+		// $scope.popupVisible = true;
+
+		$auth.login();
+	}
+
+	$scope.logout  = function()
+	{
+		$auth.logout();
+	}
+
+	// $scope.getUserInfo  = function()
+	// {
+	// 	$auth.getUserInfo();
+	// }
 
 	// $scope.popupUrl = '';
 	// $scope.popupVisible = false;
@@ -68,4 +92,8 @@ app.controller("authCtrl", function($scope, $rootScope, $http, $filter, $timeout
 	// 	}
 	// }
 
-});
+}
+
+AuthController.$inject = ['$scope', '$timeout', '$auth'];
+
+app.controller("AuthController", AuthController);
