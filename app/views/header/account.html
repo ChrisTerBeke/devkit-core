@@ -1,6 +1,6 @@
 <div>
 	<div class="name">
-		<span ng-click="$parent.logmein()">{{user.statusMessage}}</span>
+		<span ng-click="$parent.auth.login()">{{user.statusMessage}}</span>
 	</div>
 	<img ng-src="{{$parent.user.avatar || 'app/assets/images/avatar-fallback.jpg'}}?size=30" />
 </div>

@@ -1,8 +1,8 @@
 var os 			= require('os');
-var fs 			= require('os');
+var fs 			= require('fs');
 var path		= require('path');
 
-var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sidebar, $file, windowEventsFactory) 
+var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sidebar, $file, windowEventsFactory)
 {
 	// $rootScope.sharedVars = {};
 	// $rootScope.project = {};
@@ -24,12 +24,12 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 	$scope.active = undefined; // currently viewing
 	$scope.fileHistory = [];
 
-	$scope.setBlur = function(blur) 
+	$scope.setBlur = function(blur)
 	{
 		$scope.blurred = blur;
 	}
 
-	$scope.setFocus = function(focus) 
+	$scope.setFocus = function(focus)
 	{
 		$scope.focus = focus;
 	}
@@ -40,7 +40,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		$scope.popup.visible = visible;
 	}
 
-	$scope.closePopup = function() 
+	$scope.closePopup = function()
 	{
 		// $rootScope.$emit('devkit.blur', false);
 
@@ -53,7 +53,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 
 	$scope.auth = {};
 
-	$scope.auth.login = function() 
+	$scope.auth.login = function()
 	{
 		console.log('debug login');
 
@@ -65,12 +65,12 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		$auth.login();
 	}
 
-	$scope.auth.logout  = function() 
+	$scope.auth.logout  = function()
 	{
 		$auth.logout();
 	}
 
-	$scope.auth.getUserInfo  = function() 
+	$scope.auth.getUserInfo  = function()
 	{
 		$auth.getUserInfo();
 	}
@@ -79,7 +79,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 
 	$scope.file = {};
 
-	$scope.file.open = function(file_path) 
+	$scope.file.open = function(file_path)
 	{
     	var open = $file.open(/* file,  */file_path, $scope.files, $scope.fileHistory/* , file_path_history */);
 
@@ -90,30 +90,30 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
     }
 
 	// close current file
-	$scope.file.close = function(file_path) 
+	$scope.file.close = function(file_path)
 	{
     	$file.close(/* file,  */file_path, $scope.files, $scope.fileHistory/* , file_path_history */);
     }
 
 	// safe file
-	$scope.file.save = function() 
+	$scope.file.save = function()
 	{
     	$file.save($scope.files, $scope.active);
     }
 
 	// get file info
-	$scope.file.getInfo = function(file_path) 
+	$scope.file.getInfo = function(file_path)
 	{
     	$file.getInfo(file_path);
     }
 
 	// get file icon
-	$scope.file.icon = function(file_path) 
+	$scope.file.icon = function(file_path)
 	{
     	$file.icon(file_path);
     }
 
-	win.on('close', function() 
+	win.on('close', function()
 	{
 		// hide ourselves first
 		$scope.$apply(function() {
@@ -127,28 +127,28 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		this.close(true);
 	});
 
-	window.addEventListener('load', function() 
+	window.addEventListener('load', function()
 	{
-		$timeout(function() 
+		$timeout(function()
 		{
 			$scope.loaded = true;
 
 			// load previous project, if available
-			if( typeof window.localStorage.project_dir == 'string' ) 
+			if( typeof window.localStorage.project_dir == 'string' )
 			{
 				$sidebar.load( window.localStorage.project_dir );
 			}
 
 			// load previous files, if available
-			if( typeof window.localStorage.files_open != 'undefined' ) 
+			if( typeof window.localStorage.files_open != 'undefined' )
 			{
 				var files_open = window.localStorage.files_open.split(',');
 
 				if( files_open.length < 1 ) return;
 
-				files_open.forEach(function( file_path ) 
+				files_open.forEach(function( file_path )
 				{
-					if( fs.existsSync(file_path) ) 
+					if( fs.existsSync(file_path) )
 					{
 						$scope.file.open(file_path);
 						// $rootScope.$emit('editor.open', file_path );
@@ -163,7 +163,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 	});
 
 	// listen for a message from the iframe
-	window.addEventListener('message', function(e) 
+	window.addEventListener('message', function(e)
 	{
 		$scope.$apply(function(){
 
@@ -186,13 +186,13 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 
 		$scope.user = {};
 
-		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' ) 
+		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' )
 		{
 			//$scope.login();
 			$scope.user.status = 'logged-out';
 			$scope.user.statusMessage = 'Log in';
-		} 
-		else 
+		}
+		else
 		{
 			$scope.auth.getUserInfo();
 		}
