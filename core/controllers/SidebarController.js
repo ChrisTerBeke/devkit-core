@@ -16,17 +16,20 @@ var trash		= require('trash');
 
 app.controller("sidebarCtrl", function($scope, $rootScope, $sidebar) {
 
-	$scope.filetree = {};
-	$scope.selected = [];
+	// $scope.filetree = {};
+	// $scope.selected = [];
 
-	$rootScope.$on('project.loaded', function() {
-		// watch for any changes in the directory
-		var watch = watchTree($rootScope.project.path, function (event) {
-			$scope.filetree = $sidebar.update();
-		});
+	// $rootScope.$on('project.loaded', function() {
+	// 	// watch for any changes in the directory
+	// 	var watch = watchTree($rootScope.project.path, function (event) {
+	// 		$scope.filetree = $sidebar.update();
+	// 	});
 
-		$scope.update();
-	});
+	// 	$scope.filetree = $scope.update();
+
+
+	// 	console.log('filetree', $scope.filetree);
+	// });
 
 	// $scope.select = function( event, path )
 	// {
@@ -98,7 +101,16 @@ app.controller("sidebarCtrl", function($scope, $rootScope, $sidebar) {
 
 	$scope.open = function(item)
 	{
-		$sidebar.openFile(item);
+		console.log('open stuff', item, $scope.$parent.files);
+
+		var open = $sidebar.openFile(item, $scope.$parent.files, $scope.$parent.fileHistory);
+
+	    $scope.active = open.active;
+
+
+
+        $scope.$parent.files = open.files;
+        $scope.$parent.fileHistory = open.fileHistory;
 	}
 
 	// $scope.keyPress = function( event, item ) {
@@ -172,6 +184,7 @@ app.controller("sidebarCtrl", function($scope, $rootScope, $sidebar) {
 
                 $scope.selected.forEach(function( item_path ){
                     $rootScope.$emit('editor.open', item_path );
+                    console.log('i emitted');
                 });
 
             }}));

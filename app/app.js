@@ -1,14 +1,21 @@
-app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($rootScope, $timeout, $play, $ocLazyLoad, $file) {
+app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', function($rootScope, $timeout, $play, $ocLazyLoad, $file, $module) {
 	$timeout(function() {
 
 		// lazy load codemirror
-		$ocLazyLoad.load('devkit-editor-codemirror');
+		// $ocLazyLoad.load('devkit-editor-codemirror');
 
-		 // lazy load markdown widget
-		$ocLazyLoad.load('markdown');
+		//  // lazy load markdown widget
+		// $ocLazyLoad.load('markdown');
 
-		// lazy load svg widget
-		$ocLazyLoad.load('svg');
+		// // lazy load svg widget
+		// $ocLazyLoad.load('svg');
+
+		$module.load('codemirror', 'editor', './bower_components/');
+
+		$module.load('svg', 'widget');
+
+		$module.load('markdown', 'widget');
+
 
 		$file.setConfig([
 			{
@@ -37,42 +44,42 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', function($ro
 	}, 100);
 }]);
 
-app.config(function($ocLazyLoadProvider) {
+// app.config(function($ocLazyLoadProvider) {
 
-	$ocLazyLoadProvider.config({
-		debug: true,
-		modules: [
-			{
-				name: 'markdown',
-				serie: true,
-				files: [
-					'./widgets/markdown/MarkdownController.js',
-					'./widgets/markdown/markdown.css',
-					'./widgets/markdown/markdown.html'
-				]
-			},
-			{
-				name: 'svg',
-				serie: true,
-				files: [
-					'./widgets/svg/SvgController.js',
-					'./widgets/svg/svg.css',
-					'./widgets/svg/svg.html'
-				]
-			},
-			{
-				name: 'devkit-editor-codemirror',
-				serie: true,
-				files: [
-					'./bower_components/devkit-editor-codemirror/js/codemirror/lib/codemirror.js',
-					'./bower_components/devkit-editor-codemirror/js/codemirror/mode/javascript/javascript.js',
-					'./bower_components/devkit-editor-codemirror/js/angular-ui-codemirror/ui-codemirror.js',
-					'./bower_components/devkit-editor-codemirror/js/CodemirrorController.js',
-					'./bower_components/devkit-editor-codemirror/css/codemirror.css',
-					'./bower_components/devkit-editor-codemirror/codemirror.html'
-				]
-			}
-		]
-	});
+// 	$ocLazyLoadProvider.config({
+// 		debug: true,
+// 		modules: [
+// 			{
+// 				name: 'markdown',
+// 				serie: true,
+// 				files: [
+// 					'./widgets/markdown/MarkdownController.js',
+// 					'./widgets/markdown/markdown.css',
+// 					'./widgets/markdown/markdown.html'
+// 				]
+// 			},
+// 			{
+// 				name: 'svg',
+// 				serie: true,
+// 				files: [
+// 					'./widgets/svg/SvgController.js',
+// 					'./widgets/svg/svg.css',
+// 					'./widgets/svg/svg.html'
+// 				]
+// 			},
+// 			{
+// 				name: 'devkit-editor-codemirror',
+// 				serie: true,
+// 				files: [
+// 					'./bower_components/devkit-editor-codemirror/js/codemirror/lib/codemirror.js',
+// 					'./bower_components/devkit-editor-codemirror/js/codemirror/mode/javascript/javascript.js',
+// 					'./bower_components/devkit-editor-codemirror/js/angular-ui-codemirror/ui-codemirror.js',
+// 					'./bower_components/devkit-editor-codemirror/js/CodemirrorController.js',
+// 					'./bower_components/devkit-editor-codemirror/css/codemirror.css',
+// 					'./bower_components/devkit-editor-codemirror/codemirror.html'
+// 				]
+// 			}
+// 		]
+// 	});
 
-});
+// });

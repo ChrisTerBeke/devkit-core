@@ -1,12 +1,27 @@
 var os 			= require('os');
-var fs 			= require('fs');
+// var fs 			= require('fs');
+var fs			= require('fs-extra');
 var path		= require('path');
 
-var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sidebar, $file, windowEventsFactory)
+var open		= require("open");
+var watchTree 	= require("fs-watch-tree").watchTree;
+var trash		= require('trash');
+
+var events 		= {};
+
+
+var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sidebar, $file, $events, windowEventsFactory, $templateCache)
 {
 	// $rootScope.sharedVars = {};
 	// $rootScope.project = {};
+		// lazy load codemirror
+		// $ocLazyLoad.load('devkit-editor-codemirror');
 
+		//  // lazy load markdown widget
+		// $ocLazyLoad.load('markdown');
+
+		// // lazy load svg widget
+		// $ocLazyLoad.load('svg');
 	var gui 		= require('nw.gui');
 	var win 		= gui.Window.get();
 
@@ -23,6 +38,8 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 	$scope.files = {}; // files open
 	$scope.active = undefined; // currently viewing
 	$scope.fileHistory = [];
+
+	$scope.project = {};
 
 	$scope.setBlur = function(blur)
 	{
@@ -49,6 +66,17 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		// $scope.popupVisible = false;
 		// $scope.popupUrl = '';
 		$scope.user.status = 'logged-out';
+	}
+
+	$scope.updateFiletree = function(project_dir) 
+	{
+		var watch = watchTree(project_dir, function (event) {
+			$scope.filetree = $sidebar.update(project_dir);
+		});
+
+		$scope.filetree = $sidebar.update(project_dir);
+
+		console.log('filetree', $scope.filetree);
 	}
 
 	// $scope.auth = {};
@@ -136,7 +164,14 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 			// load previous project, if available
 			if( typeof window.localStorage.project_dir == 'string' )
 			{
-				$sidebar.load( window.localStorage.project_dir );
+				$scope.project = $sidebar.load( window.localStorage.project_dir );
+
+				// var watch = watchTree($rootScope.project.path, function (event) {
+				// 	$scope.filetree = $sidebar.update();
+				// });
+
+				// $scope.filetree = $sidebar.update();
+				$scope.updateFiletree( window.localStorage.project_dir);
 			}
 
 			// load previous files, if available
@@ -205,35 +240,35 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
     /* TODO: Merge this somehow, make it more elegeant*/
 
     win.on('focus', function() {
-		$scope.$apply(function()
-		{
+		// $scope.$apply(function()
+		// {
 		    // $scope.focus = true;
 		    $scope.setFocus(true);
-		});
+		// });
     });
 
     win.on('blur', function() {
-		$scope.$apply(function()
-		{
+		// $scope.$apply(function()
+		// {
 		    // $scope.focus = false;
 		    $scope.setFocus(false);
-		});
+		// });
     });
 
 	window.addEventListener('blur', function() {
-		$scope.$apply(function()
-		{
+		// $scope.$apply(function()
+		// {
 		    // $scope.focus = false;
 		    $scope.setFocus(false);
-		});
+		// });
 	});
 
 	window.addEventListener('focus', function() {
-		$scope.$apply(function()
-		{
+		// $scope.$apply(function()
+		// {
 		    // $scope.focus = true;
 		    $scope.setFocus(true);
-		});
+		// });
 	});
 
 
@@ -307,6 +342,8 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		label: 'Open Project',
 		click: function() {
 			$sidebar.open();
+
+			$scope.updateFiletree(window.localStorage.project_dir);
 		},
 		key: 'o',
 		modifiers: 'cmd'
@@ -333,7 +370,8 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 	file.insert(new gui.MenuItem({
 		label: 'Save',
 		click: function() {
-			$rootScope.$emit('editor.saveRequest'); /*where is this called?*/
+			$scope.file.save();
+			// $rootScope.$emit('editor.saveRequest'); /*where is this called?*/
 		},
 		key: 's',
 		modifiers: 'cmd'
@@ -410,6 +448,6 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 
 }
 
-ApplicationController.$inject = ['$scope', '$timeout', '$auth', '$stoplight', '$sidebar', '$file', 'windowEventsFactory'];
+ApplicationController.$inject = ['$scope', '$timeout', '$auth', '$stoplight', '$sidebar', '$file', '$events', 'windowEventsFactory', '$templateCache'];
 
 app.controller("ApplicationController", ApplicationController);

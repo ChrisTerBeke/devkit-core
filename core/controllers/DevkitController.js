@@ -96,9 +96,9 @@ app.controller("devkitCtrl", function($scope, $rootScope, $http, $stoplight, $si
 	// });
 
 	// methods
-	$scope.emit = function( event, data ) {
-		$rootScope.$emit( event, data );
-	}
+	// $scope.emit = function( event, data ) {
+	// 	$rootScope.$emit( event, data );
+	// }
 
 	// $scope.load = function( project_dir ){
 

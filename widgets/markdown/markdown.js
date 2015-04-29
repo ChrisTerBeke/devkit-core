@@ -15,3 +15,5 @@ angular.module('module.modules').controller("markdownWidgetCtrl", function( $sco
 		$scope.code = $scope.$parent.files[ $scope.$parent.active ].code;
 	}
 });
+
+console.log('I loaded markdown.js');

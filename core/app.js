@@ -14,6 +14,17 @@ app.config(function($sceDelegateProvider) {
 	$sceDelegateProvider.resourceUrlWhitelist(window.AUTH.whitelist);
 });
 
+app.config(function ($controllerProvider) {
+    // app.controller = $controllerProvider.register;
+
+    app.controller = function (name, constructor)
+    {
+        $controllerProvider.register(name, constructor);
+        return (this);
+    }
+});
+
+
 // add Bearer token to $http requests
 app.run(['$rootScope', '$injector', function($rootScope, $injector) {
 

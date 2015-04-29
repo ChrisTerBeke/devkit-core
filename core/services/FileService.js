@@ -8,9 +8,9 @@ angular.module('sdk.file', [])
     {
 
 	    // add the file if it's not already open
-	    if( typeof this.activeFile(files, file_path) == 'undefined' ) {
-
-		    var info = this.getInfo( file_path );
+	    if( typeof factory.activeFile(files, file_path) == 'undefined' ) {
+	    	console.log('file undefined');
+		    var info = factory.getInfo( file_path );
 
 		    // create a file entry
 		    files[ file_path ] = {
@@ -22,6 +22,8 @@ angular.module('sdk.file', [])
 			    _view		: info.view,
 			    _widgets	: info.widgets
 		    }
+
+		    console.log('file undefined', files[ file_path ]);
 
 	    }
 
@@ -36,13 +38,12 @@ angular.module('sdk.file', [])
 
 	    $rootScope.$emit('editor.focus.' + file_path );
 
-
 	    var json =
 	    {
 		    'active': file_path,
 	    	'files': files,
 	    	'fileHistory': fileHistory
-	    }
+	    };
 
 	    return json;
 
@@ -97,16 +98,36 @@ angular.module('sdk.file', [])
 		}
 */
 
-		return
+		var json =
 	    {
-		    active: active
-	    }
+		    'active': file_path,
+	    	'files': files,
+	    	'fileHistory': fileHistory
+	    };
+
+	    return json;
 
     }
 
     // write the file to disk
     factory.save = function(files, active)
     {
+    	console.log('before beforeSave');
+
+
+    	console.log(beforeSave);
+        $q.all(beforeSave)
+          .then(
+          function(results) {
+            console.log('after beforeSave', results);
+          },
+          function(errors) {
+            deferred.reject(errors);
+          },
+          function(updates) {
+            deferred.update(updates);
+          });
+
 
 	    if( typeof active == 'undefined' ) return;
 
@@ -128,7 +149,7 @@ angular.module('sdk.file', [])
     // get info (which views & widgets)
     factory.getInfo = function( file_path )
     {
-	    file_path = file_path.replace($rootScope.project.path, '');
+	    file_path = file_path.replace(window.localStorage.project_dir, '');
 
 	    // determine the view.
 	    var file = path.parse( file_path );

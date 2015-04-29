@@ -1,5 +1,5 @@
 angular.module('sdk.sidebar', [])
-    .factory('$sidebar', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
+    .factory('$sidebar', ['$file', '$http', '$timeout', '$q', function ($file, $http, $timeout, $q) {
 	var factory = {};
 
 	factory.selected = [];
@@ -25,21 +25,35 @@ angular.module('sdk.sidebar', [])
         return selected;
     }
 
-    factory.load = function( project_dir ){
-        $rootScope.project.path = project_dir;
+    factory.load = function(project_dir){
+        // $rootScope.project.path = project_dir;
+
+        // console.log('i loaded');
 
         // load metadata
         var metadata = fs.readFileSync( path.join( project_dir, 'app.json' ) ).toString();
-        metadata = JSON.parse( metadata );
-        $rootScope.project.metadata = metadata;
-        $rootScope.$emit('project.loaded');
+            metadata = JSON.parse( metadata );
+
+        // var watch = watchTree(project_dir, function (event) {
+        //     // $scope.filetree = $sidebar.update();
+        //     return {
+        //         path: project_dir,
+        //         metadata: metadata,
+        //         filetree: factory.update();
+        //     };
+        // });
+
+        // $scope.filetree = $sidebar.update();
+        // $rootScope.project.metadata = metadata;
+        // $rootScope.$emit('project.loaded');
 
         // save for restart
         window.localStorage.project_dir = project_dir;
 
         return {
             path: project_dir,
-            metadata: metadata
+            metadata: metadata,
+            // filetree: factory.update();
         };
     }
 
@@ -86,12 +100,24 @@ angular.module('sdk.sidebar', [])
     }
 */
 
-	factory.openFile = function(item) {
+	factory.openFile = function(item, files, fileHistory) {
 		if( fs.lstatSync( item.path ).isDirectory() ) {
             item.expanded = !item.expanded;
         }
         else {
-            $rootScope.$emit('editor.open', item.path );
+            console.log('open', files, fileHistory);
+            return $file.open(/* file,  */item.path, files, fileHistory/* , file_path_history */);
+
+            // $rootScope.$emit('editor.open', item.path );
+
+                
+
+
+            //     return open
+            //     $scope.active = open.active;
+
+            //     $scope.files = open.files;
+            //     $scope.fileHistory = open.fileHistory;
         }
 	}
 
@@ -101,8 +127,8 @@ angular.module('sdk.sidebar', [])
 
 
     //TODO: Update this function
-    factory.update = function() {
-        var dir = readdirSyncRecursive( $rootScope.project.path, true );
+    factory.update = function(project_dir) {
+        var dir = readdirSyncRecursive( project_dir, true );
         return dir;
         // $scope.$apply();
     }

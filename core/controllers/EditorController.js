@@ -1,4 +1,4 @@
-app.controller("editorCtrl", function($scope, $rootScope, $file, windowEventsFactory) {
+app.controller("editorController", function($scope, $rootScope, $file, windowEventsFactory) {
 
 	// $scope.files = {}; // files open
 	// $scope.active = undefined; // currently viewing
@@ -38,20 +38,18 @@ app.controller("editorCtrl", function($scope, $rootScope, $file, windowEventsFac
 		window.localStorage.files_open = files_open.join(',');
     });
 
-	// // open file
- //    $scope.open = function(file_path) {
- //    	var open = $file.open(/* file,  */file_path, $scope.files, $scope.fileHistory/* , file_path_history */);
+	// open file
+    $scope.open = function(file_path) {
 
- //    	$scope.active = open.active;
+    	$scope.$parent.file.open(file_path);
+    	console.log('open');
+    }
 
- //    	$scope.files = open.files;
- //    	$scope.fileHistory = open.fileHistory;
- //    }
-
-	// // close current file
-	// $scope.close = function(file_path) {
- //    	$file.close( file,  file_path, $scope.files, $scope.fileHistory/* , file_path_history */);
- //    }
+	// close current file
+	$scope.close = function(file_path) {
+		$scope.$parent.file.close(file_path);
+    	console.log('close');
+	}
 
 	// // safe file
 	// $scope.save = function() {

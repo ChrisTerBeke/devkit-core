@@ -44,6 +44,7 @@ module.exports = function(grunt) {
 					'./bower_components/angular-hotkeys/build/hotkeys.js',
 					'./bower_components/ng-tags-input/ng-tags-input.js',
 					'./bower_components/oclazyload/dist/ocLazyLoad.min.js',
+					'./bower_components/angular-ui-codemirror/ui-codemirror.js',
 
 					/*
 					 *	Load modules.
