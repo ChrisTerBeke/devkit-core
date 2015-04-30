@@ -74,8 +74,8 @@
     "toolbar": false,
     "frame": false,
     "transparent": true,
-    "width": 960,
-    "height": 550,
+    "width": 1000,
+    "height": 600,
     "min_width": 800,
     "min_height": 550
   }
