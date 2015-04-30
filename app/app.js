@@ -8,7 +8,7 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 
 		$module.load('markdown', 'widget');
 
-		$module.load('manifest', 'editor', './bower_components/');
+		$module.load('manifest', 'editor', './editors/');
 
 		// set editor config
 		$file.setConfig([
