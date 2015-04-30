@@ -34,6 +34,8 @@ angular.module('sdk.moduleload', [])
     {
         var path = path || './widgets/';
 
+        var module = 'devkit-' + type + '-' + module;
+
         var absPath = path + module + '/';
 
         var self = this;
@@ -41,19 +43,14 @@ angular.module('sdk.moduleload', [])
 		fs.exists(absPath + 'dependencies', function(exists) {
 			if(exists) {
 		        fs.readdir(absPath + 'dependencies', function (err, files) {
-		            if (!err)
-		            {
-		                console.log(files);
-		                for(var i = 0; i < files.length; i++)
-		                {
-		                    if(files[i].match(/\.[^.]+$/)[0] == '.js')
-		                    {
+		            if (!err) {
+		                for(var i = 0; i < files.length; i++) {
+		                    if(files[i].match(/\.[^.]+$/)[0] == '.js') {
 		                        self.injectDependency(absPath + 'dependencies/' + files[i], 'js');
 		                    }
 		                }
 		            }
-		            else
-		            {
+		            else {
 		                throw err;
 		            }
 		        });
@@ -68,7 +65,8 @@ angular.module('sdk.moduleload', [])
         .then(function(result)
         {
             console.log('result', result);
-            $templateCache.put('devkit-' + type + '-' + module + '.html', result.data);
+            console.log('template', module + '.html');
+            $templateCache.put(module + '.html', result.data);
         });
     // }, 3000);
 

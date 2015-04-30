@@ -19,7 +19,7 @@ angular.module('sdk.file', [])
 			    path		: file_path,
 			    code		: fs.readFileSync( file_path ).toString(),
 			    _changed	: false,
-			    _view		: info.view,
+			    _view		: info.editor,
 			    _widgets	: info.widgets
 		    }
 
@@ -155,7 +155,7 @@ angular.module('sdk.file', [])
 	    var file = path.parse( file_path );
 
 	    // default to codemirror
-	    var view = 'codemirror';
+	    var editor = 'codemirror';
 	    var widgets = [];
 
 		for(var i in $rootScope.editorConfig) {
@@ -193,14 +193,14 @@ angular.module('sdk.file', [])
 
 			if(extMatch && dirMatch && baseMatch) {
 				return {
-				    view: configItem.config.view || view,
+				    editor: configItem.config.editor || editor,
 				    widgets: configItem.config.widgets || widgets
 				}
 			}
 		}
 
 		return {
-		    view: view,
+		    editor: editor,
 		    widgets: widgets
 		}
     }

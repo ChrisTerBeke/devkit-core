@@ -1,30 +1,17 @@
 app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', function($rootScope, $timeout, $play, $ocLazyLoad, $file, $module) {
 	$timeout(function() {
 
-		// lazy load codemirror
-		// $ocLazyLoad.load('devkit-editor-codemirror');
-
-		//  // lazy load markdown widget
-		// $ocLazyLoad.load('markdown');
-
-		// // lazy load svg widget
-		// $ocLazyLoad.load('svg');
-
+		// load modules
 		$module.load('codemirror', 'editor', './editors/');
 
 		$module.load('svg', 'widget');
 
 		$module.load('markdown', 'widget');
 
+		$module.load('manifest', 'editor', './bower_components/');
 
+		// set editor config
 		$file.setConfig([
-			{
-				ext: ".js",
-				dir: "/animations",
-				config: {
-					widgets: [ 'markdown' ]
-				}
-			},
 			{
 				ext: ".svg",
 				config: {
@@ -36,50 +23,17 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 				config: {
 					widgets: [ 'markdown' ]
 				}
+			},
+			{
+				ext: ".json",
+				config: {
+					editor: "manifest"
+				}
 			}
 		]);
 
+		// set play button
 		$play.status('loading...');
 
 	}, 100);
 }]);
-
-// app.config(function($ocLazyLoadProvider) {
-
-// 	$ocLazyLoadProvider.config({
-// 		debug: true,
-// 		modules: [
-// 			{
-// 				name: 'markdown',
-// 				serie: true,
-// 				files: [
-// 					'./widgets/markdown/MarkdownController.js',
-// 					'./widgets/markdown/markdown.css',
-// 					'./widgets/markdown/markdown.html'
-// 				]
-// 			},
-// 			{
-// 				name: 'svg',
-// 				serie: true,
-// 				files: [
-// 					'./widgets/svg/SvgController.js',
-// 					'./widgets/svg/svg.css',
-// 					'./widgets/svg/svg.html'
-// 				]
-// 			},
-// 			{
-// 				name: 'devkit-editor-codemirror',
-// 				serie: true,
-// 				files: [
-// 					'./bower_components/devkit-editor-codemirror/js/codemirror/lib/codemirror.js',
-// 					'./bower_components/devkit-editor-codemirror/js/codemirror/mode/javascript/javascript.js',
-// 					'./bower_components/devkit-editor-codemirror/js/angular-ui-codemirror/ui-codemirror.js',
-// 					'./bower_components/devkit-editor-codemirror/js/CodemirrorController.js',
-// 					'./bower_components/devkit-editor-codemirror/css/codemirror.css',
-// 					'./bower_components/devkit-editor-codemirror/codemirror.html'
-// 				]
-// 			}
-// 		]
-// 	});
-
-// });
