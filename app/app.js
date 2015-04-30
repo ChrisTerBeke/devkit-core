@@ -10,7 +10,7 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 		// // lazy load svg widget
 		// $ocLazyLoad.load('svg');
 
-		$module.load('codemirror', 'editor', './bower_components/');
+		$module.load('codemirror', 'editor', './editors/');
 
 		$module.load('svg', 'widget');
 

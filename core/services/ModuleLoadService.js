@@ -5,10 +5,10 @@ var module = module || {};
 //module.core = angular.module('module.core', ['module.angular', 'module.vendor', 'module.filters', 'module.services']);
 
 angular.module('sdk.moduleload', [])
-    .factory('$module', ['$rootScope', '$timeout', '$http', '$q', '$templateCache', function ($rootScope, $timeout, $http, $q, $templateCache) {   
+    .factory('$module', ['$rootScope', '$timeout', '$http', '$q', '$templateCache', function ($rootScope, $timeout, $http, $q, $templateCache) {
     var factory = {};
 
-    factory.injectDependency = function(filename, filetype) 
+    factory.injectDependency = function(filename, filetype)
     {
         console.log('injectDependency');
 
@@ -30,7 +30,7 @@ angular.module('sdk.moduleload', [])
             document.getElementsByTagName('head')[0].appendChild(fileref)
     }
 
-    factory.load = function(module, type, path) 
+    factory.load = function(module, type, path)
     {
         var path = path || './widgets/';
 
@@ -38,22 +38,26 @@ angular.module('sdk.moduleload', [])
 
         var self = this;
 
-        fs.readdir(absPath + '/dependencies', function (err, files) { 
-            if (!err) 
-            {
-                console.log(files);
-                for(var i = 0; i < files.length; i++) 
-                {
-                    if(files[i].match(/\.[^.]+$/)[0] == '.js') 
-                    {
-                        self.injectDependency(absPath + 'dependencies/' + files[i], 'js');
-                    }       
-                }
-            }
-            else 
-            {
-                throw err; 
-            }
+		fs.exists(absPath + 'dependencies', function(exists) {
+			if(exists) {
+		        fs.readdir(absPath + 'dependencies', function (err, files) {
+		            if (!err)
+		            {
+		                console.log(files);
+		                for(var i = 0; i < files.length; i++)
+		                {
+		                    if(files[i].match(/\.[^.]+$/)[0] == '.js')
+		                    {
+		                        self.injectDependency(absPath + 'dependencies/' + files[i], 'js');
+		                    }
+		                }
+		            }
+		            else
+		            {
+		                throw err;
+		            }
+		        });
+        	}
         });
 
         // $timeout(function() {
@@ -61,14 +65,14 @@ angular.module('sdk.moduleload', [])
         self.injectDependency(absPath + module + '.js', 'js');
 
         $http.get(absPath + module + '.html')
-        .then(function(result) 
+        .then(function(result)
         {
             console.log('result', result);
             $templateCache.put('devkit-' + type + '-' + module + '.html', result.data);
         });
     // }, 3000);
 
-        
+
 
         // app.$inject = ['module.' + module];
 

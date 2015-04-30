@@ -1,0 +1,14 @@
+{
+  "name": "devkit-editor-codemirror",
+  "homepage": "https://github.com/printhom/devkit-editor-codemirror",
+  "version": "0.0.3",
+  "_release": "0.0.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.3",
+    "commit": "a6c6a1f5ffc8bb3bb1beb8916d0ed248015b5bd4"
+  },
+  "_source": "https://github.com/printhom/devkit-editor-codemirror.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/printhom/devkit-editor-codemirror.git"
+}
