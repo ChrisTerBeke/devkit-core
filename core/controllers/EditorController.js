@@ -15,9 +15,14 @@ app.controller("editorController", function($scope, $rootScope, $file, windowEve
 		$rootScope.$emit('editor.saveRequest.' + $scope.active);
     });
 
-	// on safe
-    $rootScope.$on('editor.performSave', function() {
-		$scope.save();
+	// // on safe
+ //    $rootScope.$on('editor.performSave', function() {
+	// 	$scope.save();
+ //    });
+
+    $rootScope.$on('editor.change', function(changeObj) {
+    	console.log('change object', changeObj);
+		// $scope.save();
     });
 
 	// on close
@@ -53,6 +58,7 @@ app.controller("editorController", function($scope, $rootScope, $file, windowEve
 
 	// // safe file
 	// $scope.save = function() {
+	// 	console.log('perform save', $scope.files, $scope.active);
  //    	$file.save($scope.files, $scope.active);
  //    }
 

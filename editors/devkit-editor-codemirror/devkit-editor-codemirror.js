@@ -1,9 +1,15 @@
 var path = require('path');
 
-app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', function( $scope, $rootScope, $http) {
+app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$events', function( $scope, $rootScope, $http, $events) {
 
 	var file_path = $scope.file.path;
 	var file_ext = path.extname( file_path );
+
+	// $events.beforeSave($scope.file.path, function() {
+	// 	return {
+
+	// 	}
+	// });
 
 	$scope.codemirrorOpts = {
 		lineNumbers: true,
@@ -24,8 +30,6 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', functio
 
 			// Events
 			_editor.on("change", function( _editor, changeObj ){
-
-				var file = $scope.$parent.$parent.file;
 
 				$rootScope.$broadcast('editor.change', changeObj);
 				$rootScope.$broadcast('editor.change.' + $scope.$parent.active, changeObj);
@@ -65,7 +69,9 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', functio
 	}
 
     $rootScope.$on('editor.saveRequest.' + $scope.file.path, function(){
-		$rootScope.$emit('editor.performSave');
+
+  //   	console.log('code save request');
+		// $rootScope.$emit('editor.performSave');
     });
 
     $rootScope.$on('editor.focus.' + $scope.file.path, function(){

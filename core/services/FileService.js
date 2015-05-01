@@ -112,33 +112,25 @@ angular.module('sdk.file', [])
     // write the file to disk
     factory.save = function(files, active)
     {
-    	console.log('before beforeSave');
+    	// console.log('before save', beforeSave[active]);
+    	if(typeof beforeSave[active] !== 'undefined') {
+	        var data = $q.all(beforeSave[active])
+	   		.then(function(response) {
+	   			console.log('response data', response);
+	   			for(var i = 0; i < response.length; i++) {
+	   				response[i](function(data) {
+						files[active] = angular.extend(files[active], data);
+					});
+	   				
+	   			}
+	   			saveFile(files, active)
+			});
+    	}
+    	else {
+    		saveFile(files, active)
+    	}
 
-
-    	console.log(beforeSave);
-        $q.all(beforeSave)
-          .then(
-          function(results) {
-            console.log('after beforeSave', results);
-          },
-          function(errors) {
-            deferred.reject(errors);
-          },
-          function(updates) {
-            deferred.update(updates);
-          });
-
-
-	    if( typeof active == 'undefined' ) return;
-
-	    var activeFile = files[ active ];
-
-	    fs.writeFileSync( activeFile.path, activeFile.code );
-
-		activeFile._changed = false;
-
-		$rootScope.$emit('editor.saved');
-		$rootScope.$emit('editor.saved.' + activeFile.path);
+    	console.log(files);
     }
 
     factory.activeFile = function(files, file_path)
@@ -215,4 +207,19 @@ angular.module('sdk.file', [])
     }
 
     return factory;
+
+    function saveFile(files, active) {
+    	if( typeof active == 'undefined' ) return;
+
+	    var activeFile = files[ active ];
+
+	    console.log('active file on save', activeFile.path);
+
+	    fs.writeFileSync( activeFile.path, activeFile.code );
+
+		activeFile._changed = false;
+
+		$rootScope.$emit('editor.saved');
+		$rootScope.$emit('editor.saved.' + activeFile.path);
+    }
 }]);

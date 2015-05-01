@@ -79,30 +79,6 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		console.log('filetree', $scope.filetree);
 	}
 
-	// $scope.auth = {};
-
-	// $scope.auth.login = function()
-	// {
-	// 	console.log('debug login');
-
-	// 	$scope.setPopup(window.PATH.auth.loginUrl, true);
-
-	// 	// $scope.popupUrl = window.PATH.auth.loginUrl;
-	// 	// $scope.popupVisible = true;
-
-	// 	$auth.login();
-	// }
-
-	// $scope.auth.logout  = function()
-	// {
-	// 	$auth.logout();
-	// }
-
-	// $scope.auth.getUserInfo  = function()
-	// {
-	// 	$auth.getUserInfo();
-	// }
-
 	$scope.stoplight = $stoplight;
 
 	$scope.file = {};

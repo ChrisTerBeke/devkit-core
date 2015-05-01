@@ -32734,21 +32734,28 @@ angular.module('sdk.auth', [])
 }]);;
 var events = events || {};
 
-var beforeSave = [];
+var beforeSave = {};
 
 angular.module('sdk.events', []).factory('$events', ['$rootScope', '$q', function ($rootScope, $q) {
 	var factory = {};
 
-	console.log('i was called!');
-
-	factory.beforeSave = function(callbackFunction) {
-		beforeSave.push($q(function(resolve, reject) {
-	    setTimeout(function() 
-	    {
-	    	var result = callbackFunction();
+	// factory.beforeSave = function(path, callbackFunction) {
+	// 	beforeSave[path] = beforeSave[path] || [];
+	// 	beforeSave[path].push($q(function(resolve, reject) {
+	//     setTimeout(function() 
+	//     {
+	//     	var result = callbackFunction();
 	    	
-	    	resolve(result);
-	    }, 1000);
+	//     	resolve(result);
+	//     }, 1000);
+	// 	}));
+	// };
+
+	factory.beforeSave = function(path, callbackFunction) {
+		console.log('before save called!');
+		beforeSave[path] = beforeSave[path] || [];
+		beforeSave[path].push($q(function(resolve, reject) {
+			resolve(callbackFunction);
 		}));
 	};
 
@@ -32868,33 +32875,25 @@ angular.module('sdk.file', [])
     // write the file to disk
     factory.save = function(files, active)
     {
-    	console.log('before beforeSave');
+    	// console.log('before save', beforeSave[active]);
+    	if(typeof beforeSave[active] !== 'undefined') {
+	        var data = $q.all(beforeSave[active])
+	   		.then(function(response) {
+	   			console.log('response data', response);
+	   			for(var i = 0; i < response.length; i++) {
+	   				response[i](function(data) {
+						files[active] = angular.extend(files[active], data);
+					});
+	   				
+	   			}
+	   			saveFile(files, active)
+			});
+    	}
+    	else {
+    		saveFile(files, active)
+    	}
 
-
-    	console.log(beforeSave);
-        $q.all(beforeSave)
-          .then(
-          function(results) {
-            console.log('after beforeSave', results);
-          },
-          function(errors) {
-            deferred.reject(errors);
-          },
-          function(updates) {
-            deferred.update(updates);
-          });
-
-
-	    if( typeof active == 'undefined' ) return;
-
-	    var activeFile = files[ active ];
-
-	    fs.writeFileSync( activeFile.path, activeFile.code );
-
-		activeFile._changed = false;
-
-		$rootScope.$emit('editor.saved');
-		$rootScope.$emit('editor.saved.' + activeFile.path);
+    	console.log(files);
     }
 
     factory.activeFile = function(files, file_path)
@@ -32971,6 +32970,21 @@ angular.module('sdk.file', [])
     }
 
     return factory;
+
+    function saveFile(files, active) {
+    	if( typeof active == 'undefined' ) return;
+
+	    var activeFile = files[ active ];
+
+	    console.log('active file on save', activeFile.path);
+
+	    fs.writeFileSync( activeFile.path, activeFile.code );
+
+		activeFile._changed = false;
+
+		$rootScope.$emit('editor.saved');
+		$rootScope.$emit('editor.saved.' + activeFile.path);
+    }
 }]);;
 
 var module = module || {};
@@ -33477,30 +33491,6 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 
 		console.log('filetree', $scope.filetree);
 	}
-
-	// $scope.auth = {};
-
-	// $scope.auth.login = function()
-	// {
-	// 	console.log('debug login');
-
-	// 	$scope.setPopup(window.PATH.auth.loginUrl, true);
-
-	// 	// $scope.popupUrl = window.PATH.auth.loginUrl;
-	// 	// $scope.popupVisible = true;
-
-	// 	$auth.login();
-	// }
-
-	// $scope.auth.logout  = function()
-	// {
-	// 	$auth.logout();
-	// }
-
-	// $scope.auth.getUserInfo  = function()
-	// {
-	// 	$auth.getUserInfo();
-	// }
 
 	$scope.stoplight = $stoplight;
 
@@ -34305,9 +34295,14 @@ app.controller("editorController", function($scope, $rootScope, $file, windowEve
 		$rootScope.$emit('editor.saveRequest.' + $scope.active);
     });
 
-	// on safe
-    $rootScope.$on('editor.performSave', function() {
-		$scope.save();
+	// // on safe
+ //    $rootScope.$on('editor.performSave', function() {
+	// 	$scope.save();
+ //    });
+
+    $rootScope.$on('editor.change', function(changeObj) {
+    	console.log('change object', changeObj);
+		// $scope.save();
     });
 
 	// on close
@@ -34343,6 +34338,7 @@ app.controller("editorController", function($scope, $rootScope, $file, windowEve
 
 	// // safe file
 	// $scope.save = function() {
+	// 	console.log('perform save', $scope.files, $scope.active);
  //    	$file.save($scope.files, $scope.active);
  //    }
 

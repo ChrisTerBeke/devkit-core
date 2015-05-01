@@ -1,20 +1,27 @@
 var events = events || {};
 
-var beforeSave = [];
+var beforeSave = {};
 
 angular.module('sdk.events', []).factory('$events', ['$rootScope', '$q', function ($rootScope, $q) {
 	var factory = {};
 
-	console.log('i was called!');
-
-	factory.beforeSave = function(callbackFunction) {
-		beforeSave.push($q(function(resolve, reject) {
-	    setTimeout(function() 
-	    {
-	    	var result = callbackFunction();
+	// factory.beforeSave = function(path, callbackFunction) {
+	// 	beforeSave[path] = beforeSave[path] || [];
+	// 	beforeSave[path].push($q(function(resolve, reject) {
+	//     setTimeout(function() 
+	//     {
+	//     	var result = callbackFunction();
 	    	
-	    	resolve(result);
-	    }, 1000);
+	//     	resolve(result);
+	//     }, 1000);
+	// 	}));
+	// };
+
+	factory.beforeSave = function(path, callbackFunction) {
+		console.log('before save called!');
+		beforeSave[path] = beforeSave[path] || [];
+		beforeSave[path].push($q(function(resolve, reject) {
+			resolve(callbackFunction);
 		}));
 	};
 
