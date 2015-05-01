@@ -93,14 +93,13 @@
 
 html {
 	height: 100%;
-	background: #3d83ad;
 }
 
 body {
 	height: 100%;
 	-webkit-user-select: none;
 
-	font-family: "Roboto";
+	font-family: "Open Sans";
 	font-weight: 300;
 	background: transparent;
 	transition: all 0.3s;
@@ -109,6 +108,8 @@ body {
 	cursor: default;
 
 	-webkit-perspective: 1500px;
+
+	background: #002B36;
 }
 
 header {
@@ -181,7 +182,7 @@ header {
 		line-height: 16px;
 		font-size: 14px;
 		text-align: center;
-		color: white;
+		color: #839496;
 		text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 	}
 		#chrome-title .title {
@@ -216,7 +217,7 @@ header {
 			cursor: pointer;
 		}
 		#user > div:hover > .name {
-			color: white;
+			color: #839496;
 			cursor: pointer;
 		}
 		#user img {
@@ -256,7 +257,7 @@ header {
 			right: -3px;
 			top: 38px;
 			background: white;
-			border: 1px solid #ccc;
+			border: 1px solid #839496;
 			border-radius: 3px;
 			white-space: nowrap;
 			box-shadow: 0 0 10px rgba(0,0,0,0.4);
@@ -409,7 +410,7 @@ header {
 
 			font-size: 12px;
 			font-weight: 200;
-			color: white;
+			color: #839496;
 			text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 			line-height: 24px;
 
@@ -478,7 +479,7 @@ content {
 						position: absolute;
 						left: 7px;
 						top: 8px;;
-						border-left: 6px solid white;
+						border-left: 6px solid #839496;
 						border-top: 4px solid transparent;
 						border-bottom: 4px solid transparent;
 
@@ -499,7 +500,7 @@ content {
 					}
 					#filetree li .label .name,
 					#filetree li .label .name-renaming {
-						color: white;
+						color: #839496;
 						font-weight: 300;
 						font-size: 12px;
 						display: inline-block;
@@ -518,7 +519,7 @@ content {
 						-webkit-mask-position: center center;
 						-webkit-mask-repeat: no-repeat;
 						-webkit-mask-size: contain;
-						background: white;
+						background: #839496;
 						width: 12px;
 						height: 12px;
 						display: inline-block;
@@ -592,25 +593,26 @@ content {
 				line-height: 25px;
 				box-sizing: border-box;
 				font-size: 12px;
-				color: #aaa;
-				background: #eee;
-				box-shadow: 0 0 10px rgba(0,0,0,0.2), inset 0 -3px 3px rgba(0,0,0,0.1);
+				color: #839496;
+				background: #073642;
+				// box-shadow: 0 0 10px rgba(0,0,0,0.2), inset 0 -3px 3px rgba(0,0,0,0.1);
 			}
 			tabs tab + tab {
-				border-left: 1px solid rgba(0,0,0,0.15);
+				// border-left: 1px solid rgba(0,0,0,0.15);
 			}
 			tabs tab.active + tab {
 				border-left-color: white;
 			}
 			tabs tab:hover {
-				background: #f5f5f5;
+				// background: #f5f5f5;
+				background: #586E75;
 			}
 			tabs tab.active {
-				color: #333;
+				color: #839496;
 				position: relative;
 				z-index: 2;
-				box-shadow: 0 0 10px rgba(0,0,0,0.25);
-				background: white;
+				// box-shadow: 0 0 10px rgba(0,0,0,0.25);
+				background: #586E75;
 			}
 				tabs tab * {
 					display: inline-block;
@@ -639,10 +641,18 @@ content {
 					background: rgba(0,0,0,0.01);
 				}
 					tabs tab .close .cross {
-						margin-left: 0px;
-						font-size: 7px;
-						line-height: 12px;
-						color: rgba(0,0,0,0.3);
+						// margin-left: 0px;
+						// font-size: 7px;
+						// line-height: 12px;
+						// color: rgba(0,0,0,0.3);
+						background: #93A1A1;
+						margin: 0;
+						width: 11px;
+						height: 11px;
+						display: block;
+						overflow: hidden;
+						text-indent: -9999px;
+						border-radius: 30px;
 					}
 					tabs tab.changed .close .cross,
 					tabs tab .close .changed {
@@ -653,11 +663,14 @@ content {
 						display: block;
 					}
 					tabs tab.changed .close .changed {
-						margin: 3px;
-						width: 5px;
-						height: 4px;
-						background: rgba(0,0,0,0.1);
-						border-radius: 3px;
+						background: #268BD2;
+						margin: 0;
+						width: 11px;
+						height: 11px;
+						display: block;
+						overflow: hidden;
+						text-indent: -9999px;
+						border-radius: 30px;
 					}
 		editormain {
 			position: absolute;
@@ -666,7 +679,7 @@ content {
 			top: 0;
 			bottom: 0;
 			display: block;
-			box-shadow: -5px 0 5px -3px rgba(0,0,0,0.05);
+			// box-shadow: -5px 0 5px -3px rgba(0,0,0,0.05);
 			border: 1px solid rgba(0,0,0,0.25);
 			border-bottom-width: 0;
 			border-right-width: 0;
@@ -682,9 +695,9 @@ content {
 			top: 35px;
 			bottom: 10px;
 			right: 10px;
-			background: white;
+			background: #002B36;
 			overflow: auto;
-			box-shadow: 0 0 10px rgba(0,0,0,0.2);
+			// box-shadow: 0 0 10px rgba(0,0,0,0.2);
 		}
 		editorview.widgets {
 			right: 230px;
@@ -731,9 +744,9 @@ content {
 			widgets widgetwrap {
 				position: relative;
 				display: block;
-				background: white;
+				background: #002B36;
 				margin: 0 10px 10px 10px;
-				box-shadow: 0 5px 5px rgba(0,0,0,0.05);
+				// box-shadow: 0 5px 5px rgba(0,0,0,0.05);
 				overflow: hidden;
 			}
 				widgets widgetwrap title {
@@ -743,7 +756,7 @@ content {
 					line-height: 18px;
 					background: #111;
 					font-size: 12px;
-					color: white;
+					color: #839496;
 				}
 				widgets widgetwrap widget {
 					display: block;
@@ -782,7 +795,7 @@ auth {
 	left: 50%;
 	margin-left: -200px;
 
-	background: white;
+	background: black;
 	box-shadow: 0 0 20px rgba(0,0,0,0.5);
 
 	visibility: hidden;
@@ -832,3 +845,66 @@ button .icon {
 	margin-right: 3px;
 }
 button .icon-add { -webkit-mask-image: url(../../../core/assets/images/icon/add.svg); }
+
+
+fieldset {
+	padding: 10px;
+	border: 1px solid #586E75;
+	margin-bottom: 10px;
+}
+fieldset legend {
+	font-size: 12px;
+	font-weight: 400;
+	padding: 0 4px;
+	color: #839496;
+}
+fieldset row {
+	display: block;
+	margin-bottom: 10px;
+}
+fieldset row:after {
+	content: "";
+	clear: both;
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+fieldset row:last-child {
+	margin-bottom: 0;
+}
+fieldset label {
+	display: block;
+	font-size: 12px;
+	color: #839496;
+	font-weight: 300;
+	line-height: 16px;
+}
+fieldset row label {
+	float: left;
+	width: 200px;
+	text-align: right;
+	line-height: 24px;
+	margin-right: 10px;
+}
+input,
+textarea,
+tags-input .tags {
+	background: transparent;
+	border: 1px solid #586E75;
+	background: #073642;
+	border-radius: 2px;
+	padding: 4px;
+	font-family: inherit;
+	font-weight: 300;
+	font-size: 12px;
+	color: #839496;
+	cursor: text;
+}
+row input,
+row textarea {
+	float: left;
+	width: 200px;
+}

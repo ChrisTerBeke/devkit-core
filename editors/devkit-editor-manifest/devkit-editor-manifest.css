@@ -67,67 +67,6 @@ editorview.manifest {
 				border-left: 6px solid transparent;
 				border-right: 6px solid transparent;
 			}
-	editorview.manifest fieldset {
-		padding: 10px;
-		border: 1px solid rgba(0,0,0,0.1);
-		margin-bottom: 10px;
-	}
-		editorview.manifest fieldset legend {
-			font-size: 12px;
-			font-weight: 400;
-			padding: 0 4px;
-			color: #333;
-		}
-		editorview.manifest fieldset row {
-			display: block;
-			margin-bottom: 10px;
-		}
-		editorview.manifest fieldset row:after {
-			content: "";
-			clear: both;
-			visibility: hidden;
-			display: block;
-			font-size: 0;
-			content: " ";
-			clear: both;
-			height: 0;
-		}
-		editorview.manifest fieldset row:last-child {
-			margin-bottom: 0;
-		}
-		editorview.manifest fieldset label {
-			display: block;
-			font-size: 12px;
-			color: #333;
-			font-weight: 300;
-			line-height: 16px;
-		}
-		editorview.manifest fieldset row label {
-			float: left;
-			width: 200px;
-			text-align: right;
-			line-height: 24px;
-			margin-right: 10px;
-		}
-		editorview.manifest input,
-		editorview.manifest textarea,
-		editorview.manifest tags-input .tags {
-			background: transparent;
-			border: 1px solid rgba(0,0,0,0.15);
-			background: rgba(0,0,0,0.05);
-			border-radius: 2px;
-			padding: 4px;
-			font-family: inherit;
-			font-weight: 300;
-			font-size: 12px;
-			color: #333;
-			cursor: text;
-		}
-		editorview.manifest row input,
-		editorview.manifest row textarea {
-			float: left;
-			width: 200px;
-		}
 		
 		editorview.manifest ul {
 			list-style: none;
