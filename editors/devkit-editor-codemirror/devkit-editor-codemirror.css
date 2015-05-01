@@ -1,5 +1,5 @@
 editorview.codemirror .CodeMirror {
-	/*font-size: 11px;*/
+	font-size: 12px;
 	/*line-height: 13px;*/
 	font-family: "Menlo", monospace !important;
 	height: 100% !important;
