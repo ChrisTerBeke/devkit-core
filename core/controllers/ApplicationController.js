@@ -12,16 +12,6 @@ var events 		= {};
 
 var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sidebar, $file, $events, windowEventsFactory, $templateCache)
 {
-	// $rootScope.sharedVars = {};
-	// $rootScope.project = {};
-		// lazy load codemirror
-		// $ocLazyLoad.load('devkit-editor-codemirror');
-
-		//  // lazy load markdown widget
-		// $ocLazyLoad.load('markdown');
-
-		// // lazy load svg widget
-		// $ocLazyLoad.load('svg');
 	var gui 		= require('nw.gui');
 	var win 		= gui.Window.get();
 
@@ -59,12 +49,8 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 
 	$scope.closePopup = function()
 	{
-		// $rootScope.$emit('devkit.blur', false);
-
 		$scope.setBlur(false);
 		$scope.setPopup('', false);
-		// $scope.popupVisible = false;
-		// $scope.popupUrl = '';
 		$scope.user.status = 'logged-out';
 	}
 
@@ -209,42 +195,26 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		}
 	}
 
-	// // window focus/blurring
-	// var gui = require('nw.gui');
- //    var win = gui.Window.get();
-
     /* TODO: Merge this somehow, make it more elegeant*/
 
-    win.on('focus', function() {
-		// $scope.$apply(function()
-		// {
-		    // $scope.focus = true;
-		    $scope.setFocus(true);
-		// });
+    win.on('focus', function() 
+    {
+		$scope.setFocus(true);
     });
 
-    win.on('blur', function() {
-		// $scope.$apply(function()
-		// {
-		    // $scope.focus = false;
-		    $scope.setFocus(false);
-		// });
+    win.on('blur', function() 
+    {
+		$scope.setFocus(false);
     });
 
-	window.addEventListener('blur', function() {
-		// $scope.$apply(function()
-		// {
-		    // $scope.focus = false;
-		    $scope.setFocus(false);
-		// });
+	window.addEventListener('blur', function() 
+	{
+		$scope.setFocus(false);
 	});
 
-	window.addEventListener('focus', function() {
-		// $scope.$apply(function()
-		// {
-		    // $scope.focus = true;
-		    $scope.setFocus(true);
-		// });
+	window.addEventListener('focus', function() 
+	{
+		$scope.setFocus(true);
 	});
 
 

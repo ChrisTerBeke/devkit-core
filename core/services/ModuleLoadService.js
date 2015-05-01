@@ -1,8 +1,4 @@
-
 var module = module || {};
-
-
-//module.core = angular.module('module.core', ['module.angular', 'module.vendor', 'module.filters', 'module.services']);
 
 angular.module('sdk.moduleload', [])
     .factory('$module', ['$rootScope', '$timeout', '$http', '$q', '$templateCache', function ($rootScope, $timeout, $http, $q, $templateCache) {
@@ -68,15 +64,6 @@ angular.module('sdk.moduleload', [])
             console.log('template', module + '.html');
             $templateCache.put(module + '.html', result.data);
         });
-    // }, 3000);
-
-
-
-        // app.$inject = ['module.' + module];
-
-    // angular.module('module.modules').requires.push('modules.' + module);
-
-    // console.log('modules',angular.module('module.modules'));
     }
 
     return factory;

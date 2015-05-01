@@ -7,9 +7,11 @@ angular.module('sdk.file', [])
     factory.open = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
     {
 
+    	console.log('file open');
+
+
 	    // add the file if it's not already open
 	    if( typeof factory.activeFile(files, file_path) == 'undefined' ) {
-	    	console.log('file undefined');
 		    var info = factory.getInfo( file_path );
 
 		    // create a file entry
@@ -22,9 +24,6 @@ angular.module('sdk.file', [])
 			    _view		: info.editor,
 			    _widgets	: info.widgets
 		    }
-
-		    console.log('file undefined', files[ file_path ]);
-
 	    }
 
 /*
@@ -112,25 +111,25 @@ angular.module('sdk.file', [])
     // write the file to disk
     factory.save = function(files, active)
     {
-    	// console.log('before save', beforeSave[active]);
-    	if(typeof beforeSave[active] !== 'undefined') {
+    	if(typeof beforeSave[active] !== 'undefined') 
+    	{
 	        var data = $q.all(beforeSave[active])
-	   		.then(function(response) {
-	   			console.log('response data', response);
-	   			for(var i = 0; i < response.length; i++) {
-	   				response[i](function(data) {
+	   		.then(function(response) 
+	   		{
+	   			for(var i = 0; i < response.length; i++) 
+	   			{
+	   				response[i](function(data) 
+	   				{
 						files[active] = angular.extend(files[active], data);
 					});
-	   				
 	   			}
 	   			saveFile(files, active)
 			});
     	}
-    	else {
+    	else 
+    	{
     		saveFile(files, active)
     	}
-
-    	console.log(files);
     }
 
     factory.activeFile = function(files, file_path)

@@ -5,11 +5,12 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$event
 	var file_path = $scope.file.path;
 	var file_ext = path.extname( file_path );
 
-	// $events.beforeSave($scope.file.path, function() {
-	// 	return {
+	/* Example Before Save Command
+	$events.beforeSave($scope.file.path, function() {
+		return {
 
-	// 	}
-	// });
+		}
+	});*/
 
 	$scope.codemirrorOpts = {
 		lineNumbers: true,
@@ -67,12 +68,6 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$event
 			break;
 
 	}
-
-    $rootScope.$on('editor.saveRequest.' + $scope.file.path, function(){
-
-  //   	console.log('code save request');
-		// $rootScope.$emit('editor.performSave');
-    });
 
     $rootScope.$on('editor.focus.' + $scope.file.path, function(){
 	    setTimeout(function(){

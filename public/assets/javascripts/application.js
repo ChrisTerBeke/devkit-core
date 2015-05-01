@@ -32770,9 +32770,11 @@ angular.module('sdk.file', [])
     factory.open = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
     {
 
+    	console.log('file open');
+
+
 	    // add the file if it's not already open
 	    if( typeof factory.activeFile(files, file_path) == 'undefined' ) {
-	    	console.log('file undefined');
 		    var info = factory.getInfo( file_path );
 
 		    // create a file entry
@@ -32785,9 +32787,6 @@ angular.module('sdk.file', [])
 			    _view		: info.editor,
 			    _widgets	: info.widgets
 		    }
-
-		    console.log('file undefined', files[ file_path ]);
-
 	    }
 
 /*
@@ -32875,25 +32874,25 @@ angular.module('sdk.file', [])
     // write the file to disk
     factory.save = function(files, active)
     {
-    	// console.log('before save', beforeSave[active]);
-    	if(typeof beforeSave[active] !== 'undefined') {
+    	if(typeof beforeSave[active] !== 'undefined') 
+    	{
 	        var data = $q.all(beforeSave[active])
-	   		.then(function(response) {
-	   			console.log('response data', response);
-	   			for(var i = 0; i < response.length; i++) {
-	   				response[i](function(data) {
+	   		.then(function(response) 
+	   		{
+	   			for(var i = 0; i < response.length; i++) 
+	   			{
+	   				response[i](function(data) 
+	   				{
 						files[active] = angular.extend(files[active], data);
 					});
-	   				
 	   			}
 	   			saveFile(files, active)
 			});
     	}
-    	else {
+    	else 
+    	{
     		saveFile(files, active)
     	}
-
-    	console.log(files);
     }
 
     factory.activeFile = function(files, file_path)
@@ -32986,11 +32985,7 @@ angular.module('sdk.file', [])
 		$rootScope.$emit('editor.saved.' + activeFile.path);
     }
 }]);;
-
 var module = module || {};
-
-
-//module.core = angular.module('module.core', ['module.angular', 'module.vendor', 'module.filters', 'module.services']);
 
 angular.module('sdk.moduleload', [])
     .factory('$module', ['$rootScope', '$timeout', '$http', '$q', '$templateCache', function ($rootScope, $timeout, $http, $q, $templateCache) {
@@ -33056,15 +33051,6 @@ angular.module('sdk.moduleload', [])
             console.log('template', module + '.html');
             $templateCache.put(module + '.html', result.data);
         });
-    // }, 3000);
-
-
-
-        // app.$inject = ['module.' + module];
-
-    // angular.module('module.modules').requires.push('modules.' + module);
-
-    // console.log('modules',angular.module('module.modules'));
     }
 
     return factory;
@@ -33200,16 +33186,13 @@ angular.module('sdk.sidebar', [])
             console.log('open', files, fileHistory);
             return $file.open(/* file,  */item.path, files, fileHistory/* , file_path_history */);
 
-            // $rootScope.$emit('editor.open', item.path );
-
-                
+            // // $rootScope.$emit('editor.open', item.path );
 
 
-            //     return open
-            //     $scope.active = open.active;
+            // $scope.active = open.active;
 
-            //     $scope.files = open.files;
-            //     $scope.fileHistory = open.fileHistory;
+            // $scope.files = open.files;
+            // $scope.fileHistory = open.fileHistory;
         }
 	}
 
@@ -33425,16 +33408,6 @@ var events 		= {};
 
 var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sidebar, $file, $events, windowEventsFactory, $templateCache)
 {
-	// $rootScope.sharedVars = {};
-	// $rootScope.project = {};
-		// lazy load codemirror
-		// $ocLazyLoad.load('devkit-editor-codemirror');
-
-		//  // lazy load markdown widget
-		// $ocLazyLoad.load('markdown');
-
-		// // lazy load svg widget
-		// $ocLazyLoad.load('svg');
 	var gui 		= require('nw.gui');
 	var win 		= gui.Window.get();
 
@@ -33472,12 +33445,8 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 
 	$scope.closePopup = function()
 	{
-		// $rootScope.$emit('devkit.blur', false);
-
 		$scope.setBlur(false);
 		$scope.setPopup('', false);
-		// $scope.popupVisible = false;
-		// $scope.popupUrl = '';
 		$scope.user.status = 'logged-out';
 	}
 
@@ -33622,42 +33591,26 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		}
 	}
 
-	// // window focus/blurring
-	// var gui = require('nw.gui');
- //    var win = gui.Window.get();
-
     /* TODO: Merge this somehow, make it more elegeant*/
 
-    win.on('focus', function() {
-		// $scope.$apply(function()
-		// {
-		    // $scope.focus = true;
-		    $scope.setFocus(true);
-		// });
+    win.on('focus', function() 
+    {
+		$scope.setFocus(true);
     });
 
-    win.on('blur', function() {
-		// $scope.$apply(function()
-		// {
-		    // $scope.focus = false;
-		    $scope.setFocus(false);
-		// });
+    win.on('blur', function() 
+    {
+		$scope.setFocus(false);
     });
 
-	window.addEventListener('blur', function() {
-		// $scope.$apply(function()
-		// {
-		    // $scope.focus = false;
-		    $scope.setFocus(false);
-		// });
+	window.addEventListener('blur', function() 
+	{
+		$scope.setFocus(false);
 	});
 
-	window.addEventListener('focus', function() {
-		// $scope.$apply(function()
-		// {
-		    // $scope.focus = true;
-		    $scope.setFocus(true);
-		// });
+	window.addEventListener('focus', function() 
+	{
+		$scope.setFocus(true);
 	});
 
 
@@ -33841,18 +33794,12 @@ ApplicationController.$inject = ['$scope', '$timeout', '$auth', '$stoplight', '$
 
 app.controller("ApplicationController", ApplicationController);
 ;
-// app.controller("AuthController", function($scope, $auth) 
-// {
-
 var AuthController = function($scope, $timeout, $auth)
 {
 
 	$scope.login = function()
 	{
 		$scope.$parent.$parent.setPopup(window.PATH.auth.loginUrl, true);
-
-		// $scope.popupUrl = window.PATH.auth.loginUrl;
-		// $scope.popupVisible = true;
 
 		$auth.login();
 	}
@@ -33861,455 +33808,13 @@ var AuthController = function($scope, $timeout, $auth)
 	{
 		$auth.logout();
 	}
-
-	// $scope.getUserInfo  = function()
-	// {
-	// 	$auth.getUserInfo();
-	// }
-
-	// $scope.popupUrl = '';
-	// $scope.popupVisible = false;
-
-	// $rootScope.sharedVars = {
-	// }
-
-	// $rootScope.$on('auth.login', function(){
-	// 	console.log('login this');
-	// 	$scope.login();
-
-	// });
-
-	// $rootScope.$on('auth.logout', function(){
-	// 	$scope.logout();
-	// });
-
-	// $rootScope.$on('closePopup', function(){
-	// 	$rootScope.$emit('devkit.blur', false);
-	// 	$scope.popupVisible = false;
-	// 	$scope.popupUrl = '';
-	// 	$rootScope.user.status = 'logged-out';
-	// });
-
-	// $scope.login  = function() {
-	// 	$scope.popupUrl = window.PATH.auth.loginUrl;
-	// 	$scope.popupVisible = true;
-
-	// 	$auth.login();
-	// }
-
-	// $scope.logout  = function() {
-	// 	$auth.logout();
-	// }
-
-	// $scope.getUserInfo  = function() {
-	// 	$auth.getUserInfo();
-	// }
-
-	// // listen for a message from the iframe
-	// window.addEventListener('message', function(e) {
-	// 	$scope.$apply(function(){
-
-	// 		// save tokens to localStorage
-	// 		window.localStorage.access_token = e.data.accessToken;
-	// 		window.localStorage.refresh_token = e.data.refreshToken;
-
-	// 		$rootScope.$emit('devkit.blur', false);
-	// 		$scope.popupVisible = false;
-	// 		$scope.popupUrl = '';
-
-	// 		$scope.getUserInfo();
-
-	// 	});
-	// });
-
-	// if(	typeof $rootScope.user == 'undefined' ) {
-
-	// 	$rootScope.user = {};
-
-	// 	if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' ) {
-	// 		//$scope.login();
-	// 		$rootScope.user.status = 'logged-out';
-	// 		$rootScope.user.statusMessage = 'Log in';
-	// 	} else {
-	// 		$scope.getUserInfo();
-	// 	}
-	// }
-
 }
 
 AuthController.$inject = ['$scope', '$timeout', '$auth'];
 
 app.controller("AuthController", AuthController);;
-// var os 			= require('os');
-// var fs 			= require('os');
-// var path		= require('path');
-
-// var DevkitController = function($scope, $file, $q) {
-// 	$rootScope.project = {};
-// 	$scope.loaded = false;
-// 	$scope.platform = os.platform();
-// 	$scope.focus = true;
-// 	$scope.blurred = false;
-// }
-
-// DevkitController.$inject = ['$scope', '$sidebar', '$q'];
-
-// app.controller("DevkitController", DevkitController);
-
-app.controller("devkitCtrl", function($scope, $rootScope, $http, $stoplight, $sidebar, windowEventsFactory, $timeout) {
-
-	// variables
-	// $rootScope.project = {};
-	// $scope.loaded = false;
-	// $scope.platform = os.platform();
-	// $scope.focus = true;
-	// $scope.blurred = false;
-
-	// $rootScope.languages = [
-	// 	{
-	// 		code: 'en',
-	// 		name: 'English'
-	// 	},
-	// 	{
-	// 		code: 'nl',
-	// 		name: 'Dutch'
-	// 	},
-	// 	{
-	// 		code: 'fr',
-	// 		name: 'French'
-	// 	},
-	// 	{
-	// 		code: 'de',
-	// 		name: 'German'
-	// 	},
-	// 	{
-	// 		code: 'es',
-	// 		name: 'Spanish'
-	// 	}
-	// ];
-
-	// // window focus/blurring
-	// var gui = require('nw.gui');
- //    var win = gui.Window.get();
-
- //    win.on('focus', function() {
-	// 	$scope.$apply(function()
-	// 	{
-	// 	    $scope.focus = true;
-	// 	});
- //    });
-
- //    win.on('blur', function() {
-	// 	$scope.$apply(function()
-	// 	{
-	// 	    $scope.focus = false;
-	// 	});
- //    });
-
-	// window.addEventListener('blur', function() {
-	// 	$scope.$apply(function()
-	// 	{
-	// 	    $scope.focus = false;
-	// 	});
-	// });
-
-	// window.addEventListener('focus', function() {
-	// 	$scope.$apply(function()
-	// 	{
-	// 	    $scope.focus = true;
-	// 	});
-	// });
-
-	// win.on('close', function() {
-	// 	// hide ourselves first
-	// 	$scope.$apply(function() {
-	// 		$scope.loaded = false;
-	// 	});
-
-	// 	// fire all callbacks
-	// 	windowEventsFactory.runQueue('close');
-
-	// 	// close for real
-	// 	this.close(true);
-	// });
-
-	// $rootScope.$on('devkit.blur', function( event, blur ) {
-	// 	$scope.blurred = blur;
-	// });
-
-	// methods
-	// $scope.emit = function( event, data ) {
-	// 	$rootScope.$emit( event, data );
-	// }
-
-	// $scope.load = function( project_dir ){
-
-	// 	$rootScope.project.path = project_dir;
-
-	// 	// load metadata
-	// 	var metadata = fs.readFileSync( path.join( project_dir, 'app.json' ) ).toString();
-	// 		metadata = JSON.parse( metadata );
-	// 	$rootScope.project.metadata = metadata;
-
-	// 	$rootScope.$emit('project.loaded');
-
-	// 	// save for restart
-	// 	window.localStorage.project_dir = project_dir;
-
-	// }
-
-	// $scope.open = function(){
-	// 	var directorychooser = document.getElementById('directorychooser');
-	// 	directorychooser.addEventListener("change", function(evt) {
-	// 		$scope.load( this.value );
-	// 	}, false)
-	// 	directorychooser.click();
-	// }
-
-	// window.addEventListener('load', function() {
-	// 	$timeout(function() {
-	// 		$scope.loaded = true;
-
-	// 		// load previous project, if available
-	// 		if( typeof window.localStorage.project_dir == 'string' ) {
-	// 			$sidebar.load( window.localStorage.project_dir );
-	// 		}
-
-	// 		// load previous files, if available
-	// 		if( typeof window.localStorage.files_open != 'undefined' ) {
-	// 			var files_open = window.localStorage.files_open.split(',');
-
-	// 			if( files_open.length < 1 ) return;
-
-	// 			files_open.forEach(function( file_path ) {
-	// 				if( fs.existsSync(file_path) ) {
-	// 					$rootScope.$emit('editor.open', file_path );
-	// 				}
-	// 			});
-
-	// 		}
-	// 		else {
-	// 			window.localStorage.files_open = '';
-	// 		}
-	// 	}, 100);
-	// });
-
-	// $scope.minimize = function() {
- //    	$stoplight.minimize();
- //    }
-
-	// $scope.close = function() {
- //    	$stoplight.close();
- //    }
-
-	// $scope.zoom = function() {
- //    	$stoplight.zoom();
- //    }
-
-
-	// // menu
-	// var gui = require('nw.gui');
-	// var win = gui.Window.get();
-
-	// var osxMenuBar = new gui.Menu({
-	// 	type: "menubar"
-	// });
-	// osxMenuBar.createMacBuiltin("Homey Devkit", {
-	// 	hideWindow: true
-	// });
-
-	// osxMenuBar.items[0].submenu.insert( new gui.MenuItem({ type: 'separator' }), 2 );
-
-	// osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
-	// 	label: 'Preferences...',
-	// 	click: function() {
-	// 		alert('preferences');
-	// 	},
-	// 	key: ',',
-	// 	modifiers: 'cmd'
-	// }), 3);
-
-	// win.menu = osxMenuBar;
-
-	// // app menu
-	// osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
-	// 	label: 'Check for updates...',
-	// 	click: function() {
-	// 		alert('Update');
-	// 	}
-	// }), 1);
-
-	// // file menu
-	// var file = new gui.Menu();
-
-	// var newMenu = new gui.MenuItem({
-	// 	label: 'New'
-	// });
-
-	// var newSubmenu = new gui.Menu();
-	// newSubmenu.append(new gui.MenuItem({
-	// 	label: 'File',
-	// 	click: function() {
-	// 		project.create();
-	// 	},
-	// 	key: 'n',
-	// 	modifiers: 'cmd'
-	// }));
-
-	// newSubmenu.append(new gui.MenuItem({
-	// 	label: 'Project...',
-	// 	click: function() {
-	// 		project.create();
-	// 	},
-	// 	key: 'n',
-	// 	modifiers: 'cmd+shift'
-	// }));
-
-	// newMenu.submenu = newSubmenu;
-	// file.insert(newMenu, 0);
-
-	// file.insert(new gui.MenuItem({
-	// 	type: 'separator'
-	// }),1);
-
-	// file.insert(new gui.MenuItem({
-	// 	label: 'Open Project',
-	// 	click: function() {
-	// 		$sidebar.open();
-	// 	},
-	// 	key: 'o',
-	// 	modifiers: 'cmd'
-	// }),2);
-
-	// file.insert(new gui.MenuItem({
-	// 	type: 'separator'
-	// }),3);
-
-	// file.insert(new gui.MenuItem({
-	// 	label: 'Close tab',
-	// 	click: function() {
-	// 		$scope.file.close();
-	// 		// $rootScope.$emit('editor.close');
-	// 	},
-	// 	key: 'w',
-	// 	modifiers: 'cmd'
-	// }),4);
-
-	// file.insert(new gui.MenuItem({
-	// 	type: 'separator'
-	// }),5);
-
-	// file.insert(new gui.MenuItem({
-	// 	label: 'Save',
-	// 	click: function() {
-	// 		$rootScope.$emit('editor.saveRequest'); /*where is this called?*/
-	// 	},
-	// 	key: 's',
-	// 	modifiers: 'cmd'
-	// }),6);
-
-	// file.insert(new gui.MenuItem({
-	// 	label: 'Save All',
-	// 	click: function() {
-	// 		$rootScope.$emit('editor.saveall'); /* again, where is this called*/
-	// 	},
-	// 	key: 's',
-	// 	modifiers: 'cmd+shift'
-	// }),7);
-
-	// win.menu.insert(new gui.MenuItem({
-	// 	label: 'File',
-	// 	submenu: file
-	// }), 1);
-
-
-	// // project menu
-	// var project = new gui.Menu();
-
-	// project.insert(new gui.MenuItem({
-	// 	label: 'Run',
-	// 	click: function(){
-	// 		$rootScope.$emit('homey.run');
-	// 	},
-	// 	key: 'r',
-	// 	modifiers: 'cmd'
-	// }), 0);
-
-	// project.insert(new gui.MenuItem({
-	// 	label: 'Run and Break',
-	// 	click: function(){
-	// 		// $rootScope.$emit('homey.runbrk');
-	// 	},
-	// 	key: 'r',
-	// 	modifiers: 'cmd+shift'
-	// }), 1);
-
-	// project.insert(new gui.MenuItem({
-	// 	label: 'REFRESH',
-	// 	click: function(){
-	// 		window.location.reload( true );
-	// 	},
-	// 	key: '§',
-	// 	modifiers: 'cmd'
-	// }),2);
-
-	// win.menu.insert(new gui.MenuItem({
-	// 	label: 'Project',
-	// 	submenu: project
-	// }), 3);
-
-	// // text menu
-	// var text = new gui.Menu();
-
-	// text.insert(new gui.MenuItem({
-	// 	type: 'checkbox',
-	// 	label: 'Wrap lines',
-	// 	click: function(){
-
-	// 	},
-	// 	checked: true,
-	// 	key: 'w',
-	// 	modifiers: 'cmd+alt'
-	// }));
-
-	// win.menu.insert(new gui.MenuItem({
-	// 	label: 'Text',
-	// 	submenu: text
-	// }), 4);
-
-});;
-app.controller("editorController", function($scope, $rootScope, $file, windowEventsFactory) {
-
-	// $scope.files = {}; // files open
-	// $scope.active = undefined; // currently viewing
-	// $scope.fileHistory = [];
-	//$scope.Object = Object;
-
-	// open a new file
-    $rootScope.$on('editor.open', function( event, file_path ) {
-		$scope.open( file_path )
-    });
-
-	// send save file request to editor view controller
-    $rootScope.$on('editor.saveRequest', function() {
-		$rootScope.$emit('editor.saveRequest.' + $scope.active);
-    });
-
-	// // on safe
- //    $rootScope.$on('editor.performSave', function() {
-	// 	$scope.save();
- //    });
-
-    $rootScope.$on('editor.change', function(changeObj) {
-    	console.log('change object', changeObj);
-		// $scope.save();
-    });
-
-	// on close
-    $rootScope.$on('editor.close', function() {
-		$scope.close( $scope.active );
-    });
-
+var EditorController = function($scope, $file, windowEventsFactory)
+{
 	// add close command to queue (why?)
     windowEventsFactory.addToQueue('close', function() {
 		window.localStorage.files_open = '';
@@ -34325,56 +33830,50 @@ app.controller("editorController", function($scope, $rootScope, $file, windowEve
 
 	// open file
     $scope.open = function(file_path) {
-
     	$scope.$parent.file.open(file_path);
-    	console.log('open');
     }
 
 	// close current file
 	$scope.close = function(file_path) {
 		$scope.$parent.file.close(file_path);
-    	console.log('close');
 	}
+}
 
-	// // safe file
-	// $scope.save = function() {
-	// 	console.log('perform save', $scope.files, $scope.active);
- //    	$file.save($scope.files, $scope.active);
- //    }
+EditorController.$inject = ['$scope', '$file', 'windowEventsFactory'];
 
-	// // get file info
-	// $scope.getInfo = function(file_path) {
- //    	$file.getInfo(file_path);
- //    }
+app.controller("EditorController", EditorController);;
+var PlayController = function($scope, $rootScope)
+{
 
-	// // get file icon
-	// $scope.icon = function(file_path) {
- //    	$file.icon(file_path);
- //    }
-
-});;
-app.controller("playCtrl", ['$scope', '$rootScope', function($scope, $rootScope) {
 	$scope.status = {};
 	$scope.shouldBeEnabled = false;
 
-	$scope.playstop = function() {
+	$scope.playstop = function() 
+	{
 		console.log('playstop');
 		$rootScope.$emit('play.playstop', $scope.status);
 	};
 
-	$rootScope.$on('play.enable', function() {
+	$rootScope.$on('play.enable', function() 
+	{
 		$scope.shouldBeEnabled = true;
 	});
 
-	$rootScope.$on('play.disable', function() {
+	$rootScope.$on('play.disable', function() 
+	{
 		$scope.shouldBeEnabled = false;
 	});
 
-	$rootScope.$on('play.status', function(e, status) {
+	$rootScope.$on('play.status', function(e, status) 
+	{
 		console.log(status);
 		$scope.status = status;
 	});
-}]);;
+}
+
+PlayController.$inject = ['$scope', '$rootScope'];
+
+app.controller("PlayController", PlayController);;
 var path 		= require('path');
 
 var open		= require("open");
@@ -34382,152 +33881,48 @@ var fs			= require('fs-extra')
 var watchTree 	= require("fs-watch-tree").watchTree;
 var trash		= require('trash');
 
-// var SidebarController = function($scope, $sidebar, $q) {
-// 	$scope.filetree = {};
-// 	$scope.selected = [];
-// }
-
-// SidebarController.$inject = ['$scope', '$sidebar', '$q'];
-
-// app.controller("SidebarController", SidebarController);
-
-app.controller("sidebarCtrl", function($scope, $rootScope, $sidebar) {
-
-	// $scope.filetree = {};
-	// $scope.selected = [];
-
-	// $rootScope.$on('project.loaded', function() {
-	// 	// watch for any changes in the directory
-	// 	var watch = watchTree($rootScope.project.path, function (event) {
-	// 		$scope.filetree = $sidebar.update();
-	// 	});
-
-	// 	$scope.filetree = $scope.update();
-
-
-	// 	console.log('filetree', $scope.filetree);
-	// });
-
-	// $scope.select = function( event, path )
-	// {
-
-	// 	// multiple selection
-	// 	if( event.metaKey || event.ctrlKey )
-	// 	{
-
-	// 		if( $scope.selected.indexOf(path) > -1 )
-	// 		{
-	// 			$scope.selected = $scope.selected.filter(function(path_)
-	// 			{
-	// 				return path_ != path;
-	// 			});
-	// 		}
-	// 		else
-	// 		{
-	// 			$scope.selected.push( path );
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		$scope.selected = [ path ];
-	// 	}
-
-	// }
+var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
+{
 
 	$scope.select = function(event, path)
 	{
 		$scope.selected = $sidebar.select($scope.selected, event, path);
 	}
 
-	// // rename a file
-	// $scope.submitRename = function( item ){
-
-	// 	var currentPath = item.path;
-	// 	var itemFolder = path.dirname( item.path );
-	// 	var newPath = path.join( itemFolder, item.name );
-
-	// 	fs.rename( currentPath, newPath );
-
-	// 	item.renaming = false;
-
-	// }
-
 	$scope.submitRename = function()
 	{
 		$sidebar.submitRename(item);
 	}
-
-	// $scope.isSelected = function( path ) {
-	// 	return $scope.selected.indexOf(path) > -1;
-	// }
 
 	$scope.isSelected = function()
 	{
 		$sidebar.isSelected(path);
 	}
 
-	// // open a new file on sidebar click
-	// $scope.open = function( item ){
-
-	// 	if( fs.lstatSync( item.path ).isDirectory() ) {
-	// 		item.expanded = !item.expanded;
-	// 	} else {
-	// 		$rootScope.$emit('editor.open', item.path );
-	// 	}
-	// }
-
 	$scope.open = function(item)
 	{
-		console.log('open stuff', item, $scope.$parent.files);
-
 		var open = $sidebar.openFile(item, $scope.$parent.files, $scope.$parent.fileHistory);
 
-	    $scope.active = open.active;
-
-
+	    $scope.$parent.active = open.active;
 
         $scope.$parent.files = open.files;
         $scope.$parent.fileHistory = open.fileHistory;
-	}
 
-	// $scope.keyPress = function( event, item ) {
-	// 	console.log( event, item );
-	// }
+        $timeout(function()
+        {
+            $scope.$parent.file.save();
+        }, 100);
+	}
 
 	$scope.update = function()
 	{
 		$scope.filetree = $sidebar.update();
 	}
 
-	// $scope.update = function(){
-	// 	$scope.filetree = readdirSyncRecursive( $rootScope.project.path, true );
-	// 	$scope.$apply();
-	// }
-
 	$scope.dropped = function( event, file, dropped_path )
 	{
 		$sidebar.dropped(event, file, dropped_path);
 	}
-
-	// $scope.dropped = function( event, file, dropped_path ){
-
-	// 	var filename = path.basename( file.path );
-
-	// 	// if dropped on a file, get the file's parent folder
-	// 	if( fs.lstatSync(dropped_path).isFile() ) {
-	// 		var new_path = path.dirname( dropped_path );
-	// 	} else {
-	// 		var new_path = path.join( dropped_path, filename );
-	// 	}
-
-	// 	// prevent overwriting
-	// 	if( fs.existsSync( new_path ) ) {
-	// 		if( !confirm('Overwrite `' + filename + '`?') ) return;
-	// 	}
-
-	// 	fs.copy( file.path, new_path, {}, function(err){});
-
-	// }
 
 	//TODO: Update this function
     $scope.showCtxmenu = function( item, event )
@@ -34645,193 +34040,11 @@ app.controller("sidebarCtrl", function($scope, $rootScope, $sidebar) {
         // Popup as context menu
         ctxmenu.popup( event.clientX, event.clientY );
     }
+}
 
-	// $scope.showCtxmenu = function( item, event ){
+SidebarController.$inject = ['$scope', '$rootScope', '$sidebar', '$timeout'];
 
-	// 	// create context menu
-	// 	var gui = require('nw.gui');
-
-	// 	// Create an empty menu
-	// 	var ctxmenu = new gui.Menu();
-
-	// 	// Add some items
-	// 	if( item ) {
-
-	// 		// multiple selection
-	// 		if( $scope.selected.indexOf(item.path) < 0 ) {
-	// 			if( event.metaKey || event.ctrlKey ) {
-	// 				$scope.selected.push( item.path );
-	// 			} else {
-	// 				$scope.selected = [ item.path ];
-	// 			}
-	// 		}
-
-	// 		ctxmenu.append(new gui.MenuItem({ label: 'Open', click: function(){
-
-	// 			$scope.selected.forEach(function( item_path ){
-	// 				$rootScope.$emit('editor.open', item_path );
-	// 			});
-
-	// 		}}));
-	// 		ctxmenu.append(new gui.MenuItem({ label: 'Open With Default Editor', click: function(){
-	// 			$scope.selected.forEach(function( item_path ){
-	// 				open( item_path );
-	// 			});
-	// 		}}));
-	// 		ctxmenu.append(new gui.MenuItem({ label: 'Open File Location', click: function(){
-	// 			$scope.selected.forEach(function( item_path ){
-	// 				open( path.dirname( item_path ) );
-	// 			});
-	// 		}}));
-	// 		ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
-	// 		ctxmenu.append(new gui.MenuItem({ label: 'Move to Trash...', click: function(){
-
-	// 			if( $scope.selected.length > 1 ) {
-	// 				if( confirm( "Are you sure you want to remove " + $scope.selected.length + " items to the trash?" ) ) {
-	// 					$scope.selected.forEach(function( item_path ){
-	// 						trash([ item_path ]);
-	// 					});
-	// 				}
-	// 			} else {
-	// 				if( confirm( "Are you sure you want to remove `" + item.name + "` to the trash?" ) ) {
-	// 					trash([ item.path ]);
-	// 				}
-	// 			}
-	// 		}}));
-	// 		if( $scope.selected.length == 1 ) {
-	// 			ctxmenu.append(new gui.MenuItem({ label: 'Rename...', click: function(){
-	// 				$scope.$apply(function(){
-	// 					item.renaming = true;
-	// 				});
-	// 			}}));
-	// 		}
-	// 		ctxmenu.append(new gui.MenuItem({ label: 'Duplicate', click: function(){
-
-	// 			$scope.selected.forEach(function( item_path ){
-	// 				var new_path = newPath( item_path );
-
-	// 				var i = 2;
-	// 				while( fs.existsSync( new_path ) ) {
-	// 					new_path = newPath( item_path, i++ );
-	// 				}
-
-	// 				fs.copySync( item_path, new_path );
-	// 			});
-
-	// 		}}));
-	// 		ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
-	// 	}
-	// 	ctxmenu.append(new gui.MenuItem({ label: 'New Folder', click: function(){
-	// 		var newFolderName = 'Untitled Folder';
-
-	// 		if( typeof item == 'undefined' ) {
-	// 			var folder = $rootScope.project.path;
-	// 		} else {
-	// 			var folder = item.path;
-	// 		}
-
-	// 		fs.ensureDir( path.join( folder, newFolderName) );
-	// 	}}));
-	// 	ctxmenu.append(new gui.MenuItem({ label: 'New File', click: function(){
-	// 		var newFileName = 'Untitled File';
-
-	// 		if( typeof item == 'undefined' ) {
-	// 			var folder = $rootScope.project.path;
-	// 		} else {
-
-	// 			if( fs.statSync( item.path ).isFile() ) {
-	// 				var folder = path.dirname( item.path );
-	// 			} else {
-	// 				var folder = item.path;
-	// 			}
-	// 		}
-
-	// 		fs.ensureFile( path.join( folder, newFileName) );
-
-	// 	} }));
-
-	// 	// Popup as context menu
-	// 	ctxmenu.popup( event.clientX, event.clientY );
-	// }
-
-});
-
-// function readdirSyncRecursive( dir, root ) {
-
-// 	root = root || false;
-
-// 	var result = [];
-
-// 	var contents = fs.readdirSync( dir );
-// 	contents.forEach(function(item){
-
-// 		var item_path = path.join(dir, item);
-// 		var item_stats = fs.lstatSync( item_path );
-
-// 		if( item_stats.isDirectory() ) {
-
-// 			result.push({
-// 				name: item,
-// 				path: path.join(dir, item),
-// 				type: 'folder',
-// 				stats: item_stats,
-// 				children: self.readdirSyncRecursive( item_path )
-// 			});
-
-// 		} else {
-
-// 			result.push({
-// 				name: item,
-// 				path: path.join(dir, item),
-// 				type: 'file',
-// 				stats: item_stats
-// 			});
-
-// 		}
-
-// 	});
-
-// 	if( root ) {
-// 		return [{
-// 			type: 'folder',
-// 			name: path.basename( dir ),
-// 			path: dir,
-// 			children: result,
-// 			stats: fs.lstatSync( dir )
-// 		}];
-// 	} else {
-// 		return result;
-// 	}
-
-// }
-
-// // duplicate file or folder, but create `filename copy[ n]` when a duplicate already exists. this was fun to do :)
-// function newPath( file_path, index ) {
-
-// 	index = index || false;
-
-// 	var filename = path.basename( file_path );
-// 	var folder = path.dirname( file_path );
-
-// 	if( fs.statSync( file_path ).isFile() ) {
-
-// 		var ext = path.extname( filename );
-// 		var base = path.basename( filename, ext );
-
-// 		if( index ) {
-// 			var new_filename = base + ' copy ' + index.toString() + ext;
-// 		} else {
-// 			var new_filename = base + ' copy' + ext;
-// 		}
-
-// 	} else {
-// 		var new_filename = filename + ' copy'
-// 		if( index ) new_filename += ' ' + index.toString();
-// 	}
-
-// 	var new_path = path.join( folder, new_filename );
-// 	return new_path;
-// };
+app.controller("SidebarController", SidebarController);;
 // app.directive('stopEvent', function () {
 //     return {
 //         restrict: 'A',

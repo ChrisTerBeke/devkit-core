@@ -35,7 +35,7 @@
 
 				<div
 					id="play"
-					ng-controller="playCtrl"
+					ng-controller="PlayController"
 					ng-class="{ 'active': status.length > 0, 'enabled': shouldBeEnabled }"
 				>
 					<div id="play-button" ng-click="playstop()"></div>
@@ -53,7 +53,7 @@
 			<content>
 
 				<sidebar
-					ng-controller="sidebarCtrl as sidebar"
+					ng-controller="SidebarController"
 					ng-right-click="showCtxmenu(undefined, $event)"
 					file-drop="dropped( $event, file, project.path )"
 				>
@@ -102,7 +102,7 @@
 
 				</sidebar>
 
-				<editor ng-controller="editorController">
+				<editor ng-controller="EditorController">
 
 					<editormain ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }">
 						<tabs>

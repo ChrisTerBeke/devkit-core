@@ -1,35 +1,5 @@
-app.controller("editorController", function($scope, $rootScope, $file, windowEventsFactory) {
-
-	// $scope.files = {}; // files open
-	// $scope.active = undefined; // currently viewing
-	// $scope.fileHistory = [];
-	//$scope.Object = Object;
-
-	// open a new file
-    $rootScope.$on('editor.open', function( event, file_path ) {
-		$scope.open( file_path )
-    });
-
-	// send save file request to editor view controller
-    $rootScope.$on('editor.saveRequest', function() {
-		$rootScope.$emit('editor.saveRequest.' + $scope.active);
-    });
-
-	// // on safe
- //    $rootScope.$on('editor.performSave', function() {
-	// 	$scope.save();
- //    });
-
-    $rootScope.$on('editor.change', function(changeObj) {
-    	console.log('change object', changeObj);
-		// $scope.save();
-    });
-
-	// on close
-    $rootScope.$on('editor.close', function() {
-		$scope.close( $scope.active );
-    });
-
+var EditorController = function($scope, $file, windowEventsFactory)
+{
 	// add close command to queue (why?)
     windowEventsFactory.addToQueue('close', function() {
 		window.localStorage.files_open = '';
@@ -45,31 +15,15 @@ app.controller("editorController", function($scope, $rootScope, $file, windowEve
 
 	// open file
     $scope.open = function(file_path) {
-
     	$scope.$parent.file.open(file_path);
-    	console.log('open');
     }
 
 	// close current file
 	$scope.close = function(file_path) {
 		$scope.$parent.file.close(file_path);
-    	console.log('close');
 	}
+}
 
-	// // safe file
-	// $scope.save = function() {
-	// 	console.log('perform save', $scope.files, $scope.active);
- //    	$file.save($scope.files, $scope.active);
- //    }
+EditorController.$inject = ['$scope', '$file', 'windowEventsFactory'];
 
-	// // get file info
-	// $scope.getInfo = function(file_path) {
- //    	$file.getInfo(file_path);
- //    }
-
-	// // get file icon
-	// $scope.icon = function(file_path) {
- //    	$file.icon(file_path);
- //    }
-
-});
+app.controller("EditorController", EditorController);

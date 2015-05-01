@@ -108,16 +108,13 @@ angular.module('sdk.sidebar', [])
             console.log('open', files, fileHistory);
             return $file.open(/* file,  */item.path, files, fileHistory/* , file_path_history */);
 
-            // $rootScope.$emit('editor.open', item.path );
-
-                
+            // // $rootScope.$emit('editor.open', item.path );
 
 
-            //     return open
-            //     $scope.active = open.active;
+            // $scope.active = open.active;
 
-            //     $scope.files = open.files;
-            //     $scope.fileHistory = open.fileHistory;
+            // $scope.files = open.files;
+            // $scope.fileHistory = open.fileHistory;
         }
 	}
 
