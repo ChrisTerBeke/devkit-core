@@ -4,11 +4,11 @@ var path 	= require('path');
 app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q ){
 
 	$scope.manifest = angular.fromJson( $scope.file.code );
-	$rootScope.project.metadata = $scope.manifest;
+	//$rootScope.project.metadata = $scope.manifest;
 	$scope.file._changed = false;
-	$scope.iconUrlTemplate = $rootScope.project.path + '/assets/icon.svg';
+	//$scope.iconUrlTemplate = $rootScope.project.path + '/assets/icon.svg';
 
-	$scope.languages = $rootScope.languages;
+	//$scope.languages = $rootScope.languages;
 	$scope.activeLanguage = 'en';
 
 	$scope.iconUrl = $scope.iconUrlTemplate + '?r=' + Math.random();
