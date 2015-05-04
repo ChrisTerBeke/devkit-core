@@ -4,6 +4,8 @@ angular.module('sdk.moduleload', [])
     .factory('$module', ['$rootScope', '$timeout', '$http', '$q', '$templateCache', function ($rootScope, $timeout, $http, $q, $templateCache) {
     var factory = {};
 
+    $rootScope.modules = {};
+
     factory.injectDependency = function(filename, filetype)
     {
         console.log('injectDependency');
@@ -29,6 +31,8 @@ angular.module('sdk.moduleload', [])
     factory.load = function(module, type, path)
     {
         var path = path || './widgets/';
+
+        var moduleName = module;
 
         var module = 'devkit-' + type + '-' + module;
 
@@ -60,11 +64,14 @@ angular.module('sdk.moduleload', [])
         $http.get(absPath + module + '.html')
         .then(function(result)
         {
-            console.log('result', result);
-            console.log('template', module + '.html');
             $templateCache.put(module + '.html', result.data);
+            $timeout(function() {
+                $rootScope.modules[type] = $rootScope.modules[type] || [];
+                $rootScope.modules[type].push(module + '.html');
+            }, 1000);
         });
     }
+
 
     return factory;
 }]);

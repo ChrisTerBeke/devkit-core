@@ -33003,6 +33003,8 @@ angular.module('sdk.moduleload', [])
     .factory('$module', ['$rootScope', '$timeout', '$http', '$q', '$templateCache', function ($rootScope, $timeout, $http, $q, $templateCache) {
     var factory = {};
 
+    $rootScope.modules = {};
+
     factory.injectDependency = function(filename, filetype)
     {
         console.log('injectDependency');
@@ -33028,6 +33030,8 @@ angular.module('sdk.moduleload', [])
     factory.load = function(module, type, path)
     {
         var path = path || './widgets/';
+
+        var moduleName = module;
 
         var module = 'devkit-' + type + '-' + module;
 
@@ -33059,11 +33063,14 @@ angular.module('sdk.moduleload', [])
         $http.get(absPath + module + '.html')
         .then(function(result)
         {
-            console.log('result', result);
-            console.log('template', module + '.html');
             $templateCache.put(module + '.html', result.data);
+            $timeout(function() {
+                $rootScope.modules[type] = $rootScope.modules[type] || [];
+                $rootScope.modules[type].push(module + '.html');
+            }, 1000);
         });
     }
+
 
     return factory;
 }]);;
@@ -33567,54 +33574,6 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		}, 100);
 	});
 
-	// listen for a message from the iframe
-	window.addEventListener('message', function(e)
-	{
-		$scope.$apply(function(){
-
-			// save tokens to localStorage
-			window.localStorage.access_token = e.data.accessToken;
-			window.localStorage.refresh_token = e.data.refreshToken;
-
-			$scope.setBlur(false);
-			$scope.setPopup('', false);
-
-			$auth.getUserInfo().then(function(result) 
-			{
-				$scope.user = result.data;
-			});
-		});
-	});
-
-	if(	typeof $scope.user == 'undefined' ) {
-		$scope.user = {};
-
-		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' )
-		{
-			$scope.user.status = 'logged-out';
-			$scope.user.statusMessage = 'Log in';
-		}
-		else
-		{
-			$auth.getUserInfo().then(function(result) 
-			{
-				$scope.user = result.data;
-			});	
-		}
-	}
-
-	$scope.login = function()
-	{
-		$scope.setPopup(window.PATH.auth.loginUrl, true);
-
-		$scope.user = $auth.login();
-	}
-
-	$scope.logout  = function()
-	{
-		$scope.user = $auth.logout();
-	}
-
     /* TODO: Merge this somehow, make it more elegeant*/
 
     win.on('focus', function() 
@@ -34098,13 +34057,16 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 	$timeout(function() {
 
 		// load modules
-		$module.load('codemirror', 'editor', './editors/');
 
 		$module.load('svg', 'widget');
 
 		$module.load('markdown', 'widget');
 
+		$module.load('codemirror', 'editor', './editors/');
+
 		$module.load('manifest', 'editor', './editors/');
+
+		$module.load('auth', 'header', './headers/');
 
 		// set editor config
 		$file.setConfig([

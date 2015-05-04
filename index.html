@@ -21,7 +21,7 @@
 			ng-click="blurred && closePopup()"
 		>
 
-			<header>
+			<!-- <header>
 				<div id="chrome-stoplight">
 					<div id="chrome-stoplight-close" ng-click="stoplight.close()"></div>
 					<div id="chrome-stoplight-minimize" ng-click="stoplight.minimize()"></div>
@@ -44,10 +44,18 @@
 
 				</div>
 
+
+
 				<div id="user" ng-class="{ 'logging-in': user.status == 'logging-in' }">
 					<div ng-include="'app/views/header/account.html'"></div>
 				</div>
 
+			</header> -->
+
+			<header ng-repeat="header in $root.modules['header']">
+				<section>
+					<item ng-include="header"></item>
+				</section>
 			</header>
 
 			<content>

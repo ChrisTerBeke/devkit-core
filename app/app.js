@@ -2,13 +2,16 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 	$timeout(function() {
 
 		// load modules
-		$module.load('codemirror', 'editor', './editors/');
 
 		$module.load('svg', 'widget');
 
 		$module.load('markdown', 'widget');
 
+		$module.load('codemirror', 'editor', './editors/');
+
 		$module.load('manifest', 'editor', './editors/');
+
+		$module.load('auth', 'header', './headers/');
 
 		// set editor config
 		$file.setConfig([
