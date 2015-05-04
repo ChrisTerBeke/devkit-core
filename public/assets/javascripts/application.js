@@ -32695,39 +32695,51 @@ angular.module('sdk.auth', [])
 	var factory = {};
 
    factory.login = function() {
-   		$rootScope.user = $rootScope.user || {};
-		$rootScope.user.status = 'logging-in';
+   		var user = {};
+		user.status = 'logging-in';
 
 		$timeout(function() {
 			$rootScope.$emit('devkit.blur', true);
 		}, 1);
 
+		return user;
+
 	}
 
 	factory.logout = function() {
-		$rootScope.user = {};
-		$rootScope.user.status = 'logged-out';
-		$rootScope.user.statusMessage = 'Log in';
+		var user = {};
+		user.status = 'logged-out';
+		user.statusMessage = 'Log in';
 
 		delete window.localStorage.access_token;
 		delete window.localStorage.refresh_token;
+
+		return user;
 	}
 
 	factory.getUserInfo = function() {
-		$rootScope.user = $rootScope.user || {};
-		$rootScope.user.status = 'logging-in';
-		$rootScope.user.statusMessage = 'Logging in...';
+		var promise = $http({
+			method: 'GET',
+	        url:  window.PATH.auth.userInfo,
+	        headers: {
+	          'Authorization': 'Bearer ' + window.localStorage.access_token
+	        },
+	        withCredentials: true
+	    })
+	    .success(function(data){
+	        user = data;
+			user.status = 'logged-in';
 
-		$http
-			.get(window.PATH.auth.userInfo)
-			.success(function(data) {
-				$rootScope.user = data;
-				$rootScope.user.status = 'logged-in';
-			})
-			.error(function(data) {
-				$rootScope.user.status = 'logged-out';
-				$rootScope.user.statusMessage = 'Error logging in!';
-			});
+			return user;
+	    })
+	    .error(function(){
+	        user.status = 'logged-out';
+			user.statusMessage = 'Error logging in!';
+
+			return user;
+	    });
+
+	    return promise;
 	}
 
     return factory;
@@ -33564,31 +33576,43 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 			window.localStorage.access_token = e.data.accessToken;
 			window.localStorage.refresh_token = e.data.refreshToken;
 
-			// $rootScope.$emit('devkit.blur', false);
 			$scope.setBlur(false);
 			$scope.setPopup('', false);
-			// $scope.popupVisible = false;
-			// $scope.popupUrl = '';
 
-			$auth.getUserInfo();
-
+			$auth.getUserInfo().then(function(result) 
+			{
+				$scope.user = result.data;
+			});
 		});
 	});
 
 	if(	typeof $scope.user == 'undefined' ) {
-
 		$scope.user = {};
 
 		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' )
 		{
-			//$scope.login();
 			$scope.user.status = 'logged-out';
 			$scope.user.statusMessage = 'Log in';
 		}
 		else
 		{
-			$auth.getUserInfo();
+			$auth.getUserInfo().then(function(result) 
+			{
+				$scope.user = result.data;
+			});	
 		}
+	}
+
+	$scope.login = function()
+	{
+		$scope.setPopup(window.PATH.auth.loginUrl, true);
+
+		$scope.user = $auth.login();
+	}
+
+	$scope.logout  = function()
+	{
+		$scope.user = $auth.logout();
 	}
 
     /* TODO: Merge this somehow, make it more elegeant*/
@@ -33794,25 +33818,6 @@ ApplicationController.$inject = ['$scope', '$timeout', '$auth', '$stoplight', '$
 
 app.controller("ApplicationController", ApplicationController);
 ;
-var AuthController = function($scope, $timeout, $auth)
-{
-
-	$scope.login = function()
-	{
-		$scope.$parent.$parent.setPopup(window.PATH.auth.loginUrl, true);
-
-		$auth.login();
-	}
-
-	$scope.logout  = function()
-	{
-		$auth.logout();
-	}
-}
-
-AuthController.$inject = ['$scope', '$timeout', '$auth'];
-
-app.controller("AuthController", AuthController);;
 var EditorController = function($scope, $file, windowEventsFactory)
 {
 	// add close command to queue (why?)
@@ -33902,16 +33907,14 @@ var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
 	$scope.open = function(item)
 	{
 		var open = $sidebar.openFile(item, $scope.$parent.files, $scope.$parent.fileHistory);
+        
+        open.active._changed
 
-	    $scope.$parent.active = open.active;
+        $scope.$parent.active = open.active;
 
         $scope.$parent.files = open.files;
         $scope.$parent.fileHistory = open.fileHistory;
 
-        $timeout(function()
-        {
-            $scope.$parent.file.save();
-        }, 100);
 	}
 
 	$scope.update = function()

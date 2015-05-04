@@ -26,16 +26,14 @@ var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
 	$scope.open = function(item)
 	{
 		var open = $sidebar.openFile(item, $scope.$parent.files, $scope.$parent.fileHistory);
+        
+        open.active._changed
 
-	    $scope.$parent.active = open.active;
+        $scope.$parent.active = open.active;
 
         $scope.$parent.files = open.files;
         $scope.$parent.fileHistory = open.fileHistory;
 
-        $timeout(function()
-        {
-            $scope.$parent.file.save();
-        }, 100);
 	}
 
 	$scope.update = function()

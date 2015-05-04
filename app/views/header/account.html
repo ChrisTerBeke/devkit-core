@@ -1,4 +1,4 @@
-<section ng-controller="AuthController">
+<section>
 	<div ng-click="login()">
 		<div class="name">
 			<span >{{user.statusMessage}}</span>
@@ -7,7 +7,7 @@
 	</div>
 
 	<ul class="dropdown" ng-show="$parent.user.status == 'logged-in'">
-		<li>
+<!-- 		<li>
 			<span class="label">
 				<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/user.svg)"></span>
 				<span class="title">Account</span>
@@ -18,7 +18,7 @@
 				<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/settings.svg)"></span>
 				<span class="title">Settings</span>
 			</span>
-		</li>
+		</li> -->
 		<li>
 			<span class="label" ng-click="logout()">
 				<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/logout.svg)"></span>

@@ -168,31 +168,43 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 			window.localStorage.access_token = e.data.accessToken;
 			window.localStorage.refresh_token = e.data.refreshToken;
 
-			// $rootScope.$emit('devkit.blur', false);
 			$scope.setBlur(false);
 			$scope.setPopup('', false);
-			// $scope.popupVisible = false;
-			// $scope.popupUrl = '';
 
-			$auth.getUserInfo();
-
+			$auth.getUserInfo().then(function(result) 
+			{
+				$scope.user = result.data;
+			});
 		});
 	});
 
 	if(	typeof $scope.user == 'undefined' ) {
-
 		$scope.user = {};
 
 		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' )
 		{
-			//$scope.login();
 			$scope.user.status = 'logged-out';
 			$scope.user.statusMessage = 'Log in';
 		}
 		else
 		{
-			$auth.getUserInfo();
+			$auth.getUserInfo().then(function(result) 
+			{
+				$scope.user = result.data;
+			});	
 		}
+	}
+
+	$scope.login = function()
+	{
+		$scope.setPopup(window.PATH.auth.loginUrl, true);
+
+		$scope.user = $auth.login();
+	}
+
+	$scope.logout  = function()
+	{
+		$scope.user = $auth.logout();
 	}
 
     /* TODO: Merge this somehow, make it more elegeant*/

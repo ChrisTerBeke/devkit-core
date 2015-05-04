@@ -3,39 +3,51 @@ angular.module('sdk.auth', [])
 	var factory = {};
 
    factory.login = function() {
-   		$rootScope.user = $rootScope.user || {};
-		$rootScope.user.status = 'logging-in';
+   		var user = {};
+		user.status = 'logging-in';
 
 		$timeout(function() {
 			$rootScope.$emit('devkit.blur', true);
 		}, 1);
 
+		return user;
+
 	}
 
 	factory.logout = function() {
-		$rootScope.user = {};
-		$rootScope.user.status = 'logged-out';
-		$rootScope.user.statusMessage = 'Log in';
+		var user = {};
+		user.status = 'logged-out';
+		user.statusMessage = 'Log in';
 
 		delete window.localStorage.access_token;
 		delete window.localStorage.refresh_token;
+
+		return user;
 	}
 
 	factory.getUserInfo = function() {
-		$rootScope.user = $rootScope.user || {};
-		$rootScope.user.status = 'logging-in';
-		$rootScope.user.statusMessage = 'Logging in...';
+		var promise = $http({
+			method: 'GET',
+	        url:  window.PATH.auth.userInfo,
+	        headers: {
+	          'Authorization': 'Bearer ' + window.localStorage.access_token
+	        },
+	        withCredentials: true
+	    })
+	    .success(function(data){
+	        user = data;
+			user.status = 'logged-in';
 
-		$http
-			.get(window.PATH.auth.userInfo)
-			.success(function(data) {
-				$rootScope.user = data;
-				$rootScope.user.status = 'logged-in';
-			})
-			.error(function(data) {
-				$rootScope.user.status = 'logged-out';
-				$rootScope.user.statusMessage = 'Error logging in!';
-			});
+			return user;
+	    })
+	    .error(function(){
+	        user.status = 'logged-out';
+			user.statusMessage = 'Error logging in!';
+
+			return user;
+	    });
+
+	    return promise;
 	}
 
     return factory;
