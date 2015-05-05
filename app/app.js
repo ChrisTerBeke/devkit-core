@@ -63,11 +63,11 @@
 
 //CORE
 // editors
-loadModules.load('codemirror', 		'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']);
+loadModule('codemirror', 		'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']);
 
 // widgets
-loadModules.load('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
-loadModules.load('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
+loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
+loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 
 // headers
 // nope..
@@ -77,17 +77,17 @@ loadModules.load('markdown', 		'widget',	'./core/components/widgets/devkit-widge
 
 // USER
 // editors
-loadModules.load('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
+loadModule('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
 
 // headers
-loadModules.load('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
-loadModules.load('title', 			'header',	'./app/components/headers/devkit-homey-header-title/');
+loadModule('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
+loadModule('title', 			'header',	'./app/components/headers/devkit-homey-header-title/');
 
 // widgets
 // nope..
 
 // themes
-loadModules.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
 
 angular.element(document).ready(function() {
 	require('nw.gui').Window.get().showDevTools();

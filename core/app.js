@@ -8,13 +8,14 @@ window.ondragover = function(e) { e.preventDefault(); return false };
 window.ondrop = function(e) { e.preventDefault(); return false };
 
 var app = angular.module('app', ['module.core', 'module.modules']);
-var modules = ['app'];
+var modules = ['ng'];
 
 var angularModules = [];
 
 angular.element(document).ready(function() {
-    console.log(modules);
     require('nw.gui').Window.get().showDevTools();
+
+    modules.push('app');
     angular.bootstrap(document, modules);
 });
 
@@ -48,30 +49,14 @@ app.run(['$rootScope', '$injector', function($rootScope, $injector) {
 }]);
 
 // run all angular defined modules
-app.run(['$rootScope', '$timeout', '$templateCache', function($rootScope, $timeout, $templateCache) {
-    // console.log(angularModules, angularModules.size());
-
+app.run(['$rootScope', '$timeout', '$templateCache', '$module', function($rootScope, $timeout, $templateCache, $module) {
     $rootScope.modules = {};
-    
-    $timeout(function() {
-        console.log(angularModules);
-        for(i in angularModules) {
-            // angularModules[i];
-            var result = angularModules[i];
 
-            $templateCache.put(result.html_path, result.data);
-
-            $rootScope.modules[result.type] = $rootScope.modules[result.type] || {};
-            $rootScope.modules[result.type][result.module] = result.html_path;
-            console.log('function', angularModules[i]);
-        }
-    }, 1000);
-
-    
-    // angularModules.forEach(function(callback) {
-    //     console.log('something loaded', callback);
-    //     callback();
-    // });
+    for(i in angularModules) 
+    {
+        var result = angularModules[i];
+        $module.load(result.module, result.type, result.dir);
+    }
 }]);
 
 if(typeof angular !== 'undefined' && window.DEBUG) {
