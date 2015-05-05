@@ -1,4 +1,4 @@
-var EditorController = function($scope, $file, windowEventsFactory)
+var EditorController = function($scope, $file, windowEventsFactory, $rootScope)
 {
 	// add close command to queue (why?)
     windowEventsFactory.addToQueue('close', function() {
@@ -22,8 +22,12 @@ var EditorController = function($scope, $file, windowEventsFactory)
 	$scope.close = function(file_path) {
 		$scope.$parent.file.close(file_path);
 	}
+	
+	$scope.getEditorPath = function( view ) {
+		return $rootScope.modules['editor'][view];
+	}
 }
 
-EditorController.$inject = ['$scope', '$file', 'windowEventsFactory'];
+EditorController.$inject = ['$scope', '$file', 'windowEventsFactory', '$rootScope'];
 
 app.controller("EditorController", EditorController);

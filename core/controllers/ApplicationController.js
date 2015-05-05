@@ -136,6 +136,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 				$scope.updateFiletree( window.localStorage.project_dir);
 			}
 
+			/*
 			// load previous files, if available
 			if( typeof window.localStorage.files_open != 'undefined' )
 			{
@@ -156,6 +157,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 			else {
 				window.localStorage.files_open = '';
 			}
+			*/
 		}, 100);
 	});
 

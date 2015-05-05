@@ -1,0 +1,20 @@
+editorview.codemirror .CodeMirror {
+	font-size: 11px;
+	line-height: 13px;
+	font-family: "Menlo", monospace !important;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+	editorview.codemirror .CodeMirror-gutters {
+		/*background: transparent;*/
+		/*border-right: 1px solid #eee;*/
+	}
+	editorview.codemirror .CodeMirror-linenumber {
+		opacity: 0.5;
+		font-size: 10px;
+	}
+	
+	editorview.codemirror {
+		background: blue;
+	}

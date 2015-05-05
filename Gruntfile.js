@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 		 *	Clean folders before copying.
 		 */
 		clean: {
-		  assets: ["./public/assets/javascripts/*", "./public/assets/stylesheets/*"],
+		  assets: ["./public/assets/javascripts/*"],
 		  config: ["./public/config.js"]
 		},
 
@@ -94,28 +94,12 @@ module.exports = function(grunt) {
 		},
 
 		/*
-		 * Initialise Compass SASS
-		 */
-		compass: {
-			dist: {
-				options: {
-					config: './compass.rb',
-					environment: window.ENV.type
-				}
-			}
-		},
-
-		/*
 		 * Watch for changes in directories
 		 */
 		watch: {
 			javascripts: {
 				files: ['./public/tmp/**/*.js', './core/**/*.js', './app/**/*.js', './bower_components/**/*.js'],
 				tasks: ['js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist')]
-			},
-			sass: {
-				files: ['./sass/**/*.scss', './css-base/dist/**/*.scss', './bower_components/**/*.scss'],
-				tasks: ['compass']
 			}
 		},
 

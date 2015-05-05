@@ -4,12 +4,9 @@
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
 
         <!-- Include Resources -->
-        <link rel="stylesheet" href="./public/assets/stylesheets/application.css" id="stylesheets" />
+        <link rel="stylesheet" href="./core/app.css" id="stylesheets" />
         <script src="./public/assets/javascripts/application.js" id="javascripts"></script>
-
-        <script>
-	    	require('nw.gui').Window.get().showDevTools();
-	    </script>
+        
     </head>
     <body
 		class="os-{{platform}}"
@@ -21,12 +18,26 @@
 			ng-click="blurred && closePopup()"
 		>
 
-			<!-- <header>
-				<div id="chrome-stoplight">
-					<div id="chrome-stoplight-close" ng-click="stoplight.close()"></div>
-					<div id="chrome-stoplight-minimize" ng-click="stoplight.minimize()"></div>
-					<div id="chrome-stoplight-zoom" ng-click="stoplight.zoom()"></div>
+			<header>
+				<div id="header-stoplight">
+					<div class="table">
+						<div class="tablecell">
+							<div id="header-stoplight-close" class="header-stoplight-button" ng-click="stoplight.close()"></div>
+							<div id="header-stoplight-minimize" class="header-stoplight-button" ng-click="stoplight.minimize()"></div>
+							<div id="header-stoplight-zoom" class="header-stoplight-button" ng-click="stoplight.zoom()"></div>
+						</div>
+					</div>
 				</div>
+				
+				<div id="header-components">
+					<section
+						ng-repeat=" ( header, path ) in $root.modules['header']"
+						ng-include="path"
+						ng-attr-id="header-{{header}}"
+					></section>					
+				</div>
+				
+				<!--
 
 				<div id="chrome-title">
 					<span class="name">{{project.metadata.name.en}}</span>
@@ -49,13 +60,9 @@
 				<div id="user" ng-class="{ 'logging-in': user.status == 'logging-in' }">
 					<div ng-include="'app/views/header/account.html'"></div>
 				</div>
+				
+				-->
 
-			</header> -->
-
-			<header ng-repeat="header in $root.modules['header']">
-				<section>
-					<item ng-include="header"></item>
-				</section>
 			</header>
 
 			<content>
@@ -120,10 +127,7 @@
 								ng-click="open(file.path)"
 								ng-class="{ 'active': $parent.active == file.path, 'changed': file._changed }"
 							>
-								<span class="close" ng-click="close(file.path)">
-									<span class="changed"></span>
-									<span class="cross">✕</span>
-								</span>
+								<span class="close" ng-click="close(file.path)"></span>
 								<span class="icon">{{file.icon}}</span>
 								<span class="name">{{file.name}}</span>
 							</tab>
@@ -134,7 +138,7 @@
 								class="{{file._view}}"
 								ng-repeat="file in files"
 								ng-show="$parent.active == file.path",
-								ng-include="'devkit-editor-'+file._view+'.html'"
+								ng-include="getEditorPath(file._view)"
 							>
 							</editorview>
 

@@ -32997,6 +32997,9 @@ angular.module('sdk.file', [])
 		$rootScope.$emit('editor.saved.' + activeFile.path);
     }
 }]);;
+var path	= require('path');
+var fs		= require('fs');
+
 var module = module || {};
 
 angular.module('sdk.moduleload', [])
@@ -33007,8 +33010,6 @@ angular.module('sdk.moduleload', [])
 
     factory.injectDependency = function(filename, filetype)
     {
-        console.log('injectDependency');
-
         if (filetype == 'js')
         {
             var fileref = document.createElement('script');
@@ -33027,48 +33028,47 @@ angular.module('sdk.moduleload', [])
             document.getElementsByTagName('head')[0].appendChild(fileref)
     }
 
-    factory.load = function(module, type, path)
+    factory.load = function(module, type, dir)
     {
-        var path = path || './widgets/';
-
-        var moduleName = module;
-
-        var module = 'devkit-' + type + '-' + module;
-
-        var absPath = path + module + '/';
-
         var self = this;
 
-		fs.exists(absPath + 'dependencies', function(exists) {
-			if(exists) {
-		        fs.readdir(absPath + 'dependencies', function (err, files) {
-		            if (!err) {
-		                for(var i = 0; i < files.length; i++) {
-		                    if(files[i].match(/\.[^.]+$/)[0] == '.js') {
-		                        self.injectDependency(absPath + 'dependencies/' + files[i], 'js');
-		                    }
-		                }
-		            }
-		            else {
-		                throw err;
-		            }
+		// load optional dependencies
+		var dependencies_path = path.join(dir, 'dependencies');
+		fs.exists(dependencies_path, function(exists) {
+			if(!exists) return;
+			fs.readdir(dependencies_path, function (err, files) {
+	            if (err) throw err;
+	            
+	            files.forEach(function(file){
+                    if( path.extname(file) == '.js') {
+                        self.injectDependency( path.join(dependencies_path, file), 'js');
+                    } else if( path.extname(file) == '.css') {
+                        self.injectDependency( path.join(dependencies_path, file), 'css');
+                    }			           
 		        });
-        	}
+	        });
         });
 
-        // $timeout(function() {
-        self.injectDependency(absPath + module + '.css', 'css');
-        self.injectDependency(absPath + module + '.js', 'js');
+		var css_path = path.join(dir, 'component.css');
+		fs.exists(css_path, function(exists) {
+	        self.injectDependency( css_path	, 'css');			
+		});
+		var js_path = path.join(dir, 'component.js');
+		fs.exists(js_path, function(exists) {
+	        self.injectDependency( js_path	, 'js');			
+		});
 
-        $http.get(absPath + module + '.html')
-        .then(function(result)
-        {
-            $templateCache.put(module + '.html', result.data);
-            $timeout(function() {
-                $rootScope.modules[type] = $rootScope.modules[type] || [];
-                $rootScope.modules[type].push(module + '.html');
-            }, 1000);
-        });
+		var html_path = path.join(dir, 'component.html');
+		fs.exists(html_path, function(exists) {
+			fs.readFile( html_path, function(err, data){
+	            if (err) throw err;
+			            
+				$templateCache.put(html_path, data.toString());
+				
+	            $rootScope.modules[type] = $rootScope.modules[type] || {};
+	            $rootScope.modules[type][module] = html_path;
+			});
+		});
     }
 
 
@@ -33551,6 +33551,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 				$scope.updateFiletree( window.localStorage.project_dir);
 			}
 
+			/*
 			// load previous files, if available
 			if( typeof window.localStorage.files_open != 'undefined' )
 			{
@@ -33571,6 +33572,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 			else {
 				window.localStorage.files_open = '';
 			}
+			*/
 		}, 100);
 	});
 
@@ -33777,7 +33779,7 @@ ApplicationController.$inject = ['$scope', '$timeout', '$auth', '$stoplight', '$
 
 app.controller("ApplicationController", ApplicationController);
 ;
-var EditorController = function($scope, $file, windowEventsFactory)
+var EditorController = function($scope, $file, windowEventsFactory, $rootScope)
 {
 	// add close command to queue (why?)
     windowEventsFactory.addToQueue('close', function() {
@@ -33801,9 +33803,13 @@ var EditorController = function($scope, $file, windowEventsFactory)
 	$scope.close = function(file_path) {
 		$scope.$parent.file.close(file_path);
 	}
+	
+	$scope.getEditorPath = function( view ) {
+		return $rootScope.modules['editor'][view];
+	}
 }
 
-EditorController.$inject = ['$scope', '$file', 'windowEventsFactory'];
+EditorController.$inject = ['$scope', '$file', 'windowEventsFactory', '$rootScope'];
 
 app.controller("EditorController", EditorController);;
 var PlayController = function($scope, $rootScope)
@@ -34054,20 +34060,38 @@ app.controller("SidebarController", SidebarController);;
 // 	};
 // });;
 app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', function($rootScope, $timeout, $play, $ocLazyLoad, $file, $module) {
-	$timeout(function() {
+	
+		// devmode
+    	require('nw.gui').Window.get().showDevTools();
 
 		// load modules
+		
+		// CORE
+		// editors
+		$module.load('codemirror', 		'editor',	'./core/components/editors/devkit-editor-codemirror/');
+		
+		// widgets
+		$module.load('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
+		$module.load('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
+		
+		// headers
+		// nope..
 
-		$module.load('svg', 'widget');
+		// themes
+//		$module.load('solarized_dark',	'theme',	'./core/components/themes/solarized_dark/');
+		
+		// USER
+		// editors
+		$module.load('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
 
-		$module.load('markdown', 'widget');
-
-		$module.load('codemirror', 'editor', './editors/');
-
-		$module.load('manifest', 'editor', './editors/');
-
-		$module.load('auth', 'header', './headers/');
-
+		// headers
+		$module.load('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
+		$module.load('title', 			'header',	'./app/components/headers/devkit-homey-header-title/');
+		
+		// widgets
+		// nope..
+		
+		
 		// set editor config
 		$file.setConfig([
 			{
@@ -34092,9 +34116,212 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 
 		// set play button
 		$play.status('loading...');
-
-	}, 100);
+		
 }]);;
+var fs 		= require('fs-extra');
+var path 	= require('path');
+
+app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $events ){
+	console.log('manifest path', $scope.file.path);
+	$scope.manifest = angular.fromJson( $scope.file.code );
+	//$rootScope.project.metadata = $scope.manifest;
+	$scope.file._changed = false;
+
+	var code;
+	//$scope.iconUrlTemplate = $rootScope.project.path + '/assets/icon.svg';
+
+	//$scope.languages = $rootScope.languages;
+	$scope.activeLanguage = 'en';
+
+	$scope.iconUrl = $scope.iconUrlTemplate + '?r=' + Math.random();
+
+	$scope.$watch('manifest', function(){
+		$scope.file._changed = true;
+	}, true);
+
+	// $events.beforeSave($scope.file.path, function() {
+	// 	// var manifest = angular.copy( $scope.manifest );
+
+	// 	// console.log('manifest data', $scope.manifest);
+
+	// 	return {
+	// 		code: angular.toJson( $scope.manifest, true )
+	// 	}
+	// });
+
+	$events.beforeSave($scope.file.path, function(cb) {
+		cb({
+			code: angular.toJson( $scope.manifest, true )
+		});
+	})
+
+  //   $rootScope.$on('editor.saveRequest.' + $scope.file.path, function(){
+
+  //   	console.log('save request');
+
+	 //    var manifest = angular.copy( $scope.manifest );
+
+		// manifest.permissions = manifest.permissions.filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
+
+		// manifest.interfaces.speech.triggers.forEach(function( trigger ){
+		// 	for( var synonym_lang in trigger.synonyms ) {
+		// 		var synonyms = trigger.synonyms[synonym_lang].filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
+		// 		if( synonyms.length > 0 ) {
+		// 			trigger.synonyms[synonym_lang] = synonyms;
+		// 		} else {
+		// 			delete trigger.synonyms[synonym_lang];
+		// 		}
+		// 	}
+		// });
+
+		// $scope.file.code = angular.toJson( manifest, true );
+		// $rootScope.$emit('editor.performSave');
+  //   });
+
+    $scope.received = function( event, file ) {
+
+	    if( file.type != 'image/svg+xml' ) {
+		    alert('Only svg files are allowed for your app icon');
+		    return;
+	    }
+
+	    var assets_path = path.join( $rootScope.project.path, 'assets' );
+	    var icon_path 	= path.join( assets_path, 'icon.svg' );
+
+		if( fs.existsSync( icon_path ) ) {
+			if( ! confirm("Overwrite existing icon?") ) {
+				return;
+			}
+		}
+
+		fs.ensureDirSync( assets_path );
+
+		fs.copy( file.path, icon_path, {}, function( err  ){
+			if (err) return console.error(err)
+
+			$scope.iconUrl = $scope.iconUrlTemplate + '?r=' + Math.random();
+		});
+
+    }
+
+});;
+var AuthController = function($scope, $auth)
+{
+
+	// listen for a message from the iframe
+	window.addEventListener('message', function(e)
+	{
+		$scope.$apply(function(){
+
+			// save tokens to localStorage
+			window.localStorage.access_token = e.data.accessToken;
+			window.localStorage.refresh_token = e.data.refreshToken;
+
+			$scope.setBlur(false);
+			$scope.setPopup('', false);
+
+			$auth.getUserInfo().then(function(result) 
+			{
+				$scope.user = result.data;
+			});
+		});
+	});
+
+	if(	typeof $scope.user == 'undefined' ) {
+		$scope.user = {};
+
+		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' )
+		{
+			$scope.user.status = 'logged-out';
+			$scope.user.statusMessage = 'Log in';
+		}
+		else
+		{
+			$auth.getUserInfo().then(function(result) 
+			{
+				$scope.user = result.data;
+			});	
+		}
+	}
+
+	$scope.login = function()
+	{
+		$scope.setPopup(window.PATH.auth.loginUrl, true);
+
+		$scope.user = $auth.login();
+	}
+
+	$scope.logout  = function()
+	{
+		$scope.user = $auth.logout();
+	}
+}
+
+AuthController.$inject = ['$scope', '$auth'];
+
+app.controller("AuthController", AuthController);;
+// app.factory('$auth', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
+// 	var factory = {};
+
+//    factory.login = function() {
+//    		var user = {};
+// 		user.status = 'logging-in';
+
+// 		$timeout(function() {
+// 			$rootScope.$emit('devkit.blur', true);
+// 		}, 1);
+
+// 		return user;
+
+// 	}
+
+// 	factory.logout = function() {
+// 		var user = {};
+// 		user.status = 'logged-out';
+// 		user.statusMessage = 'Log in';
+
+// 		delete window.localStorage.access_token;
+// 		delete window.localStorage.refresh_token;
+
+// 		return user;
+// 	}
+
+// 	factory.getUserInfo = function() {
+// 		var promise = $http({
+// 			method: 'GET',
+// 	        url:  window.PATH.auth.userInfo,
+// 	        headers: {
+// 	          'Authorization': 'Bearer ' + window.localStorage.access_token
+// 	        },
+// 	        withCredentials: true
+// 	    })
+// 	    .success(function(data){
+// 	        user = data;
+// 			user.status = 'logged-in';
+
+// 			return user;
+// 	    })
+// 	    .error(function(){
+// 	        user.status = 'logged-out';
+// 			user.statusMessage = 'Error logging in!';
+
+// 			return user;
+// 	    });
+
+// 	    return promise;
+// 	}
+
+//     return factory;
+// }]);;
+var TitleController = function($scope, $auth)
+{
+	$scope.name = 'foo';
+	$scope.bar = 'nl.athom.hello';
+}
+
+TitleController.$inject = ['$scope'];
+
+app.controller("TitleController", TitleController);;
 
 window.LANG = window.LANG  || [
 	{

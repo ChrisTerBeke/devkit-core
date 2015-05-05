@@ -1,18 +1,36 @@
 app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', function($rootScope, $timeout, $play, $ocLazyLoad, $file, $module) {
-	$timeout(function() {
+	
+		// devmode
+    	require('nw.gui').Window.get().showDevTools();
 
 		// load modules
+		
+		// CORE
+		// editors
+		$module.load('codemirror', 		'editor',	'./core/components/editors/devkit-editor-codemirror/');
+		
+		// widgets
+		$module.load('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
+		$module.load('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
+		
+		// headers
+		// nope..
 
-		$module.load('svg', 'widget');
+		// themes
+//		$module.load('solarized_dark',	'theme',	'./core/components/themes/solarized_dark/');
+		
+		// USER
+		// editors
+		$module.load('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
 
-		$module.load('markdown', 'widget');
-
-		$module.load('codemirror', 'editor', './editors/');
-
-		$module.load('manifest', 'editor', './editors/');
-
-		$module.load('auth', 'header', './headers/');
-
+		// headers
+		$module.load('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
+		$module.load('title', 			'header',	'./app/components/headers/devkit-homey-header-title/');
+		
+		// widgets
+		// nope..
+		
+		
 		// set editor config
 		$file.setConfig([
 			{
@@ -37,6 +55,5 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 
 		// set play button
 		$play.status('loading...');
-
-	}, 100);
+		
 }]);
