@@ -281,7 +281,6 @@ editor {
 				float: left;
 				width: 120px;
 				height: 25px;
-				text-align: right;
 				line-height: 25px;
 				box-sizing: border-box;
 				font-size: 12px;
@@ -306,7 +305,7 @@ editor {
 					overflow: hidden;
 					text-overflow: ellipsis;
 					max-width: 75%;
-					margin-right: 0.5em;
+					margin-left: 2em;
 				}
 				tabs tab .close {
 					border-radius: 30px;
