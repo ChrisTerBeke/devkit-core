@@ -34059,7 +34059,7 @@ app.controller("SidebarController", SidebarController);;
 // 		});
 // 	};
 // });;
-app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', function($rootScope, $timeout, $play, $ocLazyLoad, $file, $module) {
+app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootScope, $timeout, $play, $file, $module) {
 	
 		// devmode
     	require('nw.gui').Window.get().showDevTools();
