@@ -17,7 +17,7 @@ app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootSc
 		// nope..
 
 		// themes
-//		$module.load('solarized_dark',	'theme',	'./core/components/themes/solarized_dark/');
+		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
 		
 		// USER
 		// editors

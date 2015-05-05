@@ -157,6 +157,7 @@ angular.module('sdk.sidebar', [])
         contents.forEach(function(item) {
             var item_path = path.join(dir, item);
             var item_stats = fs.lstatSync( item_path );
+            var file = path.parse(item_path);
 
             if( item_stats.isDirectory() ) {
                 result.push({
@@ -173,6 +174,7 @@ angular.module('sdk.sidebar', [])
                     name: item,
                     path: path.join(dir, item),
                     type: 'file',
+                    ext: file.ext.replace(".", ""),
                     stats: item_stats
                 });
             }

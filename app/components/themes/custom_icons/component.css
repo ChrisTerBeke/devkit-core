@@ -1,0 +1,3 @@
+#filetree li.ext-svg .label .icon {
+	-webkit-mask-image: url(./assets/icons/svg.svg) !important;
+}

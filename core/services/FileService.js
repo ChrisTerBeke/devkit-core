@@ -6,18 +6,14 @@ angular.module('sdk.file', [])
 
     factory.open = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
     {
-
-    	console.log('file open');
-
-
-	    // add the file if it's not already open
+		// add the file if it's not already open
 	    if( typeof factory.activeFile(files, file_path) == 'undefined' ) {
 		    var info = factory.getInfo( file_path );
 
 		    // create a file entry
 		    files[ file_path ] = {
 			    name		: path.basename( file_path ),
-			    icon		: factory.icon( file_path ),
+			    icon		: info.icon,
 			    path		: file_path,
 			    code		: fs.readFileSync( file_path ).toString(),
 			    _changed	: false,
@@ -185,14 +181,16 @@ angular.module('sdk.file', [])
 			if(extMatch && dirMatch && baseMatch) {
 				return {
 				    editor: configItem.config.editor || editor,
-				    widgets: configItem.config.widgets || widgets
+				    widgets: configItem.config.widgets || widgets,
+				    ext: file.ext,
 				}
 			}
 		}
 
 		return {
 		    editor: editor,
-		    widgets: widgets
+		    widgets: widgets,
+		    ext: file.ext,
 		}
     }
 

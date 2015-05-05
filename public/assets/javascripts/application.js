@@ -32781,18 +32781,14 @@ angular.module('sdk.file', [])
 
     factory.open = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
     {
-
-    	console.log('file open');
-
-
-	    // add the file if it's not already open
+		// add the file if it's not already open
 	    if( typeof factory.activeFile(files, file_path) == 'undefined' ) {
 		    var info = factory.getInfo( file_path );
 
 		    // create a file entry
 		    files[ file_path ] = {
 			    name		: path.basename( file_path ),
-			    icon		: factory.icon( file_path ),
+			    icon		: info.icon,
 			    path		: file_path,
 			    code		: fs.readFileSync( file_path ).toString(),
 			    _changed	: false,
@@ -32960,14 +32956,16 @@ angular.module('sdk.file', [])
 			if(extMatch && dirMatch && baseMatch) {
 				return {
 				    editor: configItem.config.editor || editor,
-				    widgets: configItem.config.widgets || widgets
+				    widgets: configItem.config.widgets || widgets,
+				    ext: file.ext,
 				}
 			}
 		}
 
 		return {
 		    editor: editor,
-		    widgets: widgets
+		    widgets: widgets,
+		    ext: file.ext,
 		}
     }
 
@@ -33254,6 +33252,7 @@ angular.module('sdk.sidebar', [])
         contents.forEach(function(item) {
             var item_path = path.join(dir, item);
             var item_stats = fs.lstatSync( item_path );
+            var file = path.parse(item_path);
 
             if( item_stats.isDirectory() ) {
                 result.push({
@@ -33270,6 +33269,7 @@ angular.module('sdk.sidebar', [])
                     name: item,
                     path: path.join(dir, item),
                     type: 'file',
+                    ext: file.ext.replace(".", ""),
                     stats: item_stats
                 });
             }
@@ -34078,7 +34078,7 @@ app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootSc
 		// nope..
 
 		// themes
-//		$module.load('solarized_dark',	'theme',	'./core/components/themes/solarized_dark/');
+		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
 		
 		// USER
 		// editors
