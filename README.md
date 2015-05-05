@@ -1,6 +1,7 @@
 # nw.js + angularjs devkit
-
 Built your own development kit as desktop app!
+
+## Get started
 
 ### Installation
 0. Fork this repo and clone your fork locally
@@ -16,3 +17,6 @@ You can use app/app.js to configure your application. You can also install edito
 
 1. install node-webkit-builder ```npm install node-webkit-builder -g```
 2. run ```nwbuild .``` in the directory of this repository
+
+## Licence
+See LICENCE.md
