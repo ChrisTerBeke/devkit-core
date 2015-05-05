@@ -4,6 +4,8 @@
 	padding: 0;
 	border: none;
 	outline: none;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
 }
 
 /* general components */
@@ -40,15 +42,18 @@ body {
 	cursor: default;
 
 	-webkit-perspective: 1500px;
+
+	display: flex;
+  	flex-direction: column;
 	
 	background: white;
 }
 
 header {
-	position: absolute;
+/*	position: absolute;
 	top: 0;
 	left: 0;
-	right: 0;
+	right: 0;*/
 	height: 40px;
 	
 	display: flex;
@@ -68,7 +73,6 @@ header {
 		-webkit-app-region: drag;
 		
 		display: none;
-		background: red;
 		/* TODO */
 	}
 
@@ -116,13 +120,24 @@ header {
 	    align-self: auto;
 	    height: 100%;
 	    position: relative;
-	}						
+	}	
+
+wrap {
+	position: relative;
+	display: flex; 
+ 	flex-direction: column; 
+ 	height: 100%;
+}	
+
 content {
-	position: absolute;
+/*	position: absolute;
 	top: 40px;
 	left: 0;
 	right: 0;
-	bottom: 0px;
+	bottom: 0px;*/
+	flex-grow: 1;
+	display: block;
+	position: relative;
 }
 
 	sidebar,
@@ -132,6 +147,8 @@ content {
 		top: 0;
 		bottom: 0;
 		width: 220px;
+		display: inline-block;
+		vertical-align: top;
 	}
 	sidebar {
 	}
@@ -257,12 +274,14 @@ content {
 				background: rgba(0,0,0,0.05);
 			}
 			
-editor {
+	editor {
 		position: absolute;
 		top: 0;
 		left: 220px;
 		right: 0;
 		bottom: 0;
+		display: inline-block;
+		vertical-align: top;
 	}
 
 		tabs {
@@ -271,6 +290,7 @@ editor {
 			top: 0;
 			right: 0;
 			height: 25px;
+			display: block;
 			box-sizing: border-box;
 			overflow: hidden;
 			border-bottom: 1px solid #ccc;
@@ -345,11 +365,12 @@ editor {
 						content: "\2022"; /* bullet */
 					}
 		editormain {
-			position: absolute;
+/*			position: absolute;
 			left: 0;
 			right: 0;
 			top: 0;
-			bottom: 0;
+			bottom: 0;*/
+			height: 100%;
 			display: block;
 			border: 1px solid rgba(0,0,0,0.25);
 			border-bottom-width: 0;
@@ -359,24 +380,27 @@ editor {
 			right: 300px;
 			border-right-width: 1px;
 		}
-		noeditorview,
-		editorview {
-			display: block;
-			position: absolute;
-			top: 0;
-			left: 0;
-			bottom: 0;
-			right: 0;
-			overflow: auto;
-		}
 		editorviews {
 			display: block;
 			position: absolute;
 			left: 0;
-			top: 25px;
+			top: 0;
 			bottom: 0;
 			right: 0;
+			margin-top: 25px;
 			overflow: hidden;
+		}
+		noeditorview,
+		editorview {
+			display: block;
+/*			position: absolute;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;*/
+			height: 100%;
+			overflow: auto;
+			margin-left: 1px;
 		}
 		editorview .viewWrap {
 			width: 100%;
@@ -415,11 +439,11 @@ editor {
 				}
 
 		widgets {
-			position: absolute;
+/*			position: absolute;
 			top: 0;
 			left: auto;
 			right: 0;
-			bottom: 0;
+			bottom: 0;*/
 			width: 300px;
 		}
 			widgets widgetwrap {
