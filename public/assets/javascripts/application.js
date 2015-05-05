@@ -33966,6 +33966,16 @@ var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
 SidebarController.$inject = ['$scope', '$rootScope', '$sidebar', '$timeout'];
 
 app.controller("SidebarController", SidebarController);;
+var WidgetController = function($scope, $rootScope)
+{
+	$scope.getWidgetPath = function( name ) {
+		return $rootScope.modules['widget'][name];
+	}
+}
+
+WidgetController.$inject = ['$scope', '$rootScope'];
+
+app.controller("WidgetController", WidgetController);;
 // app.directive('stopEvent', function () {
 //     return {
 //         restrict: 'A',
@@ -34269,6 +34279,59 @@ app.controller("AuthController", AuthController);;
 
 //     return factory;
 // }]);;
+var PlayController = function($scope, $rootScope)
+{
+
+	$scope.status = {};
+	$scope.shouldBeEnabled = false;
+
+	$scope.playstop = function() 
+	{
+		console.log('playstop');
+		$rootScope.$emit('play.playstop', $scope.status);
+	};
+
+	$rootScope.$on('play.enable', function() 
+	{
+		$scope.shouldBeEnabled = true;
+	});
+
+	$rootScope.$on('play.disable', function() 
+	{
+		$scope.shouldBeEnabled = false;
+	});
+
+	$rootScope.$on('play.status', function(e, status) 
+	{
+		console.log(status);
+		$scope.status = status;
+	});
+}
+
+PlayController.$inject = ['$scope', '$rootScope'];
+
+app.controller("PlayController", PlayController);;
+angular.module('sdk.play', []).factory('$play', ['$rootScope', function ($rootScope) {
+	var factory = {};
+
+	factory.playstop = function(status) {
+		$rootScope.$emit('play.playstop', status);
+	};
+
+	factory.status = function(status) {
+		$rootScope.$emit('play.status', status);
+	};
+
+	factory.enable = function() {
+		$rootScope.$emit('play.enable');
+	};
+
+	factory.disable = function() {
+		$rootScope.$emit('play.disable');
+	};
+
+    return factory;
+}]);;
 var TitleController = function($scope, $auth)
 {
 	$scope.name = 'foo';
