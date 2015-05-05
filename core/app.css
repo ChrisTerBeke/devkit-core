@@ -73,7 +73,6 @@ header {
 		-webkit-app-region: drag;
 		
 		display: none;
-		background: red;
 		/* TODO */
 	}
 
@@ -395,6 +394,7 @@ content {
 			right: 0;*/
 			height: 100%;
 			overflow: auto;
+			margin-left: 1px;
 		}
 		editorview .viewWrap {
 			width: 100%;
