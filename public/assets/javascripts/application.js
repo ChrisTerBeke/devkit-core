@@ -32781,18 +32781,14 @@ angular.module('sdk.file', [])
 
     factory.open = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
     {
-
-    	console.log('file open');
-
-
-	    // add the file if it's not already open
+		// add the file if it's not already open
 	    if( typeof factory.activeFile(files, file_path) == 'undefined' ) {
 		    var info = factory.getInfo( file_path );
 
 		    // create a file entry
 		    files[ file_path ] = {
 			    name		: path.basename( file_path ),
-			    icon		: factory.icon( file_path ),
+			    icon		: info.icon,
 			    path		: file_path,
 			    code		: fs.readFileSync( file_path ).toString(),
 			    _changed	: false,
@@ -32960,14 +32956,16 @@ angular.module('sdk.file', [])
 			if(extMatch && dirMatch && baseMatch) {
 				return {
 				    editor: configItem.config.editor || editor,
-				    widgets: configItem.config.widgets || widgets
+				    widgets: configItem.config.widgets || widgets,
+				    ext: file.ext,
 				}
 			}
 		}
 
 		return {
 		    editor: editor,
-		    widgets: widgets
+		    widgets: widgets,
+		    ext: file.ext,
 		}
     }
 
@@ -33051,23 +33049,29 @@ angular.module('sdk.moduleload', [])
 
 		var css_path = path.join(dir, 'component.css');
 		fs.exists(css_path, function(exists) {
-	        self.injectDependency( css_path	, 'css');			
+			if(exists) {
+	        	self.injectDependency( css_path	, 'css');
+	        }	
 		});
 		var js_path = path.join(dir, 'component.js');
 		fs.exists(js_path, function(exists) {
-	        self.injectDependency( js_path	, 'js');			
+			if(exists) {
+	        	self.injectDependency( js_path	, 'js');
+	        }
 		});
 
 		var html_path = path.join(dir, 'component.html');
 		fs.exists(html_path, function(exists) {
-			fs.readFile( html_path, function(err, data){
-	            if (err) throw err;
-			            
-				$templateCache.put(html_path, data.toString());
-				
-	            $rootScope.modules[type] = $rootScope.modules[type] || {};
-	            $rootScope.modules[type][module] = html_path;
-			});
+			if(exists) {
+				fs.readFile( html_path, function(err, data){
+		            if (err) throw err;
+				            
+					$templateCache.put(html_path, data.toString());
+					
+		            $rootScope.modules[type] = $rootScope.modules[type] || {};
+		            $rootScope.modules[type][module] = html_path;
+				});
+			}
 		});
     }
 
@@ -33254,6 +33258,7 @@ angular.module('sdk.sidebar', [])
         contents.forEach(function(item) {
             var item_path = path.join(dir, item);
             var item_stats = fs.lstatSync( item_path );
+            var file = path.parse(item_path);
 
             if( item_stats.isDirectory() ) {
                 result.push({
@@ -33270,6 +33275,7 @@ angular.module('sdk.sidebar', [])
                     name: item,
                     path: path.join(dir, item),
                     type: 'file',
+                    ext: file.ext.replace(".", ""),
                     stats: item_stats
                 });
             }
@@ -34013,6 +34019,16 @@ var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
 SidebarController.$inject = ['$scope', '$rootScope', '$sidebar', '$timeout'];
 
 app.controller("SidebarController", SidebarController);;
+var WidgetController = function($scope, $rootScope)
+{
+	$scope.getWidgetPath = function( name ) {
+		return $rootScope.modules['widget'][name];
+	}
+}
+
+WidgetController.$inject = ['$scope', '$rootScope'];
+
+app.controller("WidgetController", WidgetController);;
 // app.directive('stopEvent', function () {
 //     return {
 //         restrict: 'A',
@@ -34059,7 +34075,7 @@ app.controller("SidebarController", SidebarController);;
 // 		});
 // 	};
 // });;
-app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', function($rootScope, $timeout, $play, $ocLazyLoad, $file, $module) {
+app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootScope, $timeout, $play, $file, $module) {
 	
 		// devmode
     	require('nw.gui').Window.get().showDevTools();
@@ -34078,7 +34094,7 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 		// nope..
 
 		// themes
-//		$module.load('solarized_dark',	'theme',	'./core/components/themes/solarized_dark/');
+		// nope..
 		
 		// USER
 		// editors
@@ -34090,6 +34106,9 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 		
 		// widgets
 		// nope..
+		
+		// themes
+		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
 		
 		
 		// set editor config

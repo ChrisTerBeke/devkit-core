@@ -18,7 +18,7 @@
 			ng-click="blurred && closePopup()"
 		>
 
-			<header>
+			<header style="-webkit-app-region: drag">
 				<div id="header-stoplight">
 					<div class="table">
 						<div class="tablecell">
@@ -96,7 +96,7 @@
 					        	ng-include="'filetreeTmpl'"
 					        	ng-class="{ 'expanded': item.expanded }"
 					        	ng-init="selected = false; item.expanded = false;"
-					        	class="type-{{item.type}}"
+					        	class="type-{{item.type}} ext-{{item.ext}}"
 					        ></li>
 					    </ul>
 					</script>
@@ -149,9 +149,9 @@
 					</editormain>
 
 					<widgets ng-repeat="file in files" ng-show="$parent.active == file.path && file._widgets.length > 0">
-						<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path">
+						<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path" ng-controller="WidgetController">
 							<title>{{widget}}</title>
-							<widget class="{{widget}}" ng-include="'devkit-widget-' + widget + '.html'"></widget>
+							<widget class="{{widget}}" ng-include="getWidgetPath(widget)"></widget>
 						</widgetwrap>
 					</widgets>
 

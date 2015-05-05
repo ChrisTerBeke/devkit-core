@@ -1,4 +1,4 @@
-app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', function($rootScope, $timeout, $play, $ocLazyLoad, $file, $module) {
+app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootScope, $timeout, $play, $file, $module) {
 	
 		// devmode
     	require('nw.gui').Window.get().showDevTools();
@@ -17,7 +17,7 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 		// nope..
 
 		// themes
-//		$module.load('solarized_dark',	'theme',	'./core/components/themes/solarized_dark/');
+		// nope..
 		
 		// USER
 		// editors
@@ -29,6 +29,9 @@ app.run(['$rootScope', '$timeout', '$play', '$ocLazyLoad', '$file', '$module', f
 		
 		// widgets
 		// nope..
+		
+		// themes
+		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
 		
 		
 		// set editor config
