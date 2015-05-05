@@ -1,3 +1,98 @@
+var path	= require('path');
+var fs		= require('fs');
+
+var loadModules = {
+    injectDependency: function(filename, filetype)
+    {
+        if (filetype == 'js')
+        {
+            var fileref = document.createElement('script');
+            fileref.setAttribute('type','text/javascript');
+            fileref.setAttribute('src', filename);
+        }
+        else if (filetype == 'css')
+        {
+            var fileref = document.createElement('link');
+            fileref.setAttribute('rel', 'stylesheet');
+            fileref.setAttribute('type', 'text/css');
+            fileref.setAttribute('href', filename);
+        }
+
+        if (typeof fileref != 'undefined')
+            document.getElementsByTagName('head')[0].appendChild(fileref)
+    },
+
+    load: function(module, type, dir, dependencies)
+    {
+        var self = this;
+
+        var dependencies = dependencies || [];
+
+		// load optional dependencies
+		var dependencies_path = path.join(dir, 'dependencies');
+		fs.exists(dependencies_path, function(exists) {
+			if(!exists) return;
+			fs.readdir(dependencies_path, function (err, files) {
+	            if (err) throw err;
+	            
+	            files.forEach(function(file){
+                    if( path.extname(file) == '.js') {
+                        self.injectDependency( path.join(dependencies_path, file), 'js');
+                    } else if( path.extname(file) == '.css') {
+                        self.injectDependency( path.join(dependencies_path, file), 'css');
+                    }			           
+		        });
+	        });
+        });
+
+		var css_path = path.join(dir, 'component.css');
+		fs.exists(css_path, function(exists) {
+			if(exists) {
+	        	self.injectDependency( css_path	, 'css');
+	        }	
+		});
+		var js_path = path.join(dir, 'component.js');
+		fs.exists(js_path, function(exists) {
+			if(exists) {
+	        	self.injectDependency( js_path	, 'js');
+	        }
+		});
+
+		var html_path = path.join(dir, 'component.html');
+		fs.exists(html_path, function(exists) {
+			if(exists) {
+				fs.readFile( html_path, function(err, data){
+		            if (err) throw err;
+
+		            	// modules.push('ui.codemirror');
+		            	if(dependencies.length > 0) {
+		            		dependencies.forEach(function(dependency){
+	          					modules.push(dependency);
+	        				});
+		            	}
+		            	
+						angularModules.push({
+							html_path: html_path,
+							data: data.toString(),
+							type: type,
+							module: module
+						// }
+							// return function() {
+							// 	$templateCache.put(html_path, data.toString());
+
+							// 	$rootScope.modules[type] = $rootScope.modules[type] || {};
+							// 	$rootScope.modules[type][module] = html_path;
+							// };
+						});    
+					// $templateCache.put(html_path, data.toString());
+					
+		   //          $rootScope.modules[type] = $rootScope.modules[type] || {};
+		   //          $rootScope.modules[type][module] = html_path;
+				});
+			}
+		});
+    }
+};
 function distOrSrcPath(env) {
 	return (env == 'development') ? '/src' : '/dist';
 };
@@ -32666,7 +32761,7 @@ module.angular = angular.module('module.angular', ['ngResource', 'ngAnimate']);
 ;
 var module = module || {};
 
-module.vendor = angular.module('module.vendor', ['ngTagsInput', 'oc.lazyLoad', 'ui.codemirror']);
+module.vendor = angular.module('module.vendor', ['ngTagsInput', 'oc.lazyLoad']);
 ;
 var module = module || {};
 
@@ -32681,7 +32776,7 @@ module.services = angular.module('module.services', [
 	'sdk.sidebar',
 	'sdk.stoplight',
 	'sdk.play',
-	'sdk.moduleload',
+	// 'sdk.moduleload',
 	'service.windowEventsFactory'
 ]);;
 var module = module || {};
@@ -32995,89 +33090,89 @@ angular.module('sdk.file', [])
 		$rootScope.$emit('editor.saved.' + activeFile.path);
     }
 }]);;
-var path	= require('path');
-var fs		= require('fs');
+ // var path	= require('path');
+// var fs		= require('fs');
 
-var module = module || {};
+// var module = module || {};
 
-angular.module('sdk.moduleload', [])
-    .factory('$module', ['$rootScope', '$timeout', '$http', '$q', '$templateCache', function ($rootScope, $timeout, $http, $q, $templateCache) {
-    var factory = {};
+// angular.module('sdk.moduleload', [])
+//     .factory('$module', ['$rootScope', '$timeout', '$http', '$q', '$templateCache', function ($rootScope, $timeout, $http, $q, $templateCache) {
+//     var factory = {};
 
-    $rootScope.modules = {};
+//     $rootScope.modules = {};
 
-    factory.injectDependency = function(filename, filetype)
-    {
-        if (filetype == 'js')
-        {
-            var fileref = document.createElement('script');
-            fileref.setAttribute('type','text/javascript');
-            fileref.setAttribute('src', filename);
-        }
-        else if (filetype == 'css')
-        {
-            var fileref = document.createElement('link');
-            fileref.setAttribute('rel', 'stylesheet');
-            fileref.setAttribute('type', 'text/css');
-            fileref.setAttribute('href', filename);
-        }
+//     factory.injectDependency = function(filename, filetype)
+//     {
+//         if (filetype == 'js')
+//         {
+//             var fileref = document.createElement('script');
+//             fileref.setAttribute('type','text/javascript');
+//             fileref.setAttribute('src', filename);
+//         }
+//         else if (filetype == 'css')
+//         {
+//             var fileref = document.createElement('link');
+//             fileref.setAttribute('rel', 'stylesheet');
+//             fileref.setAttribute('type', 'text/css');
+//             fileref.setAttribute('href', filename);
+//         }
 
-        if (typeof fileref != 'undefined')
-            document.getElementsByTagName('head')[0].appendChild(fileref)
-    }
+//         if (typeof fileref != 'undefined')
+//             document.getElementsByTagName('head')[0].appendChild(fileref)
+//     }
 
-    factory.load = function(module, type, dir)
-    {
-        var self = this;
+//     factory.load = function(module, type, dir)
+//     {
+//         var self = this;
 
-		// load optional dependencies
-		var dependencies_path = path.join(dir, 'dependencies');
-		fs.exists(dependencies_path, function(exists) {
-			if(!exists) return;
-			fs.readdir(dependencies_path, function (err, files) {
-	            if (err) throw err;
+// 		// load optional dependencies
+// 		var dependencies_path = path.join(dir, 'dependencies');
+// 		fs.exists(dependencies_path, function(exists) {
+// 			if(!exists) return;
+// 			fs.readdir(dependencies_path, function (err, files) {
+// 	            if (err) throw err;
 	            
-	            files.forEach(function(file){
-                    if( path.extname(file) == '.js') {
-                        self.injectDependency( path.join(dependencies_path, file), 'js');
-                    } else if( path.extname(file) == '.css') {
-                        self.injectDependency( path.join(dependencies_path, file), 'css');
-                    }			           
-		        });
-	        });
-        });
+// 	            files.forEach(function(file){
+//                     if( path.extname(file) == '.js') {
+//                         self.injectDependency( path.join(dependencies_path, file), 'js');
+//                     } else if( path.extname(file) == '.css') {
+//                         self.injectDependency( path.join(dependencies_path, file), 'css');
+//                     }			           
+// 		        });
+// 	        });
+//         });
 
-		var css_path = path.join(dir, 'component.css');
-		fs.exists(css_path, function(exists) {
-			if(exists) {
-	        	self.injectDependency( css_path	, 'css');
-	        }	
-		});
-		var js_path = path.join(dir, 'component.js');
-		fs.exists(js_path, function(exists) {
-			if(exists) {
-	        	self.injectDependency( js_path	, 'js');
-	        }
-		});
+// 		var css_path = path.join(dir, 'component.css');
+// 		fs.exists(css_path, function(exists) {
+// 			if(exists) {
+// 	        	self.injectDependency( css_path	, 'css');
+// 	        }	
+// 		});
+// 		var js_path = path.join(dir, 'component.js');
+// 		fs.exists(js_path, function(exists) {
+// 			if(exists) {
+// 	        	self.injectDependency( js_path	, 'js');
+// 	        }
+// 		});
 
-		var html_path = path.join(dir, 'component.html');
-		fs.exists(html_path, function(exists) {
-			if(exists) {
-				fs.readFile( html_path, function(err, data){
-		            if (err) throw err;
+// 		var html_path = path.join(dir, 'component.html');
+// 		fs.exists(html_path, function(exists) {
+// 			if(exists) {
+// 				fs.readFile( html_path, function(err, data){
+// 		            if (err) throw err;
 				            
-					$templateCache.put(html_path, data.toString());
+// 					$templateCache.put(html_path, data.toString());
 					
-		            $rootScope.modules[type] = $rootScope.modules[type] || {};
-		            $rootScope.modules[type][module] = html_path;
-				});
-			}
-		});
-    }
+// 		            $rootScope.modules[type] = $rootScope.modules[type] || {};
+// 		            $rootScope.modules[type][module] = html_path;
+// 				});
+// 			}
+// 		});
+//     }
 
 
-    return factory;
-}]);;
+//     return factory;
+// }]);;
 angular.module('sdk.play', []).factory('$play', ['$rootScope', function ($rootScope) {
 	var factory = {};
 
@@ -33386,6 +33481,15 @@ window.ondragover = function(e) { e.preventDefault(); return false };
 window.ondrop = function(e) { e.preventDefault(); return false };
 
 var app = angular.module('app', ['module.core', 'module.modules']);
+var modules = ['app'];
+
+var angularModules = [];
+
+angular.element(document).ready(function() {
+    console.log(modules);
+    require('nw.gui').Window.get().showDevTools();
+    angular.bootstrap(document, modules);
+});
 
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {
@@ -33414,6 +33518,33 @@ app.run(['$rootScope', '$injector', function($rootScope, $injector) {
             return angular.toJson(data);
         }
     };
+}]);
+
+// run all angular defined modules
+app.run(['$rootScope', '$timeout', '$templateCache', function($rootScope, $timeout, $templateCache) {
+    // console.log(angularModules, angularModules.size());
+
+    $rootScope.modules = {};
+    
+    $timeout(function() {
+        console.log(angularModules);
+        for(i in angularModules) {
+            // angularModules[i];
+            var result = angularModules[i];
+
+            $templateCache.put(result.html_path, result.data);
+
+            $rootScope.modules[result.type] = $rootScope.modules[result.type] || {};
+            $rootScope.modules[result.type][result.module] = result.html_path;
+            console.log('function', angularModules[i]);
+        }
+    }, 1000);
+
+    
+    // angularModules.forEach(function(callback) {
+    //     console.log('something loaded', callback);
+    //     callback();
+    // });
 }]);
 
 if(typeof angular !== 'undefined' && window.DEBUG) {
@@ -34065,68 +34196,100 @@ app.controller("SidebarController", SidebarController);;
 // 		});
 // 	};
 // });;
-app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootScope, $timeout, $play, $file, $module) {
+// app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootScope, $timeout, $play, $file, $module) {
 	
-		// devmode
-    	require('nw.gui').Window.get().showDevTools();
+// 		// devmode
+//     	require('nw.gui').Window.get().showDevTools();
 
-		// load modules
+// 		// load modules
 		
-		// CORE
-		// editors
-		$module.load('codemirror', 		'editor',	'./core/components/editors/devkit-editor-codemirror/');
+// 		// CORE
+// 		// editors
+// 		$module.load('codemirror', 		'editor',	'./core/components/editors/devkit-editor-codemirror/');
 		
-		// widgets
-		$module.load('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
-		$module.load('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
+// 		// widgets
+// 		$module.load('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
+// 		$module.load('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 		
-		// headers
-		// nope..
+// 		// headers
+// 		// nope..
 
-		// themes
-		// nope..
+// 		// themes
+// 		// nope..
 		
-		// USER
-		// editors
-		$module.load('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
+// 		// USER
+// 		// editors
+// 		$module.load('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
 
-		// headers
-		$module.load('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
-		$module.load('title', 			'header',	'./app/components/headers/devkit-homey-header-title/');
+// 		// headers
+// 		$module.load('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
+// 		$module.load('title', 			'header',	'./app/components/headers/devkit-homey-header-title/');
 		
-		// widgets
-		// nope..
+// 		// widgets
+// 		// nope..
 		
-		// themes
-		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+// 		// themes
+// 		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
 		
 		
-		// set editor config
-		$file.setConfig([
-			{
-				ext: ".svg",
-				config: {
-					widgets: [ 'svg' ]
-				}
-			},
-			{
-				ext: ".md",
-				config: {
-					widgets: [ 'markdown' ]
-				}
-			},
-			{
-				ext: ".json",
-				config: {
-					editor: "manifest"
-				}
-			}
-		]);
+// 		// set editor config
+// 		$file.setConfig([
+// 			{
+// 				ext: ".svg",
+// 				config: {
+// 					widgets: [ 'svg' ]
+// 				}
+// 			},
+// 			{
+// 				ext: ".md",
+// 				config: {
+// 					widgets: [ 'markdown' ]
+// 				}
+// 			},
+// 			{
+// 				ext: ".json",
+// 				config: {
+// 					editor: "manifest"
+// 				}
+// 			}
+// 		]);
 
-		// set play button
-		$play.status('loading...');
+// 		// set play button
+// 		$play.status('loading...');
 		
-}]);;
+// }]);
+
+//CORE
+// editors
+loadModules.load('codemirror', 		'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']);
+
+// widgets
+loadModules.load('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
+loadModules.load('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
+
+// headers
+// nope..
+
+// themes
+// nope..
+
+// USER
+// editors
+loadModules.load('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
+
+// headers
+loadModules.load('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
+loadModules.load('title', 			'header',	'./app/components/headers/devkit-homey-header-title/');
+
+// widgets
+// nope..
+
+// themes
+loadModules.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+
+angular.element(document).ready(function() {
+	require('nw.gui').Window.get().showDevTools();
+});;
 var fs 		= require('fs-extra');
 var path 	= require('path');
 

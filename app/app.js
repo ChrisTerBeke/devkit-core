@@ -1,62 +1,94 @@
-app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootScope, $timeout, $play, $file, $module) {
+// app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootScope, $timeout, $play, $file, $module) {
 	
-		// devmode
-    	require('nw.gui').Window.get().showDevTools();
+// 		// devmode
+//     	require('nw.gui').Window.get().showDevTools();
 
-		// load modules
+// 		// load modules
 		
-		// CORE
-		// editors
-		$module.load('codemirror', 		'editor',	'./core/components/editors/devkit-editor-codemirror/');
+// 		// CORE
+// 		// editors
+// 		$module.load('codemirror', 		'editor',	'./core/components/editors/devkit-editor-codemirror/');
 		
-		// widgets
-		$module.load('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
-		$module.load('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
+// 		// widgets
+// 		$module.load('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
+// 		$module.load('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 		
-		// headers
-		// nope..
+// 		// headers
+// 		// nope..
 
-		// themes
-		// nope..
+// 		// themes
+// 		// nope..
 		
-		// USER
-		// editors
-		$module.load('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
+// 		// USER
+// 		// editors
+// 		$module.load('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
 
-		// headers
-		$module.load('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
-		$module.load('title', 			'header',	'./app/components/headers/devkit-homey-header-title/');
+// 		// headers
+// 		$module.load('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
+// 		$module.load('title', 			'header',	'./app/components/headers/devkit-homey-header-title/');
 		
-		// widgets
-		// nope..
+// 		// widgets
+// 		// nope..
 		
-		// themes
-		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+// 		// themes
+// 		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
 		
 		
-		// set editor config
-		$file.setConfig([
-			{
-				ext: ".svg",
-				config: {
-					widgets: [ 'svg' ]
-				}
-			},
-			{
-				ext: ".md",
-				config: {
-					widgets: [ 'markdown' ]
-				}
-			},
-			{
-				ext: ".json",
-				config: {
-					editor: "manifest"
-				}
-			}
-		]);
+// 		// set editor config
+// 		$file.setConfig([
+// 			{
+// 				ext: ".svg",
+// 				config: {
+// 					widgets: [ 'svg' ]
+// 				}
+// 			},
+// 			{
+// 				ext: ".md",
+// 				config: {
+// 					widgets: [ 'markdown' ]
+// 				}
+// 			},
+// 			{
+// 				ext: ".json",
+// 				config: {
+// 					editor: "manifest"
+// 				}
+// 			}
+// 		]);
 
-		// set play button
-		$play.status('loading...');
+// 		// set play button
+// 		$play.status('loading...');
 		
-}]);
+// }]);
+
+//CORE
+// editors
+loadModules.load('codemirror', 		'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']);
+
+// widgets
+loadModules.load('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
+loadModules.load('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
+
+// headers
+// nope..
+
+// themes
+// nope..
+
+// USER
+// editors
+loadModules.load('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
+
+// headers
+loadModules.load('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
+loadModules.load('title', 			'header',	'./app/components/headers/devkit-homey-header-title/');
+
+// widgets
+// nope..
+
+// themes
+loadModules.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+
+angular.element(document).ready(function() {
+	require('nw.gui').Window.get().showDevTools();
+});
