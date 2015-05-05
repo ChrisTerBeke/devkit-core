@@ -1,17 +1,24 @@
-angular.module('sdk.file', [])
-    .factory('$file', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
+angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
+	    
 	var factory = {};
+	
+	factory.files = {};
+	factory.active = false;
+	factory.history = [];
 
 	$rootScope.editorConfig = [];
 
-    factory.open = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
+    factory.open = function( file_path )
     {
-		// add the file if it's not already open
-	    if( typeof factory.activeFile(files, file_path) == 'undefined' ) {
+    	console.log('open', file_path);
+
+	    // only load the file when it's not already open
+	    if( !factory.isOpen( file_path ) ) {
+			
 		    var info = factory.getInfo( file_path );
 
 		    // create a file entry
-		    files[ file_path ] = {
+		    factory.files[ file_path ] = {
 			    name		: path.basename( file_path ),
 			    icon		: info.icon,
 			    path		: file_path,
@@ -20,117 +27,100 @@ angular.module('sdk.file', [])
 			    _view		: info.editor,
 			    _widgets	: info.widgets
 		    }
+		    
 	    }
-
-/*
-		var fileHistory = fileHistory.filter(function( file_path_history )
-		{
+	    
+	    // set the file to active
+	    factory.active = file_path;
+	    
+	    // set the history
+		factory.history = factory.history.filter(function( file_path_history ){
 			return file_path_history != file_path;
 		});
-*/
+	    factory.history.push( file_path );
+		
+		// notify everyone
+	    $rootScope.$emit('service.file.open', file_path );
+	    $rootScope.$emit('service.file.focus', file_path );
+		$rootScope.$emit('editor.focus.' + file_path );
 
-	    fileHistory.push( file_path );
-
-	    $rootScope.$emit('editor.focus.' + file_path );
-
-	    var json =
-	    {
-		    'active': file_path,
-	    	'files': files,
-	    	'fileHistory': fileHistory
-	    };
-
-	    return json;
-
-//	    $scope.$apply();
-
+	}
+	
+	factory.isOpen = function( file_path )
+	{
+		return typeof factory.files[ file_path ] != 'undefined';
+	}
+	
+	factory.isChanged = function( file_path ) {
+		return factory.files[ file_path ]._changed;
 	}
 
     // close an item
-    factory.close = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
+    factory.close = function( file_path )
     {
-
-	    var activeFile = this.activeFile(files, file_path);
-
+	    
+	    file_path = file_path || factory.active;
+	    
 	    // check for unsaved changes
-	    if( activeFile._changed )
+	    var should_delete = false;
+	    if( factory.files[ file_path ]._changed )
 	    {
-			    if( confirm("There are unsaved changes, close " + activeFile.name + " anyway?" ) ) {
-			    delete files[ file_path ];
+			if( confirm("There are unsaved changes, close " + factory.files[ file_path ].name + " anyway?" ) ) {
+				should_delete = true;
 		    }
 	    } else {
-		    delete files[ file_path ];
+		    should_delete = true;
+		}
+		
+		if( should_delete ) {
+			
+			// delete from files
+		    delete factory.files[ file_path ];
+		    
+		    // delete from history
+			factory.history = factory.history.filter(function( file_path_history ){
+				return file_path_history != file_path;
+			});
+						
+			// set last tab as active
+			if( factory.history.length > 0 ) {
+				var lastFile = factory.history[ factory.history.length-1 ];
+				factory.open( lastFile )
+			} else {
+				factory.active = undefined;
+			}
 	    }
-
-		// set last tab as active
-		// TODO: set last viewed tab as active
-		/*
-		if( Object.keys($scope.files).length > 0 ) {
-			$scope.open( $scope.files[Object.keys($scope.files)[Object.keys($scope.files).length - 1]].path );
-		} else {
-			$scope.active = undefined;
-		}
-		*/
-
-		// remove from file history
-/*
-		var fileHistory = fileHistory.filter(function( file_path_history )
-		{
-			return file_path_history != file_path;
-		});
-*/
-
-		// set last tab as active
-/*
-		if( $scope.fileHistory.length > 0 )
-		{
-			var lastFile = fileHistory[ $scope.fileHistory.length-1 ];
-			$scope.open(lastFile);
-		}
-		else
-		{
-			active = undefined;
-		}
-*/
-
-		var json =
-	    {
-		    'active': file_path,
-	    	'files': files,
-	    	'fileHistory': fileHistory
-	    };
-
-	    return json;
+	    
+	    
+	    $rootScope.$emit('service.file.close', file_path);
 
     }
 
     // write the file to disk
-    factory.save = function(files, active)
+    factory.save = function( file_path )
     {
-    	if(typeof beforeSave[active] !== 'undefined') 
+	    
+	    file_path = file_path || factory.active;
+	    
+    	if(typeof beforeSave[ file_path ] !== 'undefined') 
     	{
-	        var data = $q.all(beforeSave[active])
+	        var data = $q.all(beforeSave[ file_path ])
 	   		.then(function(response) 
 	   		{
 	   			for(var i = 0; i < response.length; i++) 
 	   			{
 	   				response[i](function(data) 
 	   				{
-						files[active] = angular.extend(files[active], data);
+						factory.files[ file_path ] = angular.extend(factory.files[ file_path ], data);
 					});
 	   			}
-	   			saveFile(files, active)
+	   			saveFile( file_path )
 			});
     	}
     	else 
     	{
-    		saveFile(files, active)
+    		saveFile( file_path )
     	}
-    }
-
-    factory.activeFile = function(files, file_path)
-    {
-    	return files[ file_path ];
     }
 
     // get info (which views & widgets)
@@ -205,14 +195,17 @@ angular.module('sdk.file', [])
 
     return factory;
 
-    function saveFile(files, active) {
-    	if( typeof active == 'undefined' ) return;
+    function saveFile( file_path ) {
+	    
+	    console.log('saveFile', file_path)
 
-	    var activeFile = files[ active ];
+	    var activeFile = factory.files[ file_path ];
+	    
+	    console.log( 'factory.files', factory.files )
 
-	    console.log('active file on save', activeFile.path);
+	    console.log('active file on save', file_path);
 
-	    fs.writeFileSync( activeFile.path, activeFile.code );
+	    fs.writeFileSync( file_path, activeFile.code );
 
 		activeFile._changed = false;
 

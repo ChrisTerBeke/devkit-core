@@ -1,6 +1,7 @@
 var AuthController = function($scope, $auth)
 {
 
+	/*
 	// listen for a message from the iframe
 	window.addEventListener('message', function(e)
 	{
@@ -48,6 +49,7 @@ var AuthController = function($scope, $auth)
 	{
 		$scope.user = $auth.logout();
 	}
+	*/
 }
 
 AuthController.$inject = ['$scope', '$auth'];

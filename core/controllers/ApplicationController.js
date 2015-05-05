@@ -1,16 +1,11 @@
 var os 			= require('os');
-// var fs 			= require('fs');
 var fs			= require('fs-extra');
 var path		= require('path');
-
-var open		= require("open");
-var watchTree 	= require("fs-watch-tree").watchTree;
-var trash		= require('trash');
 
 var events 		= {};
 
 
-var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sidebar, $file, $events, windowEventsFactory, $templateCache)
+var ApplicationController = function($scope, $timeout, $project, $auth, $stoplight, $sidebar, $file, $events, windowEventsFactory, $templateCache)
 {
 	var gui 		= require('nw.gui');
 	var win 		= gui.Window.get();
@@ -26,10 +21,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 	$scope.popup.visible = false;
 
 	$scope.files = {}; // files open
-	$scope.active = undefined; // currently viewing
 	$scope.fileHistory = [];
-
-	$scope.project = {};
 
 	$scope.setBlur = function(blur)
 	{
@@ -54,41 +46,25 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 		$scope.user.status = 'logged-out';
 	}
 
-	$scope.updateFiletree = function(project_dir) 
-	{
-		var watch = watchTree(project_dir, function (event) {
-			$scope.filetree = $sidebar.update(project_dir);
-		});
-
-		$scope.filetree = $sidebar.update(project_dir);
-
-		console.log('filetree', $scope.filetree);
-	}
-
 	$scope.stoplight = $stoplight;
 
 	$scope.file = {};
 
 	$scope.file.open = function(file_path)
 	{
-    	var open = $file.open(/* file,  */file_path, $scope.files, $scope.fileHistory/* , file_path_history */);
-
-    	$scope.active = open.active;
-
-    	$scope.files = open.files;
-    	$scope.fileHistory = open.fileHistory;
+    	$file.open( file_path );
     }
 
 	// close current file
 	$scope.file.close = function(file_path)
 	{
-    	$file.close(/* file,  */file_path, $scope.files, $scope.fileHistory/* , file_path_history */);
+    	$file.close( file_path );
     }
 
 	// safe file
 	$scope.file.save = function()
 	{
-    	$file.save($scope.files, $scope.active);
+    	$file.save();
     }
 
 	// get file info
@@ -119,46 +95,13 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 
 	window.addEventListener('load', function()
 	{
-		$timeout(function()
+		$scope.loaded = true;
+
+		// load previous project, if available
+		if( typeof window.localStorage.project_dir == 'string' )
 		{
-			$scope.loaded = true;
-
-			// load previous project, if available
-			if( typeof window.localStorage.project_dir == 'string' )
-			{
-				$scope.project = $sidebar.load( window.localStorage.project_dir );
-
-				// var watch = watchTree($rootScope.project.path, function (event) {
-				// 	$scope.filetree = $sidebar.update();
-				// });
-
-				// $scope.filetree = $sidebar.update();
-				$scope.updateFiletree( window.localStorage.project_dir);
-			}
-
-			/*
-			// load previous files, if available
-			if( typeof window.localStorage.files_open != 'undefined' )
-			{
-				var files_open = window.localStorage.files_open.split(',');
-
-				if( files_open.length < 1 ) return;
-
-				files_open.forEach(function( file_path )
-				{
-					if( fs.existsSync(file_path) )
-					{
-						$scope.file.open(file_path);
-						// $rootScope.$emit('editor.open', file_path );
-					}
-				});
-
-			}
-			else {
-				window.localStorage.files_open = '';
-			}
-			*/
-		}, 100);
+			$project.load( window.localStorage.project_dir );
+		}
 	});
 
     /* TODO: Merge this somehow, make it more elegeant*/
@@ -253,7 +196,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 	file.insert(new gui.MenuItem({
 		label: 'Open Project',
 		click: function() {
-			$sidebar.open();
+			$project.select();
 
 			$scope.updateFiletree(window.localStorage.project_dir);
 		},
@@ -268,8 +211,7 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 	file.insert(new gui.MenuItem({
 		label: 'Close tab',
 		click: function() {
-			$scope.file.close();
-			// $rootScope.$emit('editor.close');
+			$file.close();
 		},
 		key: 'w',
 		modifiers: 'cmd'
@@ -360,6 +302,6 @@ var ApplicationController = function($scope, $timeout, $auth, $stoplight, $sideb
 
 }
 
-ApplicationController.$inject = ['$scope', '$timeout', '$auth', '$stoplight', '$sidebar', '$file', '$events', 'windowEventsFactory', '$templateCache'];
+ApplicationController.$inject = ['$scope', '$timeout', '$project', '$auth', '$stoplight', '$sidebar', '$file', '$events', 'windowEventsFactory', '$templateCache'];
 
 app.controller("ApplicationController", ApplicationController);
