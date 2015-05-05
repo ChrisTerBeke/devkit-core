@@ -68,64 +68,63 @@
 			<content>
 
 				<sidebar
-					ng-controller="SidebarController"
-					ng-right-click="showCtxmenu(undefined, $event)"
-					file-drop="dropped( $event, file, project.path )"
+					ng-controller="SidebarController as sidebar"
+					ng-right-click="showCtxMenu(undefined, $event)"
+					file-drop="dropped( $event, file )"
 				>
-
+				
 					<script type="text/ng-template" id="filetreeTmpl">
 						<span
-							ng-click="select( $event, item.path )"
-							ng-dblclick="open( item )"
-							ng-right-click="showCtxmenu(item, $event)"
+							ng-click="!isRenaming(item.path) && select( item.path, $event )"
+							ng-dblclick="!isRenaming(item.path) && open( item.path )"
+							ng-right-click="showCtxMenu(item, $event)"
 							ng-class="{ 'selected': isSelected( item.path ) }"
 							file-drop="dropped( $event, file, item.path )"
 							class="label"
 						>
-							<span class="expand" ng-click="item.expanded = !item.expanded || false;" stop-event></span>
+							<span class="expand" ng-click="!isRenaming(item.path) && expand( item.path, !isExpanded(item.path) )" stop-event></span>
 							<span class="icon"></span>
-							<span class="name" ng-show="!item.renaming">{{item.name}}</span>
-							<form ng-show="item.renaming" ng-submit="submitRename( item )" style="display: inline-block;">
-								<input class="name-renaming" type="text" ng-model="item.name" ng-blur="submitRename( item )" />
+							<span class="name" ng-show="!isRenaming(item.path)">{{item.name}}</span>
+							<form ng-show="isRenaming(item.path)" ng-submit="rename( item )" style="display: inline-block;">
+								<input class="name-renaming" type="text" ng-model="item.name" />
 								<input type="submit" style="display: none;" />
 							</form>
 						</span>
-					    <ul ng-if="item.children" ng-show="item.expanded">
+					    <ul ng-if="item.children" ng-show="isExpanded( item.path )">
 					        <li
 					        	ng-repeat="item in item.children"
 					        	ng-include="'filetreeTmpl'"
-					        	ng-class="{ 'expanded': item.expanded }"
+					        	ng-class="{ 'expanded': isExpanded( item.path ) }"
 					        	ng-init="selected = false; item.expanded = false;"
 					        	class="type-{{item.type}}"
 					        ></li>
 					    </ul>
 					</script>
-
+				
 					<ul id="filetree">
 						<li
 							ng-repeat="item in filetree"
 							ng-include="'filetreeTmpl'"
-							ng-class="{ 'expanded': item.expanded }"
-							ng-init="item.expanded=true"
+							ng-class="{ 'expanded': isExpanded( item.path ) }"
+							ng-init="expand( item.path, true )"
 							class="type-{{item.type}}"
 						></li>
 					</ul>
-
+					
 					<div id="sidebar-helper">
-						<div class="button button-add">+</div>
+						<div class="button button-add" ng-click="ctxmenu.newfile()">+</div>
 					</div>
-
+					
 				</sidebar>
 
-				<editor ng-controller="EditorController">
+				<editor ng-controller="EditorController as editor">
 
 					<editormain ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }">
 						<tabs>
 							<tab
 								ng-repeat="file in files"
-								ng-init="active = false;"
 								ng-click="open(file.path)"
-								ng-class="{ 'active': $parent.active == file.path, 'changed': file._changed }"
+								ng-class="{ 'active': active == file.path, 'changed': isChanged(file.path) }"
 							>
 								<span class="close" ng-click="close(file.path)"></span>
 								<span class="icon">{{file.icon}}</span>
@@ -137,7 +136,7 @@
 							<editorview
 								class="{{file._view}}"
 								ng-repeat="file in files"
-								ng-show="$parent.active == file.path",
+								ng-show="active == file.path",
 								ng-include="getEditorPath(file._view)"
 							>
 							</editorview>
@@ -148,7 +147,7 @@
 						</editorviews>
 					</editormain>
 
-					<widgets ng-repeat="file in files" ng-show="$parent.active == file.path && file._widgets.length > 0">
+					<widgets ng-repeat="file in files" ng-show="active == file.path && file._widgets.length > 0">
 						<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path">
 							<title>{{widget}}</title>
 							<widget class="{{widget}}" ng-include="'devkit-widget-' + widget + '.html'"></widget>
