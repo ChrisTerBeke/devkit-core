@@ -1,3 +1,7 @@
 #filetree li.ext-svg .label .icon {
 	-webkit-mask-image: url(./assets/icons/svg.svg) !important;
 }
+
+#filetree li.ext-stl .label .icon {
+	-webkit-mask-image: url(./assets/icons/stl.svg) !important;
+}
