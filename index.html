@@ -119,7 +119,7 @@
 
 			 --><editor ng-controller="EditorController">
 
-					<editormain ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }">
+					<editormain>
 						<tabs>
 							<tab
 								ng-repeat="file in files"
@@ -133,7 +133,7 @@
 							</tab>
 						</tabs>
 
-						<editorviews>
+						<editorviews ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }">
 							<editorview
 								class="{{file._view}}"
 								ng-repeat="file in files"

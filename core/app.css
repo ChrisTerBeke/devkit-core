@@ -375,10 +375,6 @@ content {
 			border-bottom-width: 0;
 			border-right-width: 0;
 		}
-		editormain.widgets {
-			right: 300px;
-			border-right-width: 1px;
-		}
 		editorviews {
 			display: block;
 			position: absolute;
@@ -388,6 +384,10 @@ content {
 			right: 0;
 			margin-top: 25px;
 			overflow: hidden;
+		}
+		editorviews.widgets {
+			right: 300px;
+			border-right-width: 1px;
 		}
 		noeditorview,
 		editorview {
