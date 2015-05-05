@@ -240,38 +240,6 @@ angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '
 		
 	});
 
-<<<<<<< HEAD
-    function readdirSyncRecursive( dir, root ) {
-        root = root || false;
-        var result = [];
-        var contents = fs.readdirSync( dir );
-
-        contents.forEach(function(item) {
-            var item_path = path.join(dir, item);
-            var item_stats = fs.lstatSync( item_path );
-            var file = path.parse(item_path);
-
-            if( item_stats.isDirectory() ) {
-                result.push({
-                    name: item,
-                    path: path.join(dir, item),
-                    type: 'folder',
-                    stats: item_stats,
-                    children: readdirSyncRecursive( item_path )
-                });
-
-            }
-            else {
-                result.push({
-                    name: item,
-                    path: path.join(dir, item),
-                    type: 'file',
-                    ext: file.ext.replace(".", ""),
-                    stats: item_stats
-                });
-            }
-        });
-=======
     return factory;
     
 }]);
@@ -281,7 +249,6 @@ angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '
 // This was fun to do :)
 function newPath( file_path, index ) {
     index = index || false;
->>>>>>> sidebar
 
     var filename = path_.basename( file_path );
     var folder = path_.dirname( file_path );
@@ -332,7 +299,8 @@ function readdirSyncRecursive( dir, root ) {
                 name: item,
                 path: path_.join(dir, item),
                 type: 'file',
-                stats: item_stats
+                stats: item_stats,
+                ext: path_.extname(item).replace(".", ""),
             });
         }
     });

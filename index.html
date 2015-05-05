@@ -114,17 +114,10 @@
 					<div id="sidebar-helper">
 						<div class="button button-add" ng-click="ctxmenu.newfile()">+</div>
 					</div>
-<<<<<<< HEAD
 
-				</sidebar><!--
-
-			 --><editor ng-controller="EditorController">
-=======
-					
 				</sidebar>
 
 				<editor ng-controller="EditorController as editor">
->>>>>>> sidebar
 
 					<editormain>
 						<tabs>
@@ -166,18 +159,7 @@
 								</div>
 							</noeditorview>
 						</editorviews>
-<<<<<<< HEAD
-=======
-					</editormain>
-
-					<widgets ng-repeat="file in files" ng-show="active == file.path && file._widgets.length > 0">
-						<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path">
-							<title>{{widget}}</title>
-							<widget class="{{widget}}" ng-include="'devkit-widget-' + widget + '.html'"></widget>
-						</widgetwrap>
-					</widgets>
->>>>>>> sidebar
-
+						
 						<widgets ng-repeat="file in files" ng-show="$parent.active == file.path && file._widgets.length > 0">
 							<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path" ng-controller="WidgetController">
 								<title>{{widget}}</title>
