@@ -17,7 +17,7 @@ app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootSc
 		// nope..
 
 		// themes
-		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+		// nope..
 		
 		// USER
 		// editors
@@ -29,6 +29,9 @@ app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootSc
 		
 		// widgets
 		// nope..
+		
+		// themes
+		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
 		
 		
 		// set editor config

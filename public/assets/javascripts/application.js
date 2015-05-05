@@ -34019,6 +34019,16 @@ var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
 SidebarController.$inject = ['$scope', '$rootScope', '$sidebar', '$timeout'];
 
 app.controller("SidebarController", SidebarController);;
+var WidgetController = function($scope, $rootScope)
+{
+	$scope.getWidgetPath = function( name ) {
+		return $rootScope.modules['widget'][name];
+	}
+}
+
+WidgetController.$inject = ['$scope', '$rootScope'];
+
+app.controller("WidgetController", WidgetController);;
 // app.directive('stopEvent', function () {
 //     return {
 //         restrict: 'A',
@@ -34084,7 +34094,7 @@ app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootSc
 		// nope..
 
 		// themes
-		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+		// nope..
 		
 		// USER
 		// editors
@@ -34096,6 +34106,9 @@ app.run(['$rootScope', '$timeout', '$play', '$file', '$module', function($rootSc
 		
 		// widgets
 		// nope..
+		
+		// themes
+		$module.load('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
 		
 		
 		// set editor config

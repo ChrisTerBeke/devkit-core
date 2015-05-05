@@ -1,4 +1,4 @@
-angular.module('module.modules').controller("markdownWidgetCtrl", function( $scope, $rootScope, $timeout ){
+app.controller("markdownWidgetCtrl", function( $scope, $rootScope, $timeout ){
 
 	$timeout(function(){
 		$scope.update();

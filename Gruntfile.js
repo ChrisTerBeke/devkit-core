@@ -145,6 +145,6 @@ module.exports = function(grunt) {
 	grunt.registerTask('js:dist', ['build:config', 'concat:', 'uglify']);
 	grunt.registerTask('js:dev', ['build:config', 'concat']);
 
-  	grunt.registerTask('default', ['clean:assets', 'compass', 'js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist'), 'compass']);
+  	grunt.registerTask('default', ['clean:assets', 'js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist')]);
 
 };
