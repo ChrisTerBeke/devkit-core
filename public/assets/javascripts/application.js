@@ -34019,16 +34019,6 @@ var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
 SidebarController.$inject = ['$scope', '$rootScope', '$sidebar', '$timeout'];
 
 app.controller("SidebarController", SidebarController);;
-var WidgetController = function($scope, $rootScope)
-{
-	$scope.getWidgetPath = function( name ) {
-		return $rootScope.modules['widget'][name];
-	}
-}
-
-WidgetController.$inject = ['$scope', '$rootScope'];
-
-app.controller("WidgetController", WidgetController);;
 // app.directive('stopEvent', function () {
 //     return {
 //         restrict: 'A',

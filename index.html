@@ -146,15 +146,14 @@
 								<div ng-include="'app/views/partials/noeditor.html'"></div>
 							</noeditorview>
 						</editorviews>
+
+						<widgets ng-repeat="file in files" ng-show="$parent.active == file.path && file._widgets.length > 0">
+							<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path" ng-controller="WidgetController">
+								<title>{{widget}}</title>
+								<widget class="{{widget}}" ng-include="getWidgetPath(widget)"></widget>
+							</widgetwrap>
+						</widgets>
 					</editormain>
-
-					<widgets ng-repeat="file in files" ng-show="$parent.active == file.path && file._widgets.length > 0">
-						<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path" ng-controller="WidgetController">
-							<title>{{widget}}</title>
-							<widget class="{{widget}}" ng-include="getWidgetPath(widget)"></widget>
-						</widgetwrap>
-					</widgets>
-
 				</editor>
 
 			</content>

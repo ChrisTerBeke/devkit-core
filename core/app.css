@@ -439,11 +439,14 @@ content {
 				}
 
 		widgets {
-/*			position: absolute;
-			top: 0;
+			position: absolute;
+			display: block;
+			position: absolute;
 			left: auto;
+			top: 0;
+			bottom: 0;
 			right: 0;
-			bottom: 0;*/
+			margin-top: 25px;
 			width: 300px;
 		}
 			widgets widgetwrap {
