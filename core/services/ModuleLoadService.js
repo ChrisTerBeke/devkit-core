@@ -52,23 +52,29 @@ angular.module('sdk.moduleload', [])
 
 		var css_path = path.join(dir, 'component.css');
 		fs.exists(css_path, function(exists) {
-	        self.injectDependency( css_path	, 'css');			
+			if(exists) {
+	        	self.injectDependency( css_path	, 'css');
+	        }	
 		});
 		var js_path = path.join(dir, 'component.js');
 		fs.exists(js_path, function(exists) {
-	        self.injectDependency( js_path	, 'js');			
+			if(exists) {
+	        	self.injectDependency( js_path	, 'js');
+	        }
 		});
 
 		var html_path = path.join(dir, 'component.html');
 		fs.exists(html_path, function(exists) {
-			fs.readFile( html_path, function(err, data){
-	            if (err) throw err;
-			            
-				$templateCache.put(html_path, data.toString());
-				
-	            $rootScope.modules[type] = $rootScope.modules[type] || {};
-	            $rootScope.modules[type][module] = html_path;
-			});
+			if(exists) {
+				fs.readFile( html_path, function(err, data){
+		            if (err) throw err;
+				            
+					$templateCache.put(html_path, data.toString());
+					
+		            $rootScope.modules[type] = $rootScope.modules[type] || {};
+		            $rootScope.modules[type][module] = html_path;
+				});
+			}
 		});
     }
 
