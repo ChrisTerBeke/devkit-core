@@ -74,8 +74,10 @@ angular.module('sdk.moduleload', [])
 				            
 					$templateCache.put(html_path, data.toString());
 					
-		            $rootScope.modules[type] = $rootScope.modules[type] || {};
-		            $rootScope.modules[type][module] = html_path;
+					$rootScope.$apply(function () {
+			            $rootScope.modules[type] = $rootScope.modules[type] || {};
+		            	$rootScope.modules[type][module] = html_path;
+			        });
 				});
 			}
 		});

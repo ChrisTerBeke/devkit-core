@@ -146,7 +146,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
         fs.rename(item.path, newPath, function() {
 	        $scope.update();
         });
-
+        
         $scope.renaming = false;
 	}
 	
