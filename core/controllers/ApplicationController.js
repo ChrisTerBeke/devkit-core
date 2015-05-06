@@ -93,16 +93,22 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 		this.close(true);
 	});
 
-	window.addEventListener('load', function()
-	{
+	// window.addEventListener('load', function()
+	// {
 		$scope.loaded = true;
 
 		// load previous project, if available
 		if( typeof window.localStorage.project_dir == 'string' )
 		{
-			$project.load( window.localStorage.project_dir );
+			$scope.filetree = $project.load( window.localStorage.project_dir );
+
+			var watch = watchTree(window.localStorage.project_dir, function (event) {
+
+				$scope.filetree = $project.load( window.localStorage.project_dir );
+				// return factory.update(project_dir);
+			});
 		}
-	});
+	// });
 
     /* TODO: Merge this somehow, make it more elegeant*/
 
@@ -198,7 +204,9 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 		click: function() {
 			$project.select();
 
-			$scope.updateFiletree(window.localStorage.project_dir);
+			console.log('debug 2');
+
+			$scope.filetree = $project.load(window.localStorage.project_dir);
 		},
 		key: 'o',
 		modifiers: 'cmd'

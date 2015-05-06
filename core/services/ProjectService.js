@@ -1,16 +1,40 @@
-angular.module('sdk.project', []).factory('$project', [ '$rootScope', '$file', function ( $rootScope, $file ) {
+angular.module('sdk.project', []).factory('$project', [ '$rootScope', '$file', function ( $rootScope, $file) {
 	
 	var factory = {};
 	
 	factory.path = false;
 
+	factory.update = function(project_dir) {	   
+    	// $rootScope.$emit('service.sidebar.tree.update');
+
+    	var filetree = readdirSyncRecursive( project_dir, true );	
+    	// console.log('return', filetree)
+
+        return filetree;
+    }
+
     factory.load = function(project_dir){
 
         // save for restart
         window.localStorage.project_dir = project_dir;
-        factory.path = project_dir;
+        // factory.path = project_dir;
         
-        $rootScope.$emit('service.project.ready');
+        // $rootScope.$emit('service.project.ready');
+
+        // $rootScope.$emit('service.sidebar.tree.update');
+        // var filetree = readdirSyncRecursive( $project.path, true );	
+	   	
+		// filetree
+		// watch for changes
+		// var watch = watchTree(project_dir, function (event) {
+
+		// 	return factory.update(project_dir);
+		// });
+	
+		// initial scan
+		return factory.update(project_dir);
+
+        // return $sidebar.getFiletree();
         
 		// load previous files, if available
 		/*

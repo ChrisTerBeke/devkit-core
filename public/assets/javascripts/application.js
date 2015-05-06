@@ -32994,19 +32994,43 @@ angular.module('sdk.moduleload', [])
 
     return factory;
 }]);;
-angular.module('sdk.project', []).factory('$project', [ '$rootScope', '$file', function ( $rootScope, $file ) {
+angular.module('sdk.project', []).factory('$project', [ '$rootScope', '$file', function ( $rootScope, $file) {
 	
 	var factory = {};
 	
 	factory.path = false;
 
+	factory.update = function(project_dir) {	   
+    	// $rootScope.$emit('service.sidebar.tree.update');
+
+    	var filetree = readdirSyncRecursive( project_dir, true );	
+    	// console.log('return', filetree)
+
+        return filetree;
+    }
+
     factory.load = function(project_dir){
 
         // save for restart
         window.localStorage.project_dir = project_dir;
-        factory.path = project_dir;
+        // factory.path = project_dir;
         
-        $rootScope.$emit('service.project.ready');
+        // $rootScope.$emit('service.project.ready');
+
+        // $rootScope.$emit('service.sidebar.tree.update');
+        // var filetree = readdirSyncRecursive( $project.path, true );	
+	   	
+		// filetree
+		// watch for changes
+		// var watch = watchTree(project_dir, function (event) {
+
+		// 	return factory.update(project_dir);
+		// });
+	
+		// initial scan
+		return factory.update(project_dir);
+
+        // return $sidebar.getFiletree();
         
 		// load previous files, if available
 		/*
@@ -33134,10 +33158,14 @@ angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '
         console.log( event, item );
     }
 
-    factory.update = function( ) {	    
-        factory.filetree = readdirSyncRecursive( $project.path, true );
-		$rootScope.$emit('service.sidebar.tree.update');
-    }
+    // factory.update = function( ) {	   
+    // 	$rootScope.$emit('service.sidebar.tree.update');
+
+    // 	var filetree = readdirSyncRecursive( $project.path, true );	
+    // 	console.log('return', filetree)
+
+    //     return filetree;
+    // }
 
     factory.dropped = function( event, file, dropped_path ) {
 	    
@@ -33273,19 +33301,34 @@ angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '
 		// Popup as context menu
 		ctxmenu.popup( event.clientX, event.clientY );
 	}
-	
-    $rootScope.$on('service.project.ready', function(){
+
+	// factory.getFiletree = function(){
+	// 	console.log('loaded this project ready');
 	   	
-		// filetree
-		// watch for changes
-		var watch = watchTree($project.path, function (event) {
-			factory.filetree = factory.update();
-		});
+	// 	// filetree
+	// 	// watch for changes
+	// 	var watch = watchTree($project.path, function (event) {
+	// 		return factory.update();
+	// 	});
 	
-		// initial scan
-		factory.filetree = factory.update();
+	// 	// initial scan
+	// 	return factory.update();
+	// }
+	
+ //    $rootScope.$on('service.project.ready', function(){
+
+ //    	console.log('loaded this project ready');
+	   	
+	// 	// filetree
+	// 	// watch for changes
+	// 	var watch = watchTree($project.path, function (event) {
+	// 		factory.filetree = factory.update();
+	// 	});
+	
+	// 	// initial scan
+	// 	factory.filetree = factory.update();
 		
-	});
+	// });
 
     return factory;
     
@@ -33477,9 +33520,9 @@ app.run(['$rootScope', '$timeout', '$templateCache', '$module', function($rootSc
 
     $rootScope.modules = {};
 
-    console.log('rootscope');
+    // console.log('rootscope');
 
-    $timeout(function() {
+    // $timeout(function() {
         console.log(angularModules);
         for(i in angularModules) {
             // angularModules[i];
@@ -33493,7 +33536,7 @@ app.run(['$rootScope', '$timeout', '$templateCache', '$module', function($rootSc
             // $rootScope.modules[result.type][result.module] = result.html_path;
             console.log('function', result.module, result.type, result.dir);
         }
-    }, 200);
+    // }, 200);
 
     
     // angularModules.forEach(function(callback) {
@@ -33600,16 +33643,22 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 		this.close(true);
 	});
 
-	window.addEventListener('load', function()
-	{
+	// window.addEventListener('load', function()
+	// {
 		$scope.loaded = true;
 
 		// load previous project, if available
 		if( typeof window.localStorage.project_dir == 'string' )
 		{
-			$project.load( window.localStorage.project_dir );
+			$scope.filetree = $project.load( window.localStorage.project_dir );
+
+			var watch = watchTree(window.localStorage.project_dir, function (event) {
+
+				$scope.filetree = $project.load( window.localStorage.project_dir );
+				// return factory.update(project_dir);
+			});
 		}
-	});
+	// });
 
     /* TODO: Merge this somehow, make it more elegeant*/
 
@@ -33705,7 +33754,9 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 		click: function() {
 			$project.select();
 
-			$scope.updateFiletree(window.localStorage.project_dir);
+			console.log('debug 2');
+
+			$scope.filetree = $project.load(window.localStorage.project_dir);
 		},
 		key: 'o',
 		modifiers: 'cmd'
@@ -33902,11 +33953,11 @@ var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
 		$sidebar.open( path );
 	}
 
-	$scope.update = function()
-	{
-		$scope.filetree = $sidebar.filetree;
-		$scope.$apply()
-	}
+	// $scope.update = function()
+	// {
+	// 	$scope.filetree = $sidebar.filetree;
+	// 	$scope.$apply()
+	// }
 
 	$scope.dropped = function( event, file, dropped_path )
 	{		
@@ -33917,9 +33968,10 @@ var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
 		$sidebar.showCtxMenu( item, event );
 	}
 	
-	$rootScope.$on('service.sidebar.tree.update', function(){
-		$scope.update();
-	});
+	// $rootScope.$on('service.sidebar.tree.update', function(){
+		
+	// 	$scope.update();
+	// });
 }
 
 SidebarController.$inject = ['$scope', '$rootScope', '$sidebar', '$timeout'];

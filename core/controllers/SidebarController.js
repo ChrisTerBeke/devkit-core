@@ -36,11 +36,11 @@ var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
 		$sidebar.open( path );
 	}
 
-	$scope.update = function()
-	{
-		$scope.filetree = $sidebar.filetree;
-		$scope.$apply()
-	}
+	// $scope.update = function()
+	// {
+	// 	$scope.filetree = $sidebar.filetree;
+	// 	$scope.$apply()
+	// }
 
 	$scope.dropped = function( event, file, dropped_path )
 	{		
@@ -51,9 +51,10 @@ var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
 		$sidebar.showCtxMenu( item, event );
 	}
 	
-	$rootScope.$on('service.sidebar.tree.update', function(){
-		$scope.update();
-	});
+	// $rootScope.$on('service.sidebar.tree.update', function(){
+		
+	// 	$scope.update();
+	// });
 }
 
 SidebarController.$inject = ['$scope', '$rootScope', '$sidebar', '$timeout'];
