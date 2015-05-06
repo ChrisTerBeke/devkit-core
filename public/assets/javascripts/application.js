@@ -33704,8 +33704,6 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 		label: 'Open Project',
 		click: function() {
 			$project.select();
-
-			$scope.updateFiletree(window.localStorage.project_dir);
 		},
 		key: 'o',
 		modifiers: 'cmd'
@@ -34012,6 +34010,7 @@ loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-ti
 
 // themes
 loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+loadModule('athom',			'theme',	'./app/components/themes/athom/');
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools
@@ -34132,8 +34131,9 @@ app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $eve
 });;
 var AuthController = function($scope, $auth)
 {
+	
+	$scope.user = {};
 
-	/*
 	// listen for a message from the iframe
 	window.addEventListener('message', function(e)
 	{
@@ -34181,7 +34181,6 @@ var AuthController = function($scope, $auth)
 	{
 		$scope.user = $auth.logout();
 	}
-	*/
 }
 
 AuthController.$inject = ['$scope', '$auth'];
@@ -34293,13 +34292,36 @@ angular.module('sdk.play', []).factory('$play', ['$rootScope', function ($rootSc
 
     return factory;
 }]);;
-var TitleController = function($scope, $auth)
+var fs		= require('fs');
+var path	= require('path');
+
+var TitleController = function($scope, $rootScope, $project)
 {
-	$scope.name = 'foo';
-	$scope.bar = 'nl.athom.hello';
+	
+	$scope.name = '';
+	$scope.id = '';
+	
+	var manifest_path = path.join($project.path, 'app.json');
+	
+	fs.readFile( manifest_path, function( err, data ) {
+		if( err ) throw err;
+		
+		var manifest = JSON.parse( data.toString() );
+		
+		$scope.$apply(function(){
+			$scope.name = manifest.name.en;
+			$scope.id	= manifest.id;
+		});
+	});
+	
+    $rootScope.$on('service.project.ready', function(){
+		alert($project.path)	    
+    });
+    
+    
 }
 
-TitleController.$inject = ['$scope'];
+TitleController.$inject = ['$scope', '$rootScope', '$project'];
 
 app.controller("TitleController", TitleController);;
 

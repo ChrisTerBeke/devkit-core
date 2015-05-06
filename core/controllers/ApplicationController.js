@@ -197,8 +197,6 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 		label: 'Open Project',
 		click: function() {
 			$project.select();
-
-			$scope.updateFiletree(window.localStorage.project_dir);
 		},
 		key: 'o',
 		modifiers: 'cmd'

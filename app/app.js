@@ -29,6 +29,7 @@ loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-ti
 
 // themes
 loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+loadModule('athom',			'theme',	'./app/components/themes/athom/');
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools

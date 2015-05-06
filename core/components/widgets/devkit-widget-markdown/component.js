@@ -15,5 +15,3 @@ app.controller("markdownWidgetCtrl", function( $scope, $rootScope, $timeout ){
 		$scope.code = $scope.$parent.files[ $scope.$parent.active ].code;
 	}
 });
-
-console.log('I loaded markdown.js');

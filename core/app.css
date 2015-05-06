@@ -293,7 +293,6 @@ content {
 			display: block;
 			box-sizing: border-box;
 			overflow: hidden;
-			border-bottom: 1px solid #ccc;
 		}
 			tabs tab {
 				position: relative;
