@@ -1,22 +1,45 @@
-# nw.js + angularjs devkit
-Built your own development kit as desktop app!
+# What is this?
+This projec's goal is to create a development kit fully based on nw.js (previously node-webkit) and angular.js.
+
+This project is currently actively maintained by [Athom](https://github.com/athombv/) and [PRINTR](https://github.com/PRINTR3D).
+
+If you're in the need of a development kit for your own project or company as well, please feel free to contribute!
 
 ## Get started
 
 ### Installation
-0. Fork this repo and clone your fork locally
-1. If not installed yet, install NodeJS (http://nodejs.org/) on your local system. 
-2. run `grunt`.
-3. run `nw .` to see your devkit for the first time!
-4. run `git remote add upstream https://github.com/printhom/devkit-core.git` if git didn't automatically fix your upstream remote branch.
+Requirements: [node.js](https://nodejs.org/), [bower](http://bower.io/), [grunt](http://gruntjs.com/), [nw.js](https://github.com/nwjs/nw.js/)
+
+1. Fork this repo and clone your fork locally
+2. run `npm install`
+3. run `bower install`
+4. run `grunt`
+5. Make an alias to the nw.js executable as `nw`
+6. run `nw .` in the cloned folder
+
+*(optional)*
+
+7. run `git remote add upstream https://github.com/printhom/devkit-core.git` if git didn't automatically fix your upstream remote branch.
 
 ### Develop
-You can use app/app.js to configure your application. You can also install editor views and widgets via bower or just place them in a folder and use app/app.js to load them (see examples in this repo). To style your devkit, create theme modules (see app/components/themes). You can check `https://github.com/printhom` to see examples of views and widgets. Basically, they contain an angularjs html template, a controller and some styling.
+The editor consists of a framework, with components:
+
+* editors (e.g. a code editor, a JSON editor..)
+* widgets (e.g. a markdown viewer..)
+* headers (e.g. a title bar, a 'Run' button..)
+* themes
+
+This core ships some components, that can be found in `./core/components/`. You can extend these for your own application by putting them in `./app/components/` and referencing to them in `./app/app.js`.
+
+Run `grunt watch` before running `nw.js .` while development, or your changes won't be applied.
 
 ### Build instructions
 
 1. install node-webkit-builder ```npm install node-webkit-builder -g```
 2. run ```nwbuild .``` in the directory of this repository
 
+## Contribute
+Contributions are more than welcome! Send a pull request from your own fork to do so.
+
 ## Licence
-See LICENCE.md
+MIT, see LICENCE.md
