@@ -87,16 +87,20 @@ angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '
         console.log( event, item );
     }
 
-    factory.update = function( ) {	    
-        factory.filetree = readdirSyncRecursive( $project.path, true );
-		$rootScope.$emit('service.sidebar.tree.update');
-    }
+    // factory.update = function( ) {	   
+    // 	$rootScope.$emit('service.sidebar.tree.update');
+
+    // 	var filetree = readdirSyncRecursive( $project.path, true );	
+    // 	console.log('return', filetree)
+
+    //     return filetree;
+    // }
 
     factory.dropped = function( event, file, dropped_path ) {
 	    
 	    dropped_path = dropped_path || $project.path;
 	    
-	    console.log('event', event, 'file', file, 'dropped_path', dropped_path)
+	    // console.log('event', event, 'file', file, 'dropped_path', dropped_path)
 	    
         var filename = path_.basename( file.path );
 
@@ -226,19 +230,34 @@ angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '
 		// Popup as context menu
 		ctxmenu.popup( event.clientX, event.clientY );
 	}
-	
-    $rootScope.$on('service.project.ready', function(){
+
+	// factory.getFiletree = function(){
+	// 	console.log('loaded this project ready');
 	   	
-		// filetree
-		// watch for changes
-		var watch = watchTree($project.path, function (event) {
-			factory.filetree = factory.update();
-		});
+	// 	// filetree
+	// 	// watch for changes
+	// 	var watch = watchTree($project.path, function (event) {
+	// 		return factory.update();
+	// 	});
 	
-		// initial scan
-		factory.filetree = factory.update();
+	// 	// initial scan
+	// 	return factory.update();
+	// }
+	
+ //    $rootScope.$on('service.project.ready', function(){
+
+ //    	console.log('loaded this project ready');
+	   	
+	// 	// filetree
+	// 	// watch for changes
+	// 	var watch = watchTree($project.path, function (event) {
+	// 		factory.filetree = factory.update();
+	// 	});
+	
+	// 	// initial scan
+	// 	factory.filetree = factory.update();
 		
-	});
+	// });
 
     return factory;
     

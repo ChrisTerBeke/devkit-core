@@ -59,9 +59,9 @@ app.run(['$rootScope', '$timeout', '$templateCache', '$module', function($rootSc
 
     $rootScope.modules = {};
 
-    console.log('rootscope');
+    // console.log('rootscope');
 
-    $timeout(function() {
+    // $timeout(function() {
         console.log(angularModules);
         for(i in angularModules) {
             // angularModules[i];
@@ -75,7 +75,7 @@ app.run(['$rootScope', '$timeout', '$templateCache', '$module', function($rootSc
             // $rootScope.modules[result.type][result.module] = result.html_path;
             console.log('function', result.module, result.type, result.dir);
         }
-    }, 200);
+    // }, 200);
 
     
     // angularModules.forEach(function(callback) {
