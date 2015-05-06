@@ -32684,7 +32684,6 @@ angular.module('sdk.events', []).factory('$events', ['$rootScope', '$q', functio
 	// };
 
 	factory.beforeSave = function(path, callbackFunction) {
-		console.log('before save called!');
 		beforeSave[path] = beforeSave[path] || [];
 		beforeSave[path].push($q(function(resolve, reject) {
 			resolve(callbackFunction);
@@ -32705,7 +32704,7 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
     factory.open = function( file_path )
     {
-    	console.log('open', file_path);
+    	// console.log('open', file_path);
 
 	    // only load the file when it's not already open
 	    if( !factory.isOpen( file_path ) ) {
@@ -32891,14 +32890,8 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     return factory;
 
     function saveFile( file_path ) {
-	    
-	    console.log('saveFile', file_path)
 
 	    var activeFile = factory.files[ file_path ];
-	    
-	    console.log( 'factory.files', factory.files )
-
-	    console.log('active file on save', file_path);
 
 	    fs.writeFileSync( file_path, activeFile.code );
 
@@ -32984,8 +32977,10 @@ angular.module('sdk.moduleload', [])
 				            
 					$templateCache.put(html_path, data.toString());
 					
-		            $rootScope.modules[type] = $rootScope.modules[type] || {};
-		            $rootScope.modules[type][module] = html_path;
+					$rootScope.$apply(function () {
+			            $rootScope.modules[type] = $rootScope.modules[type] || {};
+		            	$rootScope.modules[type][module] = html_path;
+			        });
 				});
 			}
 		});
@@ -33001,59 +32996,15 @@ angular.module('sdk.project', []).factory('$project', [ '$rootScope', '$file', f
 	factory.path = false;
 
 	factory.update = function(project_dir) {	   
-    	// $rootScope.$emit('service.sidebar.tree.update');
-
     	var filetree = readdirSyncRecursive( project_dir, true );	
-    	// console.log('return', filetree)
 
         return filetree;
     }
 
     factory.load = function(project_dir){
-
-        // save for restart
         window.localStorage.project_dir = project_dir;
-        // factory.path = project_dir;
-        
-        // $rootScope.$emit('service.project.ready');
 
-        // $rootScope.$emit('service.sidebar.tree.update');
-        // var filetree = readdirSyncRecursive( $project.path, true );	
-	   	
-		// filetree
-		// watch for changes
-		// var watch = watchTree(project_dir, function (event) {
-
-		// 	return factory.update(project_dir);
-		// });
-	
-		// initial scan
 		return factory.update(project_dir);
-
-        // return $sidebar.getFiletree();
-        
-		// load previous files, if available
-		/*
-		if( typeof window.localStorage.files_open != 'undefined' )
-		{
-			var files_open = window.localStorage.files_open.split(',');
-
-			if( files_open.length < 1 ) return;
-
-			files_open.forEach(function( file_path )
-			{
-				if( fs.existsSync(file_path) )
-				{
-					$file.open(file_path);
-					// $rootScope.$emit('editor.open', file_path );
-				}
-			});
-
-		}
-		else {
-			window.localStorage.files_open = '';
-		}
-		*/
         
     }
     
@@ -33171,7 +33122,7 @@ angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '
 	    
 	    dropped_path = dropped_path || $project.path;
 	    
-	    console.log('event', event, 'file', file, 'dropped_path', dropped_path)
+	    // console.log('event', event, 'file', file, 'dropped_path', dropped_path)
 	    
         var filename = path_.basename( file.path );
 
@@ -33754,9 +33705,9 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 		click: function() {
 			$project.select();
 
-			console.log('debug 2');
-
-			$scope.filetree = $project.load(window.localStorage.project_dir);
+			$scope.$apply(function () {
+	            $scope.filetree = $project.load(window.localStorage.project_dir);
+	        });
 		},
 		key: 'o',
 		modifiers: 'cmd'

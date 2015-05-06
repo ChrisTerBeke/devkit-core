@@ -18,7 +18,6 @@ angular.module('sdk.events', []).factory('$events', ['$rootScope', '$q', functio
 	// };
 
 	factory.beforeSave = function(path, callbackFunction) {
-		console.log('before save called!');
 		beforeSave[path] = beforeSave[path] || [];
 		beforeSave[path].push($q(function(resolve, reject) {
 			resolve(callbackFunction);

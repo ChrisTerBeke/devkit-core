@@ -100,7 +100,7 @@ angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '
 	    
 	    dropped_path = dropped_path || $project.path;
 	    
-	    console.log('event', event, 'file', file, 'dropped_path', dropped_path)
+	    // console.log('event', event, 'file', file, 'dropped_path', dropped_path)
 	    
         var filename = path_.basename( file.path );
 

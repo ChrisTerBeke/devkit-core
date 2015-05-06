@@ -204,9 +204,9 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 		click: function() {
 			$project.select();
 
-			console.log('debug 2');
-
-			$scope.filetree = $project.load(window.localStorage.project_dir);
+			$scope.$apply(function () {
+	            $scope.filetree = $project.load(window.localStorage.project_dir);
+	        });
 		},
 		key: 'o',
 		modifiers: 'cmd'
