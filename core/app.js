@@ -8,6 +8,16 @@ window.ondragover = function(e) { e.preventDefault(); return false };
 window.ondrop = function(e) { e.preventDefault(); return false };
 
 var app = angular.module('app', ['module.core', 'module.modules']);
+var modules = ['ng'];
+
+var angularModules = [];
+
+angular.element(document).ready(function() {
+    require('nw.gui').Window.get().showDevTools();
+
+    modules.push('app');
+    angular.bootstrap(document, modules);
+});
 
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {
@@ -36,6 +46,17 @@ app.run(['$rootScope', '$injector', function($rootScope, $injector) {
             return angular.toJson(data);
         }
     };
+}]);
+
+// run all angular defined modules
+app.run(['$rootScope', '$timeout', '$templateCache', '$module', function($rootScope, $timeout, $templateCache, $module) {
+    $rootScope.modules = {};
+
+    for(i in angularModules) 
+    {
+        var result = angularModules[i];
+        $module.load(result.module, result.type, result.dir);
+    }
 }]);
 
 if(typeof angular !== 'undefined' && window.DEBUG) {

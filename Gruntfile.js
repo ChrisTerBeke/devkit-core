@@ -20,6 +20,8 @@ module.exports = function(grunt) {
 			files: {
 				src: [
 
+					'./core/loadModules.js',
+
 					/*
 					 *	Include configs
 					 */
