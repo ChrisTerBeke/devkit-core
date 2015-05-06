@@ -33245,16 +33245,25 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'File',
 		click: function() {
-			project.create();
+			$rootScope.$emit('service.project.new.file');
 		},
 		key: 'n',
 		modifiers: 'cmd'
+	}));
+	
+	newSubmenu.append(new gui.MenuItem({
+		label: 'Folder',
+		click: function() {
+			$rootScope.$emit('service.project.new.folder');
+		},
+		key: 'n',
+		modifiers: 'cmd+alt'
 	}));
 
 	newSubmenu.append(new gui.MenuItem({
 		label: 'Project...',
 		click: function() {
-			project.create();
+			//project.create();
 		},
 		key: 'n',
 		modifiers: 'cmd+shift'
@@ -33520,6 +33529,41 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 			$scope.expanded.splice(index, 1);	
 		}
 	}
+	
+	$scope.newFile = function() {
+		var newFileName = 'Untitled File';
+			
+		if(typeof item == 'undefined') {
+			var folder = $scope.$parent.path; // $parent is ApplicationController
+		}
+		else {
+			if( fs.statSync( item.path ).isFile() ) {
+				var folder = path.dirname( item.path );
+			} else {
+				var folder = item.path;
+			}
+		}
+		
+		var newFilePath = path.join( folder, newFileName);
+								
+		fs.ensureFile( newFilePath );
+		$scope.renaming = newFilePath;
+		
+		// TODO: focus rename element
+	}
+	
+	$scope.newFolder = function() {
+		var newFolderName = 'Untitled Folder';			
+			
+		if(typeof item == 'undefined') {
+			var folder = $scope.$parent.path; // $parent is ApplicationController
+		}
+		else {
+			var folder = item.path;
+		}
+		
+		fs.ensureDir( path.join( folder, newFolderName) );
+	}
 
 	/*
 	 * check if filePath is extended in sidebar
@@ -33684,42 +33728,12 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		
 		// always visible options
 		ctxmenu.append(new gui.MenuItem({ label: 'New Folder', click: function() {		
-			var newFolderName = 'Untitled Folder';			
-			
-			if(typeof item == 'undefined') {
-				var folder = $scope.$parent.path; // $parent is ApplicationController
-			}
-			else {
-				var folder = item.path;
-			}
-			
-			fs.ensureDir( path.join( folder, newFolderName) );
+			$scope.newFolder();
 		}}));
 		
 		// new file menu item
 		ctxmenu.append(new gui.MenuItem({ label: 'New File', click: function(){
-		
-			var newFileName = 'Untitled File';
-			
-			if(typeof item == 'undefined') {
-				var folder = $scope.$parent.path; // $parent is ApplicationController
-			}
-			else {
-				if( fs.statSync( item.path ).isFile() ) {
-					var folder = path.dirname( item.path );
-				} else {
-					var folder = item.path;
-				}
-			}
-			
-			var newFilePath = path.join( folder, newFileName);
-									
-			fs.ensureFile( newFilePath );
-			$scope.renaming = newFilePath;
-			$scope.apply();
-			
-			// TODO: focus rename element
-			
+			$scope.newFile();
 		} }));
 		
 		// Popup as context menu
@@ -33731,6 +33745,20 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	 */
 	$rootScope.$on('service.project.open', function() {
 		$scope.selectProject();
+	});
+	
+	/*
+	 * Listen to new file event
+	 */
+	$rootScope.$on('service.project.new.file', function() {
+		$scope.newFile();
+	});
+	
+	/*
+	 * Listen to new folder event
+	 */
+	$rootScope.$on('service.project.new.folder', function() {
+		$scope.newFolder();
 	});
 
 	/*

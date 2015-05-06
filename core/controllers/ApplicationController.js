@@ -166,16 +166,25 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'File',
 		click: function() {
-			project.create();
+			$rootScope.$emit('service.project.new.file');
 		},
 		key: 'n',
 		modifiers: 'cmd'
+	}));
+	
+	newSubmenu.append(new gui.MenuItem({
+		label: 'Folder',
+		click: function() {
+			$rootScope.$emit('service.project.new.folder');
+		},
+		key: 'n',
+		modifiers: 'cmd+alt'
 	}));
 
 	newSubmenu.append(new gui.MenuItem({
 		label: 'Project...',
 		click: function() {
-			project.create();
+			//project.create();
 		},
 		key: 'n',
 		modifiers: 'cmd+shift'
