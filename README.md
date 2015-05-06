@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/printhom/devkit-core.png?label=ready&title=Ready)](https://waffle.io/printhom/devkit-core)
 # What is this?
 This projec's goal is to create a development kit fully based on nw.js (previously node-webkit) and angular.js.
 
