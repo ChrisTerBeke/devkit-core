@@ -71,6 +71,7 @@
 					ng-controller="SidebarController as sidebar"
 					ng-right-click="showCtxMenu(undefined, $event)"
 					file-drop="dropped( $event, file )"
+					ng-init="init()"
 				>
 				
 					<script type="text/ng-template" id="filetreeTmpl">

@@ -5,7 +5,7 @@ var path		= require('path');
 var events 		= {};
 
 
-var ApplicationController = function($scope, $timeout, $project, $auth, $stoplight, $sidebar, $file, $events, windowEventsFactory, $templateCache)
+var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, windowEventsFactory, $templateCache)
 {
 	var gui 		= require('nw.gui');
 	var win 		= gui.Window.get();
@@ -22,6 +22,7 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 
 	$scope.files = {}; // files open
 	$scope.fileHistory = [];
+	$scope.path = false; // current project path
 
 	$scope.setBlur = function(blur)
 	{
@@ -96,12 +97,6 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	window.addEventListener('load', function()
 	{
 		$scope.loaded = true;
-
-		// load previous project, if available
-		if( typeof window.localStorage.project_dir == 'string' )
-		{
-			$project.load( window.localStorage.project_dir );
-		}
 	});
 
     /* TODO: Merge this somehow, make it more elegeant*/
@@ -196,9 +191,9 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	file.insert(new gui.MenuItem({
 		label: 'Open Project',
 		click: function() {
-			$project.select();
-
-			$scope.updateFiletree(window.localStorage.project_dir);
+			$rootScope.$emit('service.project.open');
+			//$project.select();
+			//$scope.updateFiletree(window.localStorage.project_dir);
 		},
 		key: 'o',
 		modifiers: 'cmd'
@@ -252,7 +247,7 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	project.insert(new gui.MenuItem({
 		label: 'Run',
 		click: function(){
-			$rootScope.$emit('homey.run');
+			//$rootScope.$emit('homey.run');
 		},
 		key: 'r',
 		modifiers: 'cmd'
@@ -302,6 +297,6 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 
 }
 
-ApplicationController.$inject = ['$scope', '$timeout', '$project', '$auth', '$stoplight', '$sidebar', '$file', '$events', 'windowEventsFactory', '$templateCache'];
+ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', 'windowEventsFactory', '$templateCache'];
 
 app.controller("ApplicationController", ApplicationController);

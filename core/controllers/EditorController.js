@@ -34,7 +34,6 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 	$scope.update = function(){
 		$scope.files = $file.files;
 		$scope.active = $file.active;
-		$scope.$apply();
 	}
 	
 	$rootScope.$on('service.file.open', function(){

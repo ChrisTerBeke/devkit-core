@@ -32594,11 +32594,8 @@ module.filters = angular.module('module.filters', []);
 var module = module || {};
 
 module.services = angular.module('module.services', [
-	'sdk.project',
-	'sdk.auth',
 	'sdk.events',
 	'sdk.file',
-	'sdk.sidebar',
 	'sdk.stoplight',
 	'sdk.play',
 	'sdk.moduleload',
@@ -32994,377 +32991,6 @@ angular.module('sdk.moduleload', [])
 
     return factory;
 }]);;
-angular.module('sdk.project', []).factory('$project', [ '$rootScope', '$file', function ( $rootScope, $file ) {
-	
-	var factory = {};
-	
-	factory.path = false;
-
-    factory.load = function(project_dir){
-
-        // save for restart
-        window.localStorage.project_dir = project_dir;
-        factory.path = project_dir;
-        
-        $rootScope.$emit('service.project.ready');
-        
-		// load previous files, if available
-		/*
-		if( typeof window.localStorage.files_open != 'undefined' )
-		{
-			var files_open = window.localStorage.files_open.split(',');
-
-			if( files_open.length < 1 ) return;
-
-			files_open.forEach(function( file_path )
-			{
-				if( fs.existsSync(file_path) )
-				{
-					$file.open(file_path);
-					// $rootScope.$emit('editor.open', file_path );
-				}
-			});
-
-		}
-		else {
-			window.localStorage.files_open = '';
-		}
-		*/
-        
-    }
-    
-    factory.select = function(){
-	    var self = this;
-        var directorychooser = document.getElementById('directorychooser');
-        directorychooser.addEventListener("change", function(evt) {
-            self.load( this.value );
-        }, false)
-        directorychooser.click();
-    }
-
-    return factory;
-    
-}]);;
-var gui			= require('nw.gui');
-var path_		= require('path'); // auch
-
-var open		= require("open");
-var fs			= require('fs-extra')
-var trash		= require('trash');
-var watchTree 	= require("fs-watch-tree").watchTree;
-	
-angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '$project', '$http', '$timeout', '$q', function ($rootScope, $file, $project, $http, $timeout, $q) {
-	var factory = {};
-	
-	// various
-	factory.renaming = false;
-
-	// Selected items
-	factory.selected = [];
-	
-    factory.select = function(path, event) {
-
-        // multiple selection
-        if( event.metaKey || event.ctrlKey ) {
-            if( factory.selected.indexOf(path) > -1 ) {
-                factory.selected = factory.selected.filter(function(path_) {
-                    return path_ != path;
-                });
-            }
-            else {
-                factory.selected.push( path );
-            }
-        }
-        else {
-            factory.selected = [ path ];
-        }
-    }
-
-    factory.isSelected = function( path ) {
-        return factory.selected.indexOf(path) > -1;
-    }
-    
-    // Expanded items
-	factory.expanded = [];
-	
-    factory.expand = function( path, expanded ) {
-	    if( expanded ) {
-        	factory.expanded.push( path );	    
-		} else {
-			var index = factory.expanded.indexOf(path);	
-			factory.expanded.splice(index, 1);	
-		}
-    }
-
-    factory.isExpanded = function( path ) {
-        return factory.expanded.indexOf(path) > -1;
-    }
-
-    // rename a file
-    factory.isRenaming = function( path ){
-	    return factory.renaming === path;
-    }
-    factory.rename = function( item ){
-	    var newName = item.name;
-        var itemFolder = path_.dirname( item.path );
-        var newPath = path_.join( itemFolder, newName );
-        
-        if( fs.existsSync( newPath ) ) {
-	       return alert("That filename already exists!");
-        }
-
-        fs.rename( item.path, newPath, function(){
-	        factory.update();
-        });
-
-        factory.renaming = false;
-	    
-    }
-
-	// open a file (or directory)
-	factory.open = function( path ) {
-		if( fs.lstatSync( path ).isDirectory() ) {
-            factory.expanded.push(path);
-        } else {
-            $file.open( path );
-        }
-	}
-
-    factory.keyPress = function( event, item ) {
-        console.log( event, item );
-    }
-
-    factory.update = function( ) {	    
-        factory.filetree = readdirSyncRecursive( $project.path, true );
-		$rootScope.$emit('service.sidebar.tree.update');
-    }
-
-    factory.dropped = function( event, file, dropped_path ) {
-	    
-	    dropped_path = dropped_path || $project.path;
-	    
-	    console.log('event', event, 'file', file, 'dropped_path', dropped_path)
-	    
-        var filename = path_.basename( file.path );
-
-        // if dropped on a file, get the file's parent folder
-        if( fs.lstatSync(dropped_path).isFile() ) {
-            var new_path = path_.dirname( dropped_path );
-        }
-        else {
-            var new_path = path_.join( dropped_path, filename );
-        }
-
-        // prevent overwriting
-        if( fs.existsSync( new_path ) ) {
-            if( !confirm('Overwrite `' + filename + '`?') ) return;
-        }
-
-        fs.copy( file.path, new_path, {}, function(err){});
-    }
-    
-	factory.showCtxMenu = function( item, event ){
-		
-		// Create an empty menu
-		var ctxmenu = new gui.Menu();
-		
-		// Add some items
-		if( item ) {
-		
-			// multiple selection
-			if( factory.isSelected(item.path) ) {
-				if( event.metaKey || event.ctrlKey ) {
-					factory.selected.push( item.path );
-				} else {
-					factory.selected = [ item.path ];
-				}
-			}
-			
-			ctxmenu.append(new gui.MenuItem({ label: 'Open', click: function(){
-				factory.selected.forEach(function( item_path ){
-					$file.open( item_path );					
-				});				
-			}}));
-			ctxmenu.append(new gui.MenuItem({ label: 'Open With Default Editor', click: function(){
-				factory.selected.forEach(function( item_path ){
-					open( item_path );
-				});
-			}}));
-			ctxmenu.append(new gui.MenuItem({ label: 'Open File Location', click: function(){
-				factory.selected.forEach(function( item_path ){
-					open( path_.dirname( item_path ) );
-				});
-			}}));
-			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
-			ctxmenu.append(new gui.MenuItem({ label: 'Move to Trash...', click: function(){
-				
-				if( factory.selected.length > 1 ) {
-					if( confirm( "Are you sure you want to remove " + factory.selected.length + " items to the trash?" ) ) {
-						factory.selected.forEach(function( item_path ){
-							trash([ item_path ]);
-						});
-					}				
-				} else {
-					if( confirm( "Are you sure you want to remove `" + item.name + "` to the trash?" ) ) {
-						trash([ item.path ]);
-					}
-				}
-			}}));
-			
-			// single file options
-			if( factory.selected.length == 1 ) {
-				ctxmenu.append(new gui.MenuItem({ label: 'Rename...', click: function(){
-					factory.renaming = item.path;
-				}}));
-			}
-			
-			ctxmenu.append(new gui.MenuItem({ label: 'Duplicate', click: function(){
-				
-				factory.selected.forEach(function( item_path ){
-					var new_path = newPath( item_path );
-					
-					var i = 2;
-					while( fs.existsSync( new_path ) ) {
-						new_path = newPath( item_path, i++ );
-					}
-									
-					fs.copySync( item_path, new_path );
-				});
-				
-			}}));
-			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
-		}
-		
-		// always visible options
-		ctxmenu.append(new gui.MenuItem({ label: 'New Folder', click: function(){		
-			var newFolderName = 'Untitled Folder';			
-			
-			if( typeof item == 'undefined' ) {
-				var folder = $project.path;
-			} else {
-				var folder = item.path;
-			}
-			
-			fs.ensureDir( path_.join( folder, newFolderName) );
-		}}));
-		ctxmenu.append(new gui.MenuItem({ label: 'New File', click: function(){
-		
-			var newFileName = 'Untitled File';
-			
-			if( typeof item == 'undefined' ) {
-				var folder = $project.path;
-			} else {
-				
-				if( fs.statSync( item.path ).isFile() ) {
-					var folder = path_.dirname( item.path );
-				} else {
-					var folder = item.path;
-				}
-			}
-			
-			var newFilePath = path_.join( folder, newFileName);
-									
-			fs.ensureFile( newFilePath );
-			factory.renaming = newFilePath;
-			// TODO: focus rename element
-			
-		} }));
-		
-		// Popup as context menu
-		ctxmenu.popup( event.clientX, event.clientY );
-	}
-	
-    $rootScope.$on('service.project.ready', function(){
-	   	
-		// filetree
-		// watch for changes
-		var watch = watchTree($project.path, function (event) {
-			factory.filetree = factory.update();
-		});
-	
-		// initial scan
-		factory.filetree = factory.update();
-		
-	});
-
-    return factory;
-    
-}]);
-
-// Duplicate file or folder, but create `filename copy[ n]`
-// when a duplicate already exists.
-// This was fun to do :)
-function newPath( file_path, index ) {
-    index = index || false;
-
-    var filename = path_.basename( file_path );
-    var folder = path_.dirname( file_path );
-
-    if( fs.statSync( file_path ).isFile() ) {
-        var ext = path_.extname( filename );
-        var base = path_.basename( filename, ext );
-
-        if( index ) {
-            var new_filename = base + ' copy ' + index.toString() + ext;
-        }
-        else {
-            var new_filename = base + ' copy' + ext;
-        }
-
-    }
-    else {
-        var new_filename = filename + ' copy'
-        if( index ) new_filename += ' ' + index.toString();
-    }
-
-    var new_path = path_.join( folder, new_filename );
-    return new_path;
-}
-
-// read a dir's contents recursively
-function readdirSyncRecursive( dir, root ) {
-    root = root || false;
-    var result = [];
-    var contents = fs.readdirSync( dir );
-
-    contents.forEach(function(item) {
-        var item_path = path_.join(dir, item);
-        var item_stats = fs.lstatSync( item_path );
-
-        if( item_stats.isDirectory() ) {
-            result.push({
-                name: item,
-                path: path_.join(dir, item),
-                type: 'folder',
-                stats: item_stats,
-                children: readdirSyncRecursive( item_path )
-            });
-
-        }
-        else {
-            result.push({
-                name: item,
-                path: path_.join(dir, item),
-                type: 'file',
-                stats: item_stats,
-                ext: path_.extname(item).replace(".", ""),
-            });
-        }
-    });
-
-    if( root ) {
-        return [{
-            type: 'folder',
-            name: path_.basename( dir ),
-            path: dir,
-            children: result,
-            stats: fs.lstatSync( dir )
-        }];
-    }
-    else {
-        return result;
-    }
-};
 angular.module('sdk.stoplight', [])
     .factory('$stoplight', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {   
 	var factory = {};
@@ -33512,7 +33138,7 @@ var path		= require('path');
 var events 		= {};
 
 
-var ApplicationController = function($scope, $timeout, $project, $auth, $stoplight, $sidebar, $file, $events, windowEventsFactory, $templateCache)
+var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, windowEventsFactory, $templateCache)
 {
 	var gui 		= require('nw.gui');
 	var win 		= gui.Window.get();
@@ -33529,6 +33155,7 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 
 	$scope.files = {}; // files open
 	$scope.fileHistory = [];
+	$scope.path = false; // current project path
 
 	$scope.setBlur = function(blur)
 	{
@@ -33603,12 +33230,6 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	window.addEventListener('load', function()
 	{
 		$scope.loaded = true;
-
-		// load previous project, if available
-		if( typeof window.localStorage.project_dir == 'string' )
-		{
-			$project.load( window.localStorage.project_dir );
-		}
 	});
 
     /* TODO: Merge this somehow, make it more elegeant*/
@@ -33703,9 +33324,9 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	file.insert(new gui.MenuItem({
 		label: 'Open Project',
 		click: function() {
-			$project.select();
-
-			$scope.updateFiletree(window.localStorage.project_dir);
+			$rootScope.$emit('service.project.open');
+			//$project.select();
+			//$scope.updateFiletree(window.localStorage.project_dir);
 		},
 		key: 'o',
 		modifiers: 'cmd'
@@ -33759,7 +33380,7 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	project.insert(new gui.MenuItem({
 		label: 'Run',
 		click: function(){
-			$rootScope.$emit('homey.run');
+			//$rootScope.$emit('homey.run');
 		},
 		key: 'r',
 		modifiers: 'cmd'
@@ -33809,7 +33430,7 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 
 }
 
-ApplicationController.$inject = ['$scope', '$timeout', '$project', '$auth', '$stoplight', '$sidebar', '$file', '$events', 'windowEventsFactory', '$templateCache'];
+ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', 'windowEventsFactory', '$templateCache'];
 
 app.controller("ApplicationController", ApplicationController);
 ;
@@ -33849,7 +33470,6 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 	$scope.update = function(){
 		$scope.files = $file.files;
 		$scope.active = $file.active;
-		$scope.$apply();
 	}
 	
 	$rootScope.$on('service.file.open', function(){
@@ -33864,67 +33484,399 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 EditorController.$inject = ['$rootScope', '$scope', '$file', 'windowEventsFactory', '$rootScope'];
 
 app.controller("EditorController", EditorController);;
-var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
-{
+var gui			= require('nw.gui');
+var path		= require('path'); // auch
 
-	$scope.select = function(path, event)
-	{
-		$sidebar.select(path, event);
-	}
+var open		= require("open");
+var fs			= require('fs-extra')
+var trash		= require('trash');
+var watchTree 	= require("fs-watch-tree").watchTree;
 
-	$scope.isSelected = function(path)
-	{
-		return $sidebar.isSelected(path);
+var SidebarController = function($scope, $rootScope, $file, $timeout) {
+	
+	$scope.selected = [];
+	$scope.renaming = false;
+	$scope.expanded = [];
+	$scope.filetree = {};
+	
+	$scope.init = function() {
+		// load previous project, if available
+		if(typeof window.localStorage.project_dir == 'string') {
+			$scope.loadProject(window.localStorage.project_dir);
+		}
 	}
 	
-	$scope.expand = function(path, expanded)
-	{
-		$sidebar.expand(path, expanded);
-	}
-
-	$scope.isExpanded = function(path)
-	{
-		return $sidebar.isExpanded(path);
-	}
-
-	$scope.rename = function( item )
-	{
-		$sidebar.rename( item );
+	/*
+	 * load a project
+	 */
+	$scope.loadProject = function(rootPath) {
+		window.localStorage.project_dir = rootPath;
+        $scope.$parent.path = rootPath;
+        
+        // filetree
+		// watch for changes
+		watchTree($scope.$parent.path, function (event) { // $parent is ApplicationController
+			$scope.update();
+		});
+	
+		// initial scan
+		$scope.update();
+        $rootScope.$emit('service.project.ready');
 	}
 	
-	$scope.isRenaming = function( path )
-	{
-		return $sidebar.isRenaming( path );
+	/*
+	 * select a project directory
+	 */
+	$scope.selectProject = function() {
+        var directorychooser = document.getElementById('directorychooser');
+        directorychooser.addEventListener("change", function(evt) {
+            $scope.loadProject(this.value);
+        }, false)
+        directorychooser.click();
 	}
 
-	$scope.open = function( path )
-	{
-		$sidebar.open( path );
+	/*
+	 * select filepath
+	 */
+	$scope.select = function(filePath, event) {
+		
+		// multiple selection
+        if( event.metaKey || event.ctrlKey ) {
+            if( $scope.selected.indexOf(filePath) > -1 ) {
+                $scope.selected = $scope.selected.filter(function(path) {
+                    return path != filePath;
+                });
+            }
+            else {
+                $scope.selected.push(filePath);
+            }
+        }
+        else {
+            $scope.selected = [filePath];
+        }
 	}
 
-	$scope.update = function()
-	{
-		$scope.filetree = $sidebar.filetree;
-		$scope.$apply()
-	}
-
-	$scope.dropped = function( event, file, dropped_path )
-	{		
-		$sidebar.dropped(event, file, dropped_path);
-	}
-
-	$scope.showCtxMenu = function( item, event ){
-		$sidebar.showCtxMenu( item, event );
+	/*
+	 * check if given filePath is currently selected
+	 */
+	$scope.isSelected = function(filePath) {
+		return $scope.selected.indexOf(filePath) > -1;
 	}
 	
+	/*
+	 * expand filePath
+	 */
+	$scope.expand = function(filePath, expanded) {
+		if( expanded ) {
+        	$scope.expanded.push(filePath);	    
+		} else {
+			var index = $scope.expanded.indexOf(filePath);	
+			$scope.expanded.splice(index, 1);	
+		}
+	}
+
+	/*
+	 * check if filePath is extended in sidebar
+	 */
+	$scope.isExpanded = function(filePath) {
+		return $scope.expanded.indexOf(filePath) > -1;
+	}
+	
+	/*
+	 * rename a file
+	 */
+	$scope.rename = function(item) {
+		var newName = item.name;
+        var itemFolder = path.dirname(item.path);
+        var newPath = path.join(itemFolder, newName);
+        
+        if(fs.existsSync(newPath)) {
+	       return alert("That filename already exists!");
+        }
+
+        fs.rename(item.path, newPath, function() {
+	        $scope.update();
+        });
+
+        $scope.renaming = false;
+	}
+	
+	/*
+	 * check if given filePath is currently being renamed
+	 */
+	$scope.isRenaming = function(filePath) {
+		return $scope.renaming === filePath;
+	}
+
+	/*
+	 * open a file (or directory)
+	 */
+	$scope.open = function(filePath) {
+		if(fs.lstatSync(filePath).isDirectory()) {
+            $scope.expanded.push(path);
+        }
+        else {
+            $file.open(filePath);
+        }
+	}
+
+	/*
+	 * Update scope
+	 */
+	$scope.update = function() {
+		$scope.filetree = readdirSyncRecursive( $scope.$parent.path, true ); // $parent is ApplicationController
+	}
+	
+	/*
+	 * On drop event
+	 */
+	$scope.dropped = function(event, file, dropped_path) {
+		dropped_path = dropped_path || $scope.$parent.path;  // $parent is ApplicationController
+	    
+	    // console.log('event', event, 'file', file, 'dropped_path', dropped_path)
+	    
+        var fileName = path.basename(file.path);
+
+        // if dropped on a file, get the file's parent folder
+        if(fs.lstatSync(dropped_path).isFile()) {
+            var new_path = path.dirname(dropped_path);
+        }
+        else {
+            var new_path = path.join(dropped_path, fileName);
+        }
+
+        // prevent overwriting
+        if(fs.existsSync(new_path)) {
+            if( !confirm('Overwrite `' + fileName + '`?') ) return; // ask user to confirm file overwrite
+        }
+
+        fs.copy(file.path, new_path, {}, function(err) {
+	        console.log(err); // an error occured when copying file, let us know in console
+        });
+	};
+	
+	/*
+	 * Show a custom context menu for the sidebar (aka the right mouse button menu)
+	 * TODO: create a nicer global method to construct menus
+	 */
+	$scope.showCtxMenu = function(item, event) {
+		// Create an empty menu
+		var ctxmenu = new gui.Menu();
+		
+		// Add some items
+		if( item ) {
+			// multiple selection
+			if( $scope.isSelected(item.path) ) {
+				if( event.metaKey || event.ctrlKey ) {
+					$scope.selected.push( item.path );
+				} else {
+					$scope.selected = [ item.path ];
+				}
+			}
+			
+			ctxmenu.append(new gui.MenuItem({ label: 'Open', click: function(){
+				$scope.selected.forEach(function( item_path ){
+					$file.open( item_path );					
+				});				
+			}}));
+			
+			ctxmenu.append(new gui.MenuItem({ label: 'Open With Default Editor', click: function(){
+				$scope.selected.forEach(function( item_path ){
+					open( item_path );
+				});
+			}}));
+			
+			ctxmenu.append(new gui.MenuItem({ label: 'Open File Location', click: function(){
+				$scope.selected.forEach(function( item_path ){
+					open(path.dirname(item_path));
+				});
+			}}));
+			
+			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
+			
+			ctxmenu.append(new gui.MenuItem({ label: 'Move to Trash...', click: function(){
+				if( $scope.selected.length > 1 ) {
+					if( confirm( "Are you sure you want to remove " + $scope.selected.length + " items to the trash?" ) ) {
+						$scope.selected.forEach(function( item_path ){
+							trash([ item_path ]);
+						});
+					}				
+				}
+				else {
+					if( confirm( "Are you sure you want to remove `" + item.name + "` to the trash?" ) ) {
+						trash([ item.path ]);
+					}
+				}
+				$scope.apply();
+			}}));
+			
+			// single file options
+			if( $scope.selected.length == 1 ) {
+				ctxmenu.append(new gui.MenuItem({ label: 'Rename...', click: function(){
+					$scope.renaming = item.path;
+					$scope.apply();
+				}}));
+			}
+			
+			ctxmenu.append(new gui.MenuItem({ label: 'Duplicate', click: function(){
+				$scope.selected.forEach(function( item_path ){
+					var new_path = newPath( item_path );
+					
+					var i = 2;
+					while( fs.existsSync( new_path ) ) {
+						new_path = newPath( item_path, i++ );
+					}
+									
+					fs.copySync( item_path, new_path );
+					$scope.apply();
+				});
+				
+			}}));
+			
+			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
+		}
+		
+		// always visible options
+		ctxmenu.append(new gui.MenuItem({ label: 'New Folder', click: function() {		
+			var newFolderName = 'Untitled Folder';			
+			
+			if(typeof item == 'undefined') {
+				var folder = $scope.$parent.path; // $parent is ApplicationController
+			}
+			else {
+				var folder = item.path;
+			}
+			
+			fs.ensureDir( path.join( folder, newFolderName) );
+		}}));
+		
+		// new file menu item
+		ctxmenu.append(new gui.MenuItem({ label: 'New File', click: function(){
+		
+			var newFileName = 'Untitled File';
+			
+			if(typeof item == 'undefined') {
+				var folder = $scope.$parent.path; // $parent is ApplicationController
+			}
+			else {
+				if( fs.statSync( item.path ).isFile() ) {
+					var folder = path.dirname( item.path );
+				} else {
+					var folder = item.path;
+				}
+			}
+			
+			var newFilePath = path.join( folder, newFileName);
+									
+			fs.ensureFile( newFilePath );
+			$scope.renaming = newFilePath;
+			$scope.apply();
+			
+			// TODO: focus rename element
+			
+		} }));
+		
+		// Popup as context menu
+		ctxmenu.popup( event.clientX, event.clientY );
+	}
+	
+	/*
+	 * Listen to open new project event
+	 */
+	$rootScope.$on('service.project.open', function() {
+		$scope.selectProject();
+	});
+
+	/*
+	 * Listen to sidebar tree update event
+	 */
 	$rootScope.$on('service.sidebar.tree.update', function(){
 		$scope.update();
 	});
 }
 
-SidebarController.$inject = ['$scope', '$rootScope', '$sidebar', '$timeout'];
+SidebarController.$inject = ['$scope', '$rootScope', '$file', '$timeout'];
 
-app.controller("SidebarController", SidebarController);;
+app.controller("SidebarController", SidebarController);
+
+/*
+ * Duplicate file or folder, but create `filename copy[n]`
+ * when a duplicate already exists.
+ * This was fun to do :)
+ */
+function newPath( file_path, index ) {
+    index = index || false;
+
+    var filename = path.basename( file_path );
+    var folder = path.dirname( file_path );
+
+    if( fs.statSync( file_path ).isFile() ) {
+        var ext = path.extname( filename );
+        var base = path.basename( filename, ext );
+
+        if( index ) {
+            var new_filename = base + ' copy ' + index.toString() + ext;
+        }
+        else {
+            var new_filename = base + ' copy' + ext;
+        }
+
+    }
+    else {
+        var new_filename = filename + ' copy'
+        if( index ) new_filename += ' ' + index.toString();
+    }
+
+    var new_path = path.join( folder, new_filename );
+    return new_path;
+}
+
+/*
+ * Read a dir's contents recursively
+ */
+function readdirSyncRecursive( dir, root ) {
+    root = root || false;
+    var result = [];
+    var contents = fs.readdirSync( dir );
+
+    contents.forEach(function(item) {
+        var item_path = path.join(dir, item);
+        var item_stats = fs.lstatSync( item_path );
+
+        if( item_stats.isDirectory() ) {
+            result.push({
+                name: item,
+                path: path.join(dir, item),
+                type: 'folder',
+                stats: item_stats,
+                children: readdirSyncRecursive( item_path )
+            });
+
+        }
+        else {
+            result.push({
+                name: item,
+                path: path.join(dir, item),
+                type: 'file',
+                stats: item_stats,
+                ext: path.extname(item).replace(".", ""),
+            });
+        }
+    });
+
+    if( root ) {
+        return [{
+            type: 'folder',
+            name: path.basename( dir ),
+            path: dir,
+            children: result,
+            stats: fs.lstatSync( dir )
+        }];
+    }
+    else {
+        return result;
+    }
+};
 var WidgetController = function($scope, $rootScope)
 {
 	$scope.getWidgetPath = function( name ) {
@@ -34187,59 +34139,59 @@ var AuthController = function($scope, $auth)
 AuthController.$inject = ['$scope', '$auth'];
 
 app.controller("AuthController", AuthController);;
-// app.factory('$auth', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
-// 	var factory = {};
+app.factory('$auth', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
+	var factory = {};
 
-//    factory.login = function() {
-//    		var user = {};
-// 		user.status = 'logging-in';
+   factory.login = function() {
+   		var user = {};
+		user.status = 'logging-in';
 
-// 		$timeout(function() {
-// 			$rootScope.$emit('devkit.blur', true);
-// 		}, 1);
+		$timeout(function() {
+			$rootScope.$emit('devkit.blur', true);
+		}, 1);
 
-// 		return user;
+		return user;
 
-// 	}
+	}
 
-// 	factory.logout = function() {
-// 		var user = {};
-// 		user.status = 'logged-out';
-// 		user.statusMessage = 'Log in';
+	factory.logout = function() {
+		var user = {};
+		user.status = 'logged-out';
+		user.statusMessage = 'Log in';
 
-// 		delete window.localStorage.access_token;
-// 		delete window.localStorage.refresh_token;
+		delete window.localStorage.access_token;
+		delete window.localStorage.refresh_token;
 
-// 		return user;
-// 	}
+		return user;
+	}
 
-// 	factory.getUserInfo = function() {
-// 		var promise = $http({
-// 			method: 'GET',
-// 	        url:  window.PATH.auth.userInfo,
-// 	        headers: {
-// 	          'Authorization': 'Bearer ' + window.localStorage.access_token
-// 	        },
-// 	        withCredentials: true
-// 	    })
-// 	    .success(function(data){
-// 	        user = data;
-// 			user.status = 'logged-in';
+	factory.getUserInfo = function() {
+		var promise = $http({
+			method: 'GET',
+	        url:  window.PATH.auth.userInfo,
+	        headers: {
+	          'Authorization': 'Bearer ' + window.localStorage.access_token
+	        },
+	        withCredentials: true
+	    })
+	    .success(function(data){
+	        user = data;
+			user.status = 'logged-in';
 
-// 			return user;
-// 	    })
-// 	    .error(function(){
-// 	        user.status = 'logged-out';
-// 			user.statusMessage = 'Error logging in!';
+			return user;
+	    })
+	    .error(function(){
+	        user.status = 'logged-out';
+			user.statusMessage = 'Error logging in!';
 
-// 			return user;
-// 	    });
+			return user;
+	    });
 
-// 	    return promise;
-// 	}
+	    return promise;
+	}
 
-//     return factory;
-// }]);;
+    return factory;
+}]);;
 var PlayController = function($scope, $rootScope)
 {
 
