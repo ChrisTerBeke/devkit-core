@@ -1,7 +1,29 @@
 var path	= require('path');
 var fs		= require('fs');
 
-function loadModule(module, type, dir, dependencies)
+function injectDependency (filename, filetype)
+{
+
+	console.log('injectDependency');
+    if (filetype == 'js')
+    {
+        var fileref = document.createElement('script');
+        fileref.setAttribute('type','text/javascript');
+        fileref.setAttribute('src', filename);
+    }
+    else if (filetype == 'css')
+    {
+        var fileref = document.createElement('link');
+        fileref.setAttribute('rel', 'stylesheet');
+        fileref.setAttribute('type', 'text/css');
+        fileref.setAttribute('href', filename);
+    }
+
+    if (typeof fileref != 'undefined')
+        document.getElementsByTagName('head')[0].appendChild(fileref)
+}
+
+function loadModule (module, type, dir, dependencies)
 {
     var self = this;
 
@@ -14,6 +36,39 @@ function loadModule(module, type, dir, dependencies)
 			modules.push(dependency);
 		});
 	}
+
+	var self = this;
+    console.log('load');
+
+	// load optional dependencies
+	var dependencies_path = path.join(dir, 'dependencies');
+	fs.exists(dependencies_path, function(exists) {
+		if(!exists) return;
+		fs.readdir(dependencies_path, function (err, files) {
+            if (err) throw err;
+            
+            files.forEach(function(file){
+                if( path.extname(file) == '.js') {
+                    self.injectDependency( path.join(dependencies_path, file), 'js');
+                } else if( path.extname(file) == '.css') {
+                    self.injectDependency( path.join(dependencies_path, file), 'css');
+                }			           
+	        });
+        });
+    });
+
+	var css_path = path.join(dir, 'component.css');
+	fs.exists(css_path, function(exists) {
+		if(exists) {
+        	self.injectDependency( css_path	, 'css');
+        }	
+	});
+	var js_path = path.join(dir, 'component.js');
+	fs.exists(js_path, function(exists) {
+		if(exists) {
+        	self.injectDependency( js_path	, 'js');
+        }
+	});
 	
 	angularModules.push({
 		module: module,
@@ -32530,7 +32585,7 @@ module.angular = angular.module('module.angular', ['ngResource', 'ngAnimate']);
 ;
 var module = module || {};
 
-module.vendor = angular.module('module.vendor', ['ngTagsInput', 'oc.lazyLoad']);
+module.vendor = angular.module('module.vendor', ['ngTagsInput']);
 ;
 var module = module || {};
 
@@ -32864,59 +32919,62 @@ angular.module('sdk.moduleload', [])
 
     $rootScope.modules = {};
 
-    factory.injectDependency = function(filename, filetype)
-    {
-        if (filetype == 'js')
-        {
-            var fileref = document.createElement('script');
-            fileref.setAttribute('type','text/javascript');
-            fileref.setAttribute('src', filename);
-        }
-        else if (filetype == 'css')
-        {
-            var fileref = document.createElement('link');
-            fileref.setAttribute('rel', 'stylesheet');
-            fileref.setAttribute('type', 'text/css');
-            fileref.setAttribute('href', filename);
-        }
+    // factory.injectDependency = function(filename, filetype)
+    // {
 
-        if (typeof fileref != 'undefined')
-            document.getElementsByTagName('head')[0].appendChild(fileref)
-    }
+    // 	console.log('injectDependency');
+    //     if (filetype == 'js')
+    //     {
+    //         var fileref = document.createElement('script');
+    //         fileref.setAttribute('type','text/javascript');
+    //         fileref.setAttribute('src', filename);
+    //     }
+    //     else if (filetype == 'css')
+    //     {
+    //         var fileref = document.createElement('link');
+    //         fileref.setAttribute('rel', 'stylesheet');
+    //         fileref.setAttribute('type', 'text/css');
+    //         fileref.setAttribute('href', filename);
+    //     }
+
+    //     if (typeof fileref != 'undefined')
+    //         document.getElementsByTagName('head')[0].appendChild(fileref)
+    // }
 
     factory.load = function(module, type, dir)
     {
-        var self = this;
+  //       var self = this;
+  //       console.log('load');
 
-		// load optional dependencies
-		var dependencies_path = path.join(dir, 'dependencies');
-		fs.exists(dependencies_path, function(exists) {
-			if(!exists) return;
-			fs.readdir(dependencies_path, function (err, files) {
-	            if (err) throw err;
+		// // load optional dependencies
+		// var dependencies_path = path.join(dir, 'dependencies');
+		// fs.exists(dependencies_path, function(exists) {
+		// 	if(!exists) return;
+		// 	fs.readdir(dependencies_path, function (err, files) {
+	 //            if (err) throw err;
 	            
-	            files.forEach(function(file){
-                    if( path.extname(file) == '.js') {
-                        self.injectDependency( path.join(dependencies_path, file), 'js');
-                    } else if( path.extname(file) == '.css') {
-                        self.injectDependency( path.join(dependencies_path, file), 'css');
-                    }			           
-		        });
-	        });
-        });
+	 //            files.forEach(function(file){
+  //                   if( path.extname(file) == '.js') {
+  //                       self.injectDependency( path.join(dependencies_path, file), 'js');
+  //                   } else if( path.extname(file) == '.css') {
+  //                       self.injectDependency( path.join(dependencies_path, file), 'css');
+  //                   }			           
+		//         });
+	 //        });
+  //       });
 
-		var css_path = path.join(dir, 'component.css');
-		fs.exists(css_path, function(exists) {
-			if(exists) {
-	        	self.injectDependency( css_path	, 'css');
-	        }	
-		});
-		var js_path = path.join(dir, 'component.js');
-		fs.exists(js_path, function(exists) {
-			if(exists) {
-	        	self.injectDependency( js_path	, 'js');
-	        }
-		});
+		// var css_path = path.join(dir, 'component.css');
+		// fs.exists(css_path, function(exists) {
+		// 	if(exists) {
+	 //        	self.injectDependency( css_path	, 'css');
+	 //        }	
+		// });
+		// var js_path = path.join(dir, 'component.js');
+		// fs.exists(js_path, function(exists) {
+		// 	if(exists) {
+	 //        	self.injectDependency( js_path	, 'js');
+	 //        }
+		// });
 
 		var html_path = path.join(dir, 'component.html');
 		fs.exists(html_path, function(exists) {
@@ -33375,8 +33433,13 @@ var angularModules = [];
 angular.element(document).ready(function() {
     require('nw.gui').Window.get().showDevTools();
 
-    modules.push('app');
-    angular.bootstrap(document, modules);
+    setTimeout(function()
+    { 
+        modules.push('app');
+        angular.bootstrap(document, modules);
+    }, 200);
+
+    
 });
 
 // whitelist for iframe and assets
@@ -33410,13 +33473,33 @@ app.run(['$rootScope', '$injector', function($rootScope, $injector) {
 
 // run all angular defined modules
 app.run(['$rootScope', '$timeout', '$templateCache', '$module', function($rootScope, $timeout, $templateCache, $module) {
+    // console.log(angularModules, angularModules.size());
+
     $rootScope.modules = {};
 
-    for(i in angularModules) 
-    {
-        var result = angularModules[i];
-        $module.load(result.module, result.type, result.dir);
-    }
+    console.log('rootscope');
+
+    $timeout(function() {
+        console.log(angularModules);
+        for(i in angularModules) {
+            // angularModules[i];
+            var result = angularModules[i];
+
+            $module.load(result.module, result.type, result.dir);
+
+            // $templateCache.put(result.html_path, result.data);
+
+            // $rootScope.modules[result.type] = $rootScope.modules[result.type] || {};
+            // $rootScope.modules[result.type][result.module] = result.html_path;
+            console.log('function', result.module, result.type, result.dir);
+        }
+    }, 200);
+
+    
+    // angularModules.forEach(function(callback) {
+    //     console.log('something loaded', callback);
+    //     callback();
+    // });
 }]);
 
 if(typeof angular !== 'undefined' && window.DEBUG) {
@@ -33898,38 +33981,6 @@ app.directive('fileDrop', function ( $parse ) {
 		});
 	};
 });;
-app.run(['$rootScope', '$timeout', '$play', '$file', function($rootScope, $timeout, $play, $file) {
-	
-	// devmode
-	require('nw.gui').Window.get().showDevTools();
-	
-	// set editor config
-	$file.setConfig([
-		{
-			ext: ".svg",
-			config: {
-				widgets: [ 'svg' ]
-			}
-		},
-		{
-			ext: ".md",
-			config: {
-				widgets: [ 'markdown' ]
-			}
-		},
-		{
-			ext: ".json",
-			config: {
-				editor: "manifest"
-			}
-		}
-	]);
-
-	// set play button
-	$play.status('loading...');
-		
-}]);
-
 /*
  * Use this area to load your modules. Some module have been pre-loaded for you like codemirror, some widgets and custom icons
  */
@@ -33960,7 +34011,38 @@ loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-ti
 // nope..
 
 // themes
-loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');;
+loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+
+/*
+ * Use this area to define global settings for your app like the file editor config and devtools
+ */
+app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file) {
+	
+	// devmode
+	require('nw.gui').Window.get().showDevTools();
+	
+	// set editor config
+	$file.setConfig([
+		{
+			ext: ".svg",
+			config: {
+				widgets: [ 'svg' ]
+			}
+		},
+		{
+			ext: ".md",
+			config: {
+				widgets: [ 'markdown' ]
+			}
+		},
+		{
+			ext: ".json",
+			config: {
+				editor: "manifest"
+			}
+		}
+	]);
+}]);;
 var fs 		= require('fs-extra');
 var path 	= require('path');
 
