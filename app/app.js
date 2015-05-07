@@ -5,6 +5,7 @@
 //CORE
 // editors
 loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']);
+loadModule('viewer', 		'editor',	'./app/components/editors/devkit-printr-editor-viewer/', ['printr.viewer']);
 
 // widgets
 loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
@@ -56,6 +57,12 @@ app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file
 			ext: ".json",
 			config: {
 				editor: "manifest"
+			}
+		},
+		{
+			ext: ".stl",
+			config: {
+				editor: "viewer"
 			}
 		}
 	]);
