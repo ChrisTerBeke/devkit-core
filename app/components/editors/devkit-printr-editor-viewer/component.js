@@ -58,7 +58,7 @@ app.controller("viewerController", function( $scope, $rootScope, $timeout, $http
     $timeout(function() {
     	appendCalls(json);
     	console.log('called', json);
-    }, 1000);
+    }, 5000);
     
 
 
