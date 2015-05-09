@@ -1,166 +1,192 @@
-angular.module('sdk.file', [])
-    .factory('$file', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
+angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
+	    
 	var factory = {};
+	
+	factory.files = {};
+	factory.active = false;
+	factory.history = [];
 
-    factory.open = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
+	$rootScope.editorConfig = [];
+
+    factory.open = function( file_path )
     {
+    	// console.log('open', file_path);
 
-	    // add the file if it's not already open
-	    if( typeof this.activeFile(files, file_path) == 'undefined' ) {
-
-		    var info = this.getInfo( file_path );
+	    // only load the file when it's not already open
+	    if( !factory.isOpen( file_path ) ) {
+			
+		    var info = factory.getInfo( file_path );
 
 		    // create a file entry
-		    files[ file_path ] = {
+		    factory.files[ file_path ] = {
 			    name		: path.basename( file_path ),
-			    icon		: factory.icon( file_path ),
+			    icon		: info.icon,
 			    path		: file_path,
 			    code		: fs.readFileSync( file_path ).toString(),
 			    _changed	: false,
-			    _view		: info.view,
+			    _view		: info.editor,
 			    _widgets	: info.widgets
 		    }
-
+		    
 	    }
-
-/*
-		var fileHistory = fileHistory.filter(function( file_path_history )
-		{
+	    
+	    // set the file to active
+	    factory.active = file_path;
+	    
+	    // set the history
+		factory.history = factory.history.filter(function( file_path_history ){
 			return file_path_history != file_path;
 		});
-*/
+	    factory.history.push( file_path );
+		
+		// notify everyone
+	    $rootScope.$emit('service.file.open', file_path );
+	    $rootScope.$emit('service.file.focus', file_path );
+		$rootScope.$emit('editor.focus.' + file_path );
 
-	    fileHistory.push( file_path );
-
-	    $rootScope.$emit('editor.focus.' + file_path );
-
-
-	    var json =
-	    {
-		    'active': file_path,
-	    	'files': files,
-	    	'fileHistory': fileHistory
-	    }
-
-	    return json;
-
-//	    $scope.$apply();
-
+	}
+	
+	factory.isOpen = function( file_path )
+	{
+		return typeof factory.files[ file_path ] != 'undefined';
+	}
+	
+	factory.isChanged = function( file_path ) {
+		return factory.files[ file_path ]._changed;
 	}
 
     // close an item
-    factory.close = function(/* file,  */file_path, files, fileHistory/* , file_path_history */)
+    factory.close = function( file_path )
     {
-
-	    var activeFile = this.activeFile(files, file_path);
-
+	    
+	    file_path = file_path || factory.active;
+	    
 	    // check for unsaved changes
-	    if( activeFile._changed )
+	    var should_delete = false;
+	    if( factory.files[ file_path ]._changed )
 	    {
-			    if( confirm("There are unsaved changes, close " + activeFile.name + " anyway?" ) ) {
-			    delete files[ file_path ];
+			if( confirm("There are unsaved changes, close " + factory.files[ file_path ].name + " anyway?" ) ) {
+				should_delete = true;
 		    }
 	    } else {
-		    delete files[ file_path ];
+		    should_delete = true;
+		}
+		
+		if( should_delete ) {
+			
+			// delete from files
+		    delete factory.files[ file_path ];
+		    
+		    // delete from history
+			factory.history = factory.history.filter(function( file_path_history ){
+				return file_path_history != file_path;
+			});
+						
+			// set last tab as active
+			if( factory.history.length > 0 ) {
+				var lastFile = factory.history[ factory.history.length-1 ];
+				factory.open( lastFile )
+			} else {
+				factory.active = undefined;
+			}
 	    }
-
-		// set last tab as active
-		// TODO: set last viewed tab as active
-		/*
-		if( Object.keys($scope.files).length > 0 ) {
-			$scope.open( $scope.files[Object.keys($scope.files)[Object.keys($scope.files).length - 1]].path );
-		} else {
-			$scope.active = undefined;
-		}
-		*/
-
-		// remove from file history
-/*
-		var fileHistory = fileHistory.filter(function( file_path_history )
-		{
-			return file_path_history != file_path;
-		});
-*/
-
-		// set last tab as active
-/*
-		if( $scope.fileHistory.length > 0 )
-		{
-			var lastFile = fileHistory[ $scope.fileHistory.length-1 ];
-			$scope.open(lastFile);
-		}
-		else
-		{
-			active = undefined;
-		}
-*/
-
-		return
-	    {
-		    active: active
-	    }
+	    
+	    
+	    $rootScope.$emit('service.file.close', file_path);
 
     }
 
     // write the file to disk
-    factory.save = function(files, active)
+    factory.save = function( file_path )
     {
-
-	    if( typeof active == 'undefined' ) return;
-
-	    var activeFile = files[ active ];
-
-	    fs.writeFileSync( activeFile.path, activeFile.code );
-
-		activeFile._changed = false;
-
-		$rootScope.$emit('editor.saved');
-		$rootScope.$emit('editor.saved.' + activeFile.path);
-    }
-
-    factory.activeFile = function(files, file_path)
-    {
-    	return files[ file_path ];
+	    
+	    file_path = file_path || factory.active;
+	    
+    	if(typeof beforeSave[ file_path ] !== 'undefined') 
+    	{
+	        var data = $q.all(beforeSave[ file_path ])
+	   		.then(function(response) 
+	   		{
+	   			for(var i = 0; i < response.length; i++) 
+	   			{
+	   				response[i](function(data) 
+	   				{
+						factory.files[ file_path ] = angular.extend(factory.files[ file_path ], data);
+					});
+	   			}
+	   			saveFile( file_path )
+			});
+    	}
+    	else 
+    	{
+    		saveFile( file_path )
+    	}
     }
 
     // get info (which views & widgets)
     factory.getInfo = function( file_path )
     {
-
-	    file_path = file_path.replace($rootScope.project.path, '');
+	    file_path = file_path.replace(window.localStorage.project_dir, '');
 
 	    // determine the view.
 	    var file = path.parse( file_path );
 
 	    // default to codemirror
-	    var view = 'codemirror';
+	    var editor = 'codemirror';
 	    var widgets = [];
 
-		// find a specific one
-		// "/app.json"
-	    if( file.base == 'app.json' && file.dir == '/' ) {
-		    view = 'manifest';
-		    widgets = [];
+		for(var i in $rootScope.editorConfig) {
+			var configItem = $rootScope.editorConfig[i];
+			var extMatch = false;
+			var dirMatch = false;
+			var baseMatch = false;
+
+			if(configItem.ext) {
+				if(file.ext === configItem.ext) {
+					extMatch = true;
+				}
+			}
+			else {
+				extMatch = true;
+			}
+
+			if(configItem.dir) {
+				if(file.dir === configItem.dir) {
+					dirMatch = true;
+				}
+			}
+			else {
+				dirMatch = true;
+			}
+
+			if(configItem.base) {
+				if(file.base === configItem.base) {
+					baseMatch = true;
+				}
+			}
+			else {
+				baseMatch = true;
+			}
+
+			if(extMatch && dirMatch && baseMatch) {
+				return {
+				    editor: configItem.config.editor || editor,
+				    widgets: configItem.config.widgets || widgets,
+				    ext: file.ext,
+				}
+			}
 		}
 
-		// "/animations/*.js"
-	    if( file.ext == '.js' && file.dir == '/animations' ) {
-		    view = 'codemirror';
-		    widgets = [ 'ledring' ];
+		return {
+		    editor: editor,
+		    widgets: widgets,
+		    ext: file.ext,
 		}
-
-		// "*.svg"
-	    if( file.ext == '.svg' ) {
-		    view = 'codemirror';
-		    widgets = [ 'svg' ];
-		}
-
-	    return {
-		    view: view,
-		    widgets: widgets
-		}
-
     }
+
+    factory.setConfig = function(config) {
+	  	$rootScope.editorConfig = config;
+    };
 
     factory.icon = function( file_path )
     {
@@ -168,4 +194,16 @@ angular.module('sdk.file', [])
     }
 
     return factory;
+
+    function saveFile( file_path ) {
+
+	    var activeFile = factory.files[ file_path ];
+
+	    fs.writeFileSync( file_path, activeFile.code );
+
+		activeFile._changed = false;
+
+		$rootScope.$emit('editor.saved');
+		$rootScope.$emit('editor.saved.' + activeFile.path);
+    }
 }]);

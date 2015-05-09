@@ -1,5 +1,0 @@
-<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path">
-	<title>{{widget}}</title>
-	<link rel="stylesheet" type="text/css" ng-href="./editor/widgets/{{widget}}/widget.css" />
-	<widget class="{{widget}}" ng-include="'./editor/widgets/' + widget + '/widget.html'"></widget>
-</widgetwrap>

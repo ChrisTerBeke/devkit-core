@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 		 *	Clean folders before copying.
 		 */
 		clean: {
-		  assets: ["./public/assets/javascripts/*", "./public/assets/stylesheets/*"],
+		  assets: ["./public/assets/javascripts/*"],
 		  config: ["./public/config.js"]
 		},
 
@@ -19,6 +19,8 @@ module.exports = function(grunt) {
 			},
 			files: {
 				src: [
+
+					'./core/loadModules.js',
 
 					/*
 					 *	Include configs
@@ -41,7 +43,6 @@ module.exports = function(grunt) {
 					/*
 					 *	Angular vendor dependencies.
 					 */
-					'./bower_components/angular-ui-codemirror/ui-codemirror.js',
 					'./bower_components/angular-hotkeys/build/hotkeys.js',
 					'./bower_components/ng-tags-input/ng-tags-input.js',
 
@@ -53,6 +54,7 @@ module.exports = function(grunt) {
 					'./core/modules/filters.js',
 					'./core/modules/services.js',
 					'./core/modules/core.js',
+					'./core/modules/modules.js',
 
 					/*
 					 *	Include source files
@@ -60,16 +62,13 @@ module.exports = function(grunt) {
 					'./core/dependencies/**/*.js',
 					'./core/filters/**/*.js',
 					'./core/services/**/*.js',
-					'./core/directives/**/*.js',
 
 					/*
-					 *	Include main files
+					 *	Include core
 					 */
-					'./bower_components/codemirror/lib/codemirror.js',
-					'./bower_components/codemirror/mode/javascript/javascript.js',
-
 					'./core/app.js',
 					'./core/controllers/**/*.js',
+					'./core/directives/**/*.js',
 
 					/*
 					 *	Include app specific files
@@ -95,28 +94,12 @@ module.exports = function(grunt) {
 		},
 
 		/*
-		 * Initialise Compass SASS
-		 */
-		compass: {
-			dist: {
-				options: {
-					config: './compass.rb',
-					environment: window.ENV.type
-				}
-			}
-		},
-
-		/*
 		 * Watch for changes in directories
 		 */
 		watch: {
 			javascripts: {
-				files: ['./public/tmp/**/*.js', './core/**/*.js', './app/**/*.js'],
+				files: ['./public/tmp/**/*.js', './core/**/*.js', './app/**/*.js', './bower_components/**/*.js'],
 				tasks: ['js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist')]
-			},
-			sass: {
-				files: ['./sass/**/*.scss', './css-base/dist/**/*.scss'],
-				tasks: ['compass']
 			}
 		},
 
@@ -162,6 +145,6 @@ module.exports = function(grunt) {
 	grunt.registerTask('js:dist', ['build:config', 'concat:', 'uglify']);
 	grunt.registerTask('js:dev', ['build:config', 'concat']);
 
-  	grunt.registerTask('default', ['clean:assets', 'compass', 'js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist'), 'compass']);
+  	grunt.registerTask('default', ['clean:assets', 'js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist')]);
 
 };

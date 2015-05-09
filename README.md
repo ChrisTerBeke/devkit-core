@@ -1,23 +1,45 @@
-# Homey Development Kit
+# What is this?
+This projec's goal is to create a development kit fully based on nw.js (previously node-webkit) and angular.js.
 
-Create Homey apps without any effort!
+This project is currently actively maintained by [Athom](https://github.com/athombv/) and [PRINTR](https://github.com/PRINTR3D).
 
-### Usage
-*This is probably what you want when you want to make Homey apps.*
+If you're in the need of a development kit for your own project or company as well, please feel free to contribute!
 
-Download a pre-built version from https://developers.athom.nl
+## Get started
 
-### Run instructions (for editor development only)
-Download a pre-built nw.js binary from http://nwjs.io, and execute `run.sh` in you're on OS X. Otherwise, you're on your own ;)
+### Installation
+Requirements: [node.js](https://nodejs.org/), [bower](http://bower.io/), [grunt](http://gruntjs.com/), [nw.js](https://github.com/nwjs/nw.js/)
+
+1. Fork this repo and clone your fork locally
+2. run `npm install`
+3. run `bower install`
+4. run `grunt`
+5. Make an alias to the nw.js executable as `nw`
+6. run `nw .` in the cloned folder
+
+*(optional)*
+
+7. run `git remote add upstream https://github.com/printhom/devkit-core.git` if git didn't automatically fix your upstream remote branch.
+
+### Develop
+The editor consists of a framework, with components:
+
+* editors (e.g. a code editor, a JSON editor..)
+* widgets (e.g. a markdown viewer..)
+* headers (e.g. a title bar, a 'Run' button..)
+* themes
+
+This core ships some components, that can be found in `./core/components/`. You can extend these for your own application by putting them in `./app/components/` and referencing to them in `./app/app.js`.
+
+Run `grunt watch` before running `nw.js .` while development, or your changes won't be applied.
 
 ### Build instructions
 
 1. install node-webkit-builder ```npm install node-webkit-builder -g```
 2. run ```nwbuild .``` in the directory of this repository
 
-### Docs
-_this will be improved over time_
+## Contribute
+Contributions are more than welcome! Send a pull request from your own fork to do so.
 
-The editor can load a **project** (directory), and reads the **app.json** file from it. When a file is opened, the file path (directory names + filename + extension) is parsed, and **custom views** will be opened accordingly. A view can be an **editor** (defaults to CodeMirror) or **one or more widgets** (defaults to none).
-
-These views make editing easier. For example, when a .svg file is loaded, a preview widget is shown. When a LED ring animation is opened, a LED ring simulator is shown.
+## Licence
+MIT, see LICENCE.md
