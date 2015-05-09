@@ -34943,7 +34943,7 @@ var AuthController = function($scope, $auth)
 		}
 		else
 		{
-			$auth.getUserInfo().then(function(result) 
+			$auth.getUserInfo().then(function(result)
 			{
 				$scope.user = result.data;
 			});	
@@ -35042,6 +35042,8 @@ var FormideUploadController = function($scope, $rootScope) {
 		var zipFile = projectDir + '/app.zip';
 		var zip = fs.createWriteStream(zipFile);
 		var archive = archiver('zip');
+		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
+		manifest = JSON.parse(manifest);
 		
 		archive.pipe(zip);
 		
@@ -35078,8 +35080,8 @@ var FormideUploadController = function($scope, $rootScope) {
 			});
 			
 			var form = r.form();
-			form.append('version', '1.0.0'); // TODO: get version from manifest and auto update after uploading?
-			form.append('app_id', ''); // TODO: get app id from manifest
+			form.append('version', manifest.version); // TODO: auto update manifest version after upload?
+			form.append('app_id', manifest.id);
 			form.append('app_file', fs.createReadStream(zipFile, {filename: 'app.zip', contentType: 'application/zip'}));
 		});
 	};

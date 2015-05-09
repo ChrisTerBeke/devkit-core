@@ -1,0 +1,14 @@
+{
+  "id": "554e1b932c1b53747b3cd213",
+  "version": "1.0.2",
+  "name": {
+    "en": "Hello World!"
+  },
+  "description": {
+    "en": "Example app for Formide"
+  },
+  "author": {
+    "name": "Chris ter Beke",
+    "email": "chris@printr.nl"
+  }
+}
