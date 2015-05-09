@@ -51,7 +51,7 @@
     "fs-extra": "^0.18.0",
     "fs-watch-tree": "^0.2.5",
     "open": "0.0.5",
-    "request": "^2.54.0",
+    "request": "^2.55.0",
     "semver": "*",
     "tmp": "0.0.25",
     "trash": "^1.4.1"

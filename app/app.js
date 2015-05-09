@@ -5,7 +5,6 @@
 //CORE
 // editors
 loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']);
-loadModule('viewer', 		'editor',	'./app/components/editors/devkit-printr-editor-viewer/', ['printr.viewer']);
 
 // widgets
 loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
@@ -19,17 +18,18 @@ loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-mark
 
 // APP
 // editors
-loadModule('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
+loadModule('manifest', 		'editor',	'./app/components/editors/devkit-printr-editor-manifest/');
+loadModule('viewer', 		'editor',	'./app/components/editors/devkit-printr-editor-viewer/', ['printr.viewer']);
 
 // headers
-loadModule('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
-loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-title/');
+loadModule('upload', 		'header',	'./app/components/headers/devkit-printr-header-upload/');
 
 // widgets
 // nope..
 
 // themes
 loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+loadModule('custom_icons',	'theme',	'./app/components/themes/formide/');
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools
