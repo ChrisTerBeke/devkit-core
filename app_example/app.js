@@ -18,17 +18,17 @@ loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-mark
 
 // APP
 // editors
-loadModule('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
+loadModule('manifest', 		'editor',	'./app_example/components/editors/devkit-homey-editor-manifest/');
 
 // headers
-loadModule('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
-loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-title/');
+loadModule('auth', 			'header',	'./app_example/components/headers/devkit-homey-header-auth/');
+loadModule('title', 		'header',	'./app_example/components/headers/devkit-homey-header-title/');
 
 // widgets
 // nope..
 
 // themes
-loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+loadModule('custom_icons',	'theme',	'./app_example/components/themes/custom_icons/');
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools

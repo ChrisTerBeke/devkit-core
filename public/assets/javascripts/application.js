@@ -34279,7 +34279,7 @@ app.directive('fileDrop', function ( $parse ) {
 loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']);
 
 // widgets
-loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
+//loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
 loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 
 // headers
@@ -34300,7 +34300,7 @@ loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-ti
 // nope..
 
 // themes
-loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+//loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools
