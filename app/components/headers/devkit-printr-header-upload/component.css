@@ -1,9 +1,0 @@
-.devkit-printr-header-upload {
-	position: absolute;
-	z-index: 3;
-	left: 10px;
-	top: 7px;
-	bottom: 10px;
-	cursor: default;
-	-webkit-app-region: no-drag;
-}
