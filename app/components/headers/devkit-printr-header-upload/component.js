@@ -45,7 +45,7 @@ var FormideUploadController = function($scope, $rootScope) {
 			return;
 		}
 		
-		$scope.status = "uploading"; // change status to compressing
+		$scope.status = "uploading"; // change status to uploading
 		
 		archive.pipe(zip);
 		
