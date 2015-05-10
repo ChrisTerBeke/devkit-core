@@ -11,6 +11,7 @@ var FormideUploadController = function($scope, $rootScope) {
 	
 	$scope.run = function() {
 		$scope.status = "checking"; // change status to checking
+		$scope.message = "";
 		
 		if($scope.hasSession()) {
 			$scope.compressAndUpload();	
