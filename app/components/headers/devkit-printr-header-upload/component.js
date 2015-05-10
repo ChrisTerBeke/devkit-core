@@ -77,6 +77,7 @@ var FormideUploadController = function($scope, $rootScope) {
 					$scope.status = "failed";
 					$scope.message = response.message;
 				}
+				fs.unlink(zipFile);
 				$scope.$apply();
 			});
 			
