@@ -2,6 +2,7 @@ var fs 				= require('fs');
 var	path			= require('path');
 var archiver 		= require('archiver');
 var request			= require('request');
+var semver			= require('semver');
 
 var FormideUploadController = function($scope, $rootScope) {
 	
@@ -35,6 +36,12 @@ var FormideUploadController = function($scope, $rootScope) {
 		var archive = archiver('zip');
 		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
 		manifest = JSON.parse(manifest);
+		
+		if(semver.valid(manifest.version) == null) {
+			$scope.status = 'failed';
+			$scope.message = 'Invalid version number. Use semver!';
+			return;
+		}
 		
 		archive.pipe(zip);
 		
