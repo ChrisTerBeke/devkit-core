@@ -5,17 +5,26 @@ var request			= require('request');
 
 var FormideUploadController = function($scope, $rootScope) {
 	
+	$scope.status = "idle";
+	$scope.message = "";
+	
 	$scope.run = function() {
+		$scope.status = "uploading";
 		if($scope.hasSession()) {
 			$scope.compressAndUpload();	
 		}
 		else {
+			$scope.status = "failed";
 			alert('Not logged in!');
 		}
 	};
 	
 	$scope.hasSession = function() {
 		return window.localStorage.access_token !== undefined;
+	};
+	
+	$scope.goToAppManager = function() {
+		gui.Shell.openExternal("https://apps.formide.com");
 	};
 	
 	$scope.compressAndUpload = function() {
@@ -53,12 +62,15 @@ var FormideUploadController = function($scope, $rootScope) {
 				var response = JSON.parse(body);
 				if(response.success) {
 					console.log('upload ok');
-					// do something
+					$scope.status = "uploaded";
+					$scope.message = "";
 				}
 				else {
 					console.log('upload failed', response);
-					// do something
+					$scope.status = "failed";
+					$scope.message = response.message;
 				}
+				$scope.$apply();
 			});
 			
 			var form = r.form();
