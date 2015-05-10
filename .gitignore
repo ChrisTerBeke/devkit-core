@@ -33,6 +33,3 @@ bower_components
 *.DS_Store
 .DS_Store
 *.lock
-
-# ignore app folder to prevent git issues
-app
