@@ -10,7 +10,8 @@ var FormideUploadController = function($scope, $rootScope) {
 	$scope.message = "";
 	
 	$scope.run = function() {
-		$scope.status = "uploading";
+		$scope.status = "checking"; // change status to checking
+		
 		if($scope.hasSession()) {
 			$scope.compressAndUpload();	
 		}
@@ -43,6 +44,8 @@ var FormideUploadController = function($scope, $rootScope) {
 			return;
 		}
 		
+		$scope.status = "uploading"; // change status to compressing
+		
 		archive.pipe(zip);
 		
 		archive.bulk([{
@@ -58,7 +61,6 @@ var FormideUploadController = function($scope, $rootScope) {
 		});
 		
 		zip.on('close', function() {
-			console.log('Uploading app...');
 			
 			var r = request({
 				url: 'https://api2.formide.com/apps/upload?access_token=' + window.localStorage.access_token,
@@ -68,12 +70,10 @@ var FormideUploadController = function($scope, $rootScope) {
 				if (err) return console.log(err);
 				var response = JSON.parse(body);
 				if(response.success) {
-					console.log('upload ok');
 					$scope.status = "uploaded";
 					$scope.message = "";
 				}
 				else {
-					console.log('upload failed', response);
 					$scope.status = "failed";
 					$scope.message = response.message;
 				}
