@@ -34298,6 +34298,7 @@ loadModule('viewer', 		'editor',	'./app/components/editors/devkit-printr-editor-
 // headers
 loadModule('auth', 			'header',	'./app/components/headers/devkit-printr-header-auth/');
 loadModule('upload', 		'header',	'./app/components/headers/devkit-printr-header-upload/');
+loadModule('title', 		'header',	'./app/components/headers/devkit-printr-header-title/');
 
 // widgets
 // nope..
@@ -34923,6 +34924,13 @@ var AuthController = function($scope, $rootScope, $http)
 			}
 		});
 	};
+
+	$scope.goToAppManager = function() {
+		var projectDir = window.localStorage.project_dir;
+		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
+		manifest = JSON.parse(manifest);
+		gui.Shell.openExternal(window.PATH.appManager + "?app_id=" + manifest.id);
+	};
 	
 	// listen for a message from the iframe
 	window.addEventListener('message', function(e) {
@@ -34945,6 +34953,7 @@ var AuthController = function($scope, $rootScope, $http)
 AuthController.$inject = ['$scope', '$rootScope', '$http'];
 
 app.controller("AuthController", AuthController);;
+component.js;
 var fs 				= require('fs');
 var	path			= require('path');
 var archiver 		= require('archiver');

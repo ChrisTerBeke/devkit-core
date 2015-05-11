@@ -18,6 +18,7 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$event
 		styleActiveLine: true,
 		lineWrapping: true,
         autoCloseTags: true,
+        theme: "solarized dark",
 		onLoad: function( _editor ){
 
 			$scope.editor = _editor;

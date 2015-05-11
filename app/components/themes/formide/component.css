@@ -1,48 +1,41 @@
-body {
-  background: #417C9D;
-  color: #fff;
-  background-image: linear-gradient(to bottom, #1B5A80, #639BB8);
-  background-repeat: repeat;
-  background-position: 0 0;
-  background-size: cover; }
+/*
+Error: Invalid CSS after "...mary-text-color": expected selector or at-rule, was ":"
+        on line 28 of /Users/Bouke/Sites/devkit-core/app/components/themes/formide/component.scss
 
-#filetree li .label .name,
-#filetree li .label .name-renaming {
-  color: #fff;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
+23: 
+24: $primary-color:
+25: 
+26: 
+27: 
+28: $primary-text-color:
+29: $secondary-text-color:
+30: $active-text-color: 
+31: 
+32: $button-color:
+33: $icon-color:
 
-#filetree li .label .icon {
-  background: #fff; }
-
-#filetree li .label .expand:before {
-  border-left-color: #fff; }
-
-tabs {
-  border-bottom: #3a6e8b; }
-  tabs tab {
-    color: #fff;
-    border-right-color: #3a6e8b;
-    background: #174661; }
-    tabs tab:hover, tabs tab.active {
-      color: #fff;
-      background: #093a56; }
-    tabs tab .close {
-      box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5); }
-    tabs tab.changed .close .changed {
-      background: #268BD2; }
-
-widgets {
-  padding-left: 8px;
-  padding-right: 8px; }
-  widgets widgetwrap {
-    margin-bottom: 8px; }
-    widgets widgetwrap title {
-      padding: 4px 16px;
-      font-size: 12px;
-      color: #fff;
-      background: #174661; }
-    widgets widgetwrap widget {
-      background: white;
-      padding: 8px; }
-
-/*# sourceMappingURL=component.css.map */
+Backtrace:
+/Users/Bouke/Sites/devkit-core/app/components/themes/formide/component.scss:28
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/scss/parser.rb:1165:in `expected'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/scss/parser.rb:1101:in `expected'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/scss/parser.rb:43:in `parse'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/engine.rb:393:in `_to_tree'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/engine.rb:368:in `_render_with_sourcemap'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/engine.rb:285:in `render_with_sourcemap'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:490:in `update_stylesheet'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:209:in `each'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:470:in `on_file_changed'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:328:in `block in watch'
+/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:291:in `call'
+/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:291:in `_process_changes'
+/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:255:in `block in _wait_for_changes'
+/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:238:in `loop'
+/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:238:in `_wait_for_changes'
+/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:327:in `block in _start_wait_thread'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Invalid CSS after \"...mary-text-color\": expected selector or at-rule, was \":\"\A         on line 28 of /Users/Bouke/Sites/devkit-core/app/components/themes/formide/component.scss\A \A 23: \A 24: $primary-color:\A 25: \A 26: \A 27: \A 28: $primary-text-color:\A 29: $secondary-text-color:\A 30: $active-text-color: \A 31: \A 32: $button-color:\A 33: $icon-color:"; }

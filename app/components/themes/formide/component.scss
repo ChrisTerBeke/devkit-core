@@ -1,13 +1,53 @@
 
-$background-color: #417C9D;
-$tab-color: darken(saturate($background-color, 20%), 20% );
-$tab-active-color: darken(saturate($tab-color, 20%), 5% );
+$background-color: #073642;
+
+$text-color-light: #829496;
+$text-color-dark: #647B83;
+
+$tab-color: #073642;
+$tab-active-color: #002B36;
 
 $tab-border-color: darken($background-color, 5% );
 
+$button-color: #93A1A1;
+$button-border-color: #586E75;
+$button-text-color: darken($text-color-light, 35%);
 
-$text-color-light: #fff;
-$text-color-dark: #000;
+
+
+
+
+
+
+
+
+$primary-color:
+
+
+
+$primary-text-color:
+$secondary-text-color:
+$active-text-color: 
+
+$button-color:
+$icon-color:
+
+$background-color:
+
+$header-color:
+
+$sidebar-color:
+$sidebar-text-color:
+$sidebar-active-text-color:
+$active-sidebar-color: 
+
+$tab-color: $sidebar-color;
+$tab-text-color: $sidebar-text-color;
+$tab-active-text-color: $sidebar-active-text-color;
+$active-tab-color: $background-color;
+
+
+
 
 
 @function set-text-color($color) {
@@ -18,12 +58,35 @@ $text-color-dark: #000;
   }
 }
 
+@mixin gradient($from, $to) {
+  background: -webkit-gradient(linear, left top, left bottom, from($from), to($to));
+  background: -moz-linear-gradient(top,  $from, $to);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$from}', endColorstr='#{$to}');
+}
+
+@mixin button-background($bg:$button-bg) {
+    background-color: $bg;
+    @include gradient(lighten($bg, 5%), $bg);
+    box-shadow: 0 1px 2px rgba(darken($bg, 60%), .1);
+    display: inline-block;
+
+    &:hover,
+    &:focus {
+        opacity: .8;
+        color: inherit;
+    }
+
+    &,
+    &:hover,
+    &:active,
+    &:focus {
+        outline: 0;      
+    }
+}
 
 body {
 	background: $background-color;
 	color: set-text-color($background-color);
-
-	background-image: linear-gradient(to bottom, #1B5A80, #639BB8);
 	background-repeat: repeat;
 	background-position: 0 0;
 	background-size: cover;
@@ -43,13 +106,22 @@ body {
 	border-left-color: set-text-color($background-color);
 }
 
+#header-components {
+
+}
+
 tabs {
-	border-bottom: $tab-border-color;
+	background: #073642;
+	border: 1px solid $tab-border-color;
 
 	tab {
 		color: set-text-color($tab-color);
 		border-right-color: $tab-border-color;
-		background: $tab-color;	
+		background: $tab-color;
+		// background: $tab-active-color;
+
+		border-right: 1px solid $tab-border-color;
+		// border-width: 1px 1px 0 1px;
 
 		&:hover,
 		&.active {
@@ -59,6 +131,10 @@ tabs {
 
 		.close {
 			box-shadow: inset 0 0 2px rgba(0,0,0,0.5);
+
+			&:before {
+				color: set-text-color($background-color);
+			}
 		}
 
 		&.changed .close .changed {
@@ -67,9 +143,25 @@ tabs {
 	}
 }
 
+editormain {
+	background: #002B36;
+}
+editorviews {
+	// display: block;
+	// position: absolute;
+	// left: 0;
+	// top: 0;
+	// bottom: 0;
+	// right: 0;
+	// margin-top: 25px;
+	// overflow: hidden;
+
+}
+
 widgets {
 	padding-left: 8px;
 	padding-right: 8px;
+	background: $background-color;
 	widgetwrap {
 		margin-bottom: 8px;
 		title {
@@ -86,3 +178,74 @@ widgets {
 		}
 	}	
 }
+
+.btn,
+%btn {
+    font-size: 14px;
+    /*@extend strong;*/
+    color: $button-text-color;
+    border: 1px solid;
+    border-color: $button-border-color;
+    padding: 4px 12px;
+    letter-spacing: 0.02em;
+    transition: opacity 0.3s ease-out;
+    border-radius: 3px;
+    @include button-background($button-color);
+
+    &:disabled {
+        opacity: .2;
+        cursor: not-allowed;
+    }
+
+    .label {
+		display: inline-block;
+		vertical-align: middle;
+		font-size: 13px;
+		color: #333;
+	}
+	.icon {
+		display: inline-block;
+		vertical-align: middle;
+		width: 16px;
+		height: 16px;
+		-webkit-mask-repeat: no-repeat;
+		-webkit-mask-position: center center;
+		-webkit-mask-size: contain;
+		background: #333;
+		margin-right: 3px;
+	}
+}
+
+// button,
+// .btn {
+// 	display: inline-block;
+// 	background: #eee;
+// 	border: 1px solid rgba(0,0,0,0.1);
+// 	border-radius: 3px;
+// 	padding: 4px 10px;
+
+// 	&:hover {
+// 		background: #f9f9f9;
+// 	}
+// 	&:active {
+// 		background: #e3e3e3;
+// 	}
+
+// 	.label {
+// 		display: inline-block;
+// 		vertical-align: middle;
+// 		font-size: 13px;
+// 		color: #333;
+// 	}
+// 	.icon {
+// 		display: inline-block;
+// 		vertical-align: middle;
+// 		width: 10px;
+// 		height: 10px;
+// 		-webkit-mask-repeat: no-repeat;
+// 		-webkit-mask-position: center center;
+// 		-webkit-mask-size: contain;
+// 		background: #333;
+// 		margin-right: 3px;
+// 	}
+// }

@@ -71,6 +71,13 @@ var AuthController = function($scope, $rootScope, $http)
 			}
 		});
 	};
+
+	$scope.goToAppManager = function() {
+		var projectDir = window.localStorage.project_dir;
+		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
+		manifest = JSON.parse(manifest);
+		gui.Shell.openExternal(window.PATH.appManager + "?app_id=" + manifest.id);
+	};
 	
 	// listen for a message from the iframe
 	window.addEventListener('message', function(e) {
