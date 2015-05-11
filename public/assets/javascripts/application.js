@@ -34953,7 +34953,7 @@ var AuthController = function($scope, $rootScope, $http)
 AuthController.$inject = ['$scope', '$rootScope', '$http'];
 
 app.controller("AuthController", AuthController);;
-component.js;
+;
 var fs 				= require('fs');
 var	path			= require('path');
 var archiver 		= require('archiver');
