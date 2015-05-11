@@ -105,7 +105,6 @@ window.PATH.root 			=	window.location.protocol + '//' + window.location.hostname
 
 window.PATH.auth			= {
 	loginUrl: 'https://sdk.formide.com',
-	//loginUrl: 'http://localhost:8080',
 	userInfo: 'https://api2.formide.com/auth/me'
 }
 
