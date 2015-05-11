@@ -18,6 +18,7 @@ var AuthController = function($scope, $rootScope, $http)
 	$scope.logout = function() {
 		delete window.localStorage.access_token;
 		delete window.localStorage.refresh_token;
+		delete window.localStorage.user;
 		$scope.user = undefined;
 	};
 	
