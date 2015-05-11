@@ -1,17 +1,10 @@
-var AuthController = function($scope, $http)
+var AuthController = function($scope, $rootScope, $http)
 {	
-	$scope.user = 'undefined';
+	$scope.user = JSON.parse(window.localStorage.user);
 	
 	$scope.init = function() {
-		if(typeof $scope.user == 'undefined') {
-			$scope.user = {};
-	
-			if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' ) {
-				$scope.user.status = 'logged-out';
-				$scope.user.statusMessage = 'Log in';
-			}
-			else {
-				$scope.logout();
+		if($scope.user == undefined) {
+			if(window.localStorage.access_token && window.localStorage.refresh_token) {
 				$scope.getUserInfo();
 			}
 		}
@@ -25,13 +18,13 @@ var AuthController = function($scope, $http)
 	$scope.logout = function() {
 		delete window.localStorage.access_token;
 		delete window.localStorage.refresh_token;
-		$scope.user = 'undefined';
+		$scope.user = undefined;
 	};
 	
 	$scope.getUserInfo = function() {
-		var promise = $http({
+		$http({
 			method: 'GET',
-	        url:  window.PATH.auth.userInfo,
+	        url: window.PATH.auth.userInfo,
 	        headers: {
 	          'Authorization': 'Bearer ' + window.localStorage.access_token
 	        },
@@ -40,17 +33,43 @@ var AuthController = function($scope, $http)
 	    .then(function(result) {
 			if(result.status == 200) {
 				$scope.user = result.data;
+				window.localStorage.user = JSON.stringify(result.data);
 			}
 			else {
-				$scope.logout();
-				$scope.login();
+				$scope.refreshAccessToken();
+			}
+		});
+	};
+	
+	$scope.refreshAccessToken = function() {
+		$http({
+			method: 'POST',
+			url: window.PATH.auth.loginUrl + '/refresh',
+			data: {
+				refresh_token: window.localStorage.refresh_token
+			}
+		})
+		.then(function(result) {
+			if(result.status == 200) {
+				if(result.data.code != 200) {
+					console.log(result);
+				}
+				else {
+					// save tokens to localStorage
+					window.localStorage.access_token = result.data.accessToken;
+					window.localStorage.refresh_token = result.data.refreshToken;
+					$scope.getUserInfo();
+				}
+			}
+			else {
+				console.log(result);
 			}
 		});
 	};
 	
 	// listen for a message from the iframe
 	window.addEventListener('message', function(e) {
-		$scope.$apply(function(){
+		$scope.$apply(function() {
 
 			// save tokens to localStorage
 			window.localStorage.access_token = e.data.accessToken;
@@ -66,6 +85,6 @@ var AuthController = function($scope, $http)
 	});
 }
 
-AuthController.$inject = ['$scope', '$http'];
+AuthController.$inject = ['$scope', '$rootScope', '$http'];
 
 app.controller("AuthController", AuthController);
