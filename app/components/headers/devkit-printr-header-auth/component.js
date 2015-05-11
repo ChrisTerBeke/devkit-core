@@ -1,6 +1,6 @@
 var AuthController = function($scope, $rootScope, $http)
 {	
-	$scope.user = JSON.parse(window.localStorage.user);
+	$scope.user = window.localStorage.user;
 	
 	$scope.init = function() {
 		if($scope.user == undefined) {
@@ -34,7 +34,7 @@ var AuthController = function($scope, $rootScope, $http)
 	    .then(function(result) {
 			if(result.status == 200) {
 				$scope.user = result.data;
-				window.localStorage.user = JSON.stringify(result.data);
+				window.localStorage.user = result.data;
 			}
 			else {
 				$scope.refreshAccessToken();
