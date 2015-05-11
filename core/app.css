@@ -451,15 +451,15 @@ content {
 			widgets widgetwrap {
 				position: relative;
 				display: block;
-				margin: 0 10px 10px 10px;
-				// box-shadow: 0 5px 5px rgba(0,0,0,0.05);
+/*				margin: 0 10px 10px 10px;*/
+/*				// box-shadow: 0 5px 5px rgba(0,0,0,0.05);*/
 				overflow: hidden;
 			}
 				widgets widgetwrap title {
 					display: block;
-					padding: 4px 8px;
-					height: 18px;
-					line-height: 18px;
+					padding: 4px 16px;
+					/*height: 18px;*/
+					/*line-height: 18px;*/
 					background: #111;
 					font-size: 12px;
 					color: #839496;

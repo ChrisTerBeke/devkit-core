@@ -1,0 +1,88 @@
+
+$background-color: #417C9D;
+$tab-color: darken(saturate($background-color, 20%), 20% );
+$tab-active-color: darken(saturate($tab-color, 20%), 5% );
+
+$tab-border-color: darken($background-color, 5% );
+
+
+$text-color-light: #fff;
+$text-color-dark: #000;
+
+
+@function set-text-color($color) {
+  @if (lightness($color) > 50) {
+    @return $text-color-dark; // Lighter backgorund, return dark color
+  } @else {
+    @return $text-color-light; // Darker background, return light color
+  }
+}
+
+
+body {
+	background: $background-color;
+	color: set-text-color($background-color);
+
+	background-image: linear-gradient(to bottom, #1B5A80, #639BB8);
+	background-repeat: repeat;
+	background-position: 0 0;
+	background-size: cover;
+}
+
+#filetree li .label .name,
+#filetree li .label .name-renaming {
+	color: set-text-color($background-color);
+	text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+#filetree li .label .icon {
+	background: set-text-color($background-color);	
+}
+
+#filetree li .label .expand:before {
+	border-left-color: set-text-color($background-color);
+}
+
+tabs {
+	border-bottom: $tab-border-color;
+
+	tab {
+		color: set-text-color($tab-color);
+		border-right-color: $tab-border-color;
+		background: $tab-color;	
+
+		&:hover,
+		&.active {
+			color: set-text-color($tab-active-color);
+			background: $tab-active-color;	
+		}
+
+		.close {
+			box-shadow: inset 0 0 2px rgba(0,0,0,0.5);
+		}
+
+		&.changed .close .changed {
+			background: #268BD2;	
+		}
+	}
+}
+
+widgets {
+	padding-left: 8px;
+	padding-right: 8px;
+	widgetwrap {
+		margin-bottom: 8px;
+		title {
+			padding: 4px 16px;
+			font-size: 12px;
+			color: set-text-color($tab-color);
+			background: $tab-color;	
+		}
+
+		widget {
+			background: white;
+			padding: 8px;
+		
+		}
+	}	
+}

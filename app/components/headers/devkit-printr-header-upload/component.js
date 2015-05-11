@@ -65,7 +65,7 @@ var FormideUploadController = function($scope, $rootScope) {
 		});
 		
 		zip.on('close', function() {
-			
+			console.log( window.PATH.apiRoot + '/apps/upload?access_token=' + window.localStorage.access_token);
 			var r = request({
 				url: window.PATH.apiRoot + '/apps/upload?access_token=' + window.localStorage.access_token,
 				method: 'post',

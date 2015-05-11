@@ -14,7 +14,7 @@ loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-mark
 // nope..
 
 // themes
-// nope..
+loadModule('formide', 		'theme',	'./core/components/themes/formide/');
 
 // APP
 // editors

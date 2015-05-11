@@ -34288,7 +34288,7 @@ loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-mark
 // nope..
 
 // themes
-// nope..
+loadModule('formide', 		'theme',	'./core/components/themes/formide/');
 
 // APP
 // editors
@@ -35008,7 +35008,7 @@ var FormideUploadController = function($scope, $rootScope) {
 		});
 		
 		zip.on('close', function() {
-			
+			console.log( window.PATH.apiRoot + '/apps/upload?access_token=' + window.localStorage.access_token);
 			var r = request({
 				url: window.PATH.apiRoot + '/apps/upload?access_token=' + window.localStorage.access_token,
 				method: 'post',
