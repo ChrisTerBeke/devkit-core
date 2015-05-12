@@ -1,4 +1,3 @@
-
 module.exports = function(grunt) {
 	window = {};
 
@@ -25,12 +24,9 @@ module.exports = function(grunt) {
 					/*
 					 *	Include configs
 					 */
-					'./app/config/helpers.js',
-					'./app/config/environment.js',
-					'./app/config/auth.js',
-					'./app/config/path.js',
-					'./app/config/include.js',
-					'./app/config/debug.js',
+					'./app/environment.js',
+					'./app/config.js',
+					'./app/debug.js',
 
 					/*
 					 *	Angular and its main dependencies.

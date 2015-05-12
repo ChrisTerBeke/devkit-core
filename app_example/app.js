@@ -4,7 +4,7 @@
  
 //CORE
 // editors
-loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']);
+loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']); // inject an angularjs dependency as 4th parameter
 
 // widgets
 loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
@@ -14,14 +14,13 @@ loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-mark
 // nope..
 
 // themes
-// nope..
+loadModule('formide', 		'theme',	'./core/components/themes/formide/');
 
 // APP
 // editors
 loadModule('manifest', 		'editor',	'./app_example/components/editors/devkit-homey-editor-manifest/');
 
 // headers
-loadModule('auth', 			'header',	'./app_example/components/headers/devkit-homey-header-auth/');
 loadModule('title', 		'header',	'./app_example/components/headers/devkit-homey-header-title/');
 
 // widgets
