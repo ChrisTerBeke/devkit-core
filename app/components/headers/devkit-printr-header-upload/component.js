@@ -26,13 +26,6 @@ var FormideUploadController = function($scope, $rootScope) {
 		return window.localStorage.access_token !== undefined;
 	};
 	
-	$scope.goToAppManager = function() {
-		var projectDir = window.localStorage.project_dir;
-		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
-		manifest = JSON.parse(manifest);
-		gui.Shell.openExternal(window.PATH.appManager + "?app_id=" + manifest.id);
-	};
-	
 	$scope.compressAndUpload = function() {
 		
 		var projectDir = window.localStorage.project_dir;
