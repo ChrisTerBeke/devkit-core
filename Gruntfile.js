@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
 	window = {};
 
-	require("./app/config/environment.js");
+	require("./app_example/config/environment.js");
 
 	var json = {
 		/*
@@ -24,9 +24,9 @@ module.exports = function(grunt) {
 					/*
 					 *	Include configs
 					 */
-					'./app/environment.js',
-					'./app/config.js',
-					'./app/debug.js',
+					'./app_example/environment.js',
+					'./app_example/config.js',
+					'./app_example/debug.js',
 
 					/*
 					 *	Angular and its main dependencies.
@@ -69,7 +69,7 @@ module.exports = function(grunt) {
 					/*
 					 *	Include app specific files
 					 */
-					'./app/**/*.js'
+					'./app_example/**/*.js'
 				],
 				dest: './public/assets/javascripts/application.js'
 			}
@@ -94,7 +94,7 @@ module.exports = function(grunt) {
 		 */
 		watch: {
 			javascripts: {
-				files: ['./public/tmp/**/*.js', './core/**/*.js', './app/**/*.js', './bower_components/**/*.js'],
+				files: ['./public/tmp/**/*.js', './core/**/*.js', './app_example/**/*.js', './bower_components/**/*.js'],
 				tasks: ['js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist')]
 			}
 		},
