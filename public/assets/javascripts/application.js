@@ -79,7 +79,8 @@ function loadModule (module, type, dir, dependencies)
 ;
 function distOrSrcPath(env) {
 	return (env == 'development') ? '/src' : '/dist';
-};
+}
+
 // Put general configuration here.
 
 window.ENV 	= window.ENV || {};
@@ -89,27 +90,25 @@ window.ENV.name 			=	'devkit';
 window.ENV.type				= 	'development'; //development || testing || production
 
 window.DEBUG				=	(window.ENV.type == 'development' || window.ENV.type == 'testing') ? true : false;;
-window.AUTH = window.AUTH || {};
+window.CONFIG = {};
 
-window.AUTH.whitelist = [
+// paths
+window.CONFIG.paths = {
+	root:		window.location.protocol + '//' + window.location.hostname + ':' + window.location.port,
+	login:		'https://sdk.formide.com',
+	user:		'https://api2.formide.com/auth/me',
+	appManager:	'https://apps.formide.com',
+	apiRoot:	'https://api2.formide.com'
+};
+
+// url whitelist
+window.CONFIG.whitelist = [
 	'self',
 	'file://',
 	'http://localhost:8080/**',
 	'http://*.formide.com/**',
 	'https://*.formide.com/**'
 ];;
-//Set main paths here.
-window.PATH = window.PATH || {};
-
-window.PATH.root 			=	window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
-
-window.PATH.auth			= {
-	loginUrl: 'https://sdk.formide.com',
-	userInfo: 'https://api2.formide.com/auth/me'
-}
-
-window.PATH.appManager = 'https://apps.formide.com';
-window.PATH.apiRoot = 'https://api2.formide.com';;
 if(window.ENV.type == 'development' || window.ENV.type == 'testing')
 {
   console.groupCollapsed("Development- or Testing Mode");
@@ -124,7 +123,7 @@ if(window.ENV.type == 'development' || window.ENV.type == 'testing')
 
     console.group("App", window.ENV.name);
        	console.log("Environment", window.ENV);
-    	console.log("Paths", window.PATH);
+    	console.log("Paths", window.CONFIG.paths);
     console.groupEnd();
 
   console.groupEnd();
@@ -33383,7 +33382,7 @@ angular.element(document).ready(function() {
 
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {
-	$sceDelegateProvider.resourceUrlWhitelist(window.AUTH.whitelist);
+	$sceDelegateProvider.resourceUrlWhitelist(window.CONFIG.whitelist);
 });
 
 app.config(function ($controllerProvider) {
@@ -35051,27 +35050,4 @@ var FormideUploadController = function($scope, $rootScope) {
 
 FormideUploadController.$inject = ['$scope', '$rootScope'];
 
-app.controller("FormideUploadController", FormideUploadController);;
-
-window.LANG = window.LANG  || [
-	{
-		code: 'en',
-		name: 'English'
-	},
-	{
-		code: 'nl',
-		name: 'Dutch'
-	},
-	{
-		code: 'fr',
-		name: 'French'
-	},
-	{
-		code: 'de',
-		name: 'German'
-	},
-	{
-		code: 'es',
-		name: 'Spanish'
-	}
-];
+app.controller("FormideUploadController", FormideUploadController);

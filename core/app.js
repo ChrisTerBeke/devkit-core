@@ -26,7 +26,7 @@ angular.element(document).ready(function() {
 
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {
-	$sceDelegateProvider.resourceUrlWhitelist(window.AUTH.whitelist);
+	$sceDelegateProvider.resourceUrlWhitelist(window.CONFIG.whitelist);
 });
 
 app.config(function ($controllerProvider) {
