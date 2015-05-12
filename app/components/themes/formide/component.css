@@ -1,41 +1,125 @@
 /*
-Error: Invalid CSS after "...mary-text-color": expected selector or at-rule, was ":"
-        on line 28 of /Users/Bouke/Sites/devkit-core/app/components/themes/formide/component.scss
+$primary-color:
 
-23: 
-24: $primary-color:
-25: 
-26: 
-27: 
-28: $primary-text-color:
-29: $secondary-text-color:
-30: $active-text-color: 
-31: 
-32: $button-color:
-33: $icon-color:
 
-Backtrace:
-/Users/Bouke/Sites/devkit-core/app/components/themes/formide/component.scss:28
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/scss/parser.rb:1165:in `expected'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/scss/parser.rb:1101:in `expected'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/scss/parser.rb:43:in `parse'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/engine.rb:393:in `_to_tree'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/engine.rb:368:in `_render_with_sourcemap'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/engine.rb:285:in `render_with_sourcemap'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:490:in `update_stylesheet'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:209:in `each'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:470:in `on_file_changed'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:328:in `block in watch'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:291:in `call'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:291:in `_process_changes'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:255:in `block in _wait_for_changes'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:238:in `loop'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:238:in `_wait_for_changes'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:327:in `block in _start_wait_thread'
+
+$primary-text-color:
+$secondary-text-color:
+$active-text-color: 
+
+$button-color:
+$icon-color:
+
+$background-color:
+
+$header-color:
+
+$sidebar-color:
+$sidebar-text-color:
+$sidebar-active-text-color:
+$active-sidebar-color: 
 */
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: Invalid CSS after \"...mary-text-color\": expected selector or at-rule, was \":\"\A         on line 28 of /Users/Bouke/Sites/devkit-core/app/components/themes/formide/component.scss\A \A 23: \A 24: $primary-color:\A 25: \A 26: \A 27: \A 28: $primary-text-color:\A 29: $secondary-text-color:\A 30: $active-text-color: \A 31: \A 32: $button-color:\A 33: $icon-color:"; }
+/*
+$tab-color: $sidebar-color;
+$tab-text-color: $sidebar-text-color;
+$tab-active-text-color: $sidebar-active-text-color;
+$active-tab-color: $background-color;
+*/
+body {
+  background: #073642;
+  color: #829496;
+  background-repeat: repeat;
+  background-position: 0 0;
+  background-size: cover; }
+
+#filetree li .label .name,
+#filetree li .label .name-renaming {
+  color: #829496;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
+
+#filetree li .label .icon {
+  background: #829496; }
+
+#filetree li .label .expand:before {
+  border-left-color: #829496; }
+
+tabs {
+  background: #073642;
+  border: 1px solid #05232b; }
+  tabs tab {
+    color: #829496;
+    border-right-color: #05232b;
+    background: #073642;
+    border-right: 1px solid #05232b; }
+    tabs tab:hover,
+    tabs tab.active {
+      color: #829496;
+      background: #002B36; }
+    tabs tab .close {
+      box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5); }
+      tabs tab .close:before {
+        color: #829496; }
+    tabs tab.changed .close .changed {
+      background: #268BD2; }
+
+editormain {
+  background: #002B36; }
+
+widgets {
+  padding-left: 8px;
+  padding-right: 8px;
+  background: #073642; }
+  widgets widgetwrap {
+    margin-bottom: 8px; }
+    widgets widgetwrap title {
+      padding: 4px 16px;
+      font-size: 12px;
+      color: #829496;
+      background: #073642; }
+    widgets widgetwrap widget {
+      background: white;
+      padding: 8px; }
+
+.btn {
+  font-size: 14px;
+  /*@extend strong;*/
+  color: #2e3637;
+  border: 1px solid;
+  border-color: #586E75;
+  padding: 4px 12px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.3s ease-out;
+  border-radius: 3px;
+  background-color: #93A1A1;
+  background: -webkit-gradient(linear, left top, left bottom, from(#a1adad), to(#93A1A1));
+  background: -moz-linear-gradient(top, #a1adad, #93A1A1);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1adad', endColorstr='#93A1A1');
+  box-shadow: 0 1px 2px rgba(1, 1, 1, 0.1);
+  display: inline-block; }
+  .btn:hover,
+  .btn:focus {
+    opacity: .8;
+    color: inherit; }
+  .btn,
+  .btn:hover,
+  .btn:active,
+  .btn:focus {
+    outline: 0; }
+  .btn:disabled {
+    opacity: .2;
+    cursor: not-allowed; }
+  .btn .label {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 13px;
+    color: #333; }
+  .btn .icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center center;
+    -webkit-mask-size: contain;
+    background: #333;
+    margin-right: 3px; }
