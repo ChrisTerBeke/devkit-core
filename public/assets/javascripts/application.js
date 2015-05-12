@@ -79,7 +79,8 @@ function loadModule (module, type, dir, dependencies)
 ;
 function distOrSrcPath(env) {
 	return (env == 'development') ? '/src' : '/dist';
-};
+}
+
 // Put general configuration here.
 
 window.ENV 	= window.ENV || {};
@@ -89,24 +90,25 @@ window.ENV.name 			=	'devkit';
 window.ENV.type				= 	'development'; //development || testing || production
 
 window.DEBUG				=	(window.ENV.type == 'development' || window.ENV.type == 'testing') ? true : false;;
-window.AUTH = window.AUTH || {};
+window.CONFIG = {};
 
-window.AUTH.whitelist = [
+// paths
+window.CONFIG.paths = {
+	root:		window.location.protocol + '//' + window.location.hostname + ':' + window.location.port,
+	login:		'https://sdk.formide.com',
+	user:		'https://api2.formide.com/auth/me',
+	appManager:	'https://apps.formide.com',
+	apiRoot:	'https://api2.formide.com'
+};
+
+// url whitelist
+window.CONFIG.whitelist = [
 	'self',
 	'file://',
 	'http://localhost:8080/**',
 	'http://*.formide.com/**',
 	'https://*.formide.com/**'
 ];;
-//Set main paths here.
-window.PATH = window.PATH || {};
-
-window.PATH.root 			=	window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
-
-window.PATH.auth			= {
-	loginUrl: 'https://sdk.formide.com',
-	userInfo: 'https://api2.formide.com/auth/me'
-};
 if(window.ENV.type == 'development' || window.ENV.type == 'testing')
 {
   console.groupCollapsed("Development- or Testing Mode");
@@ -121,7 +123,7 @@ if(window.ENV.type == 'development' || window.ENV.type == 'testing')
 
     console.group("App", window.ENV.name);
        	console.log("Environment", window.ENV);
-    	console.log("Paths", window.PATH);
+    	console.log("Paths", window.CONFIG.paths);
     console.groupEnd();
 
   console.groupEnd();
@@ -32597,7 +32599,6 @@ module.services = angular.module('module.services', [
 	'sdk.events',
 	'sdk.file',
 	'sdk.stoplight',
-	'sdk.play',
 	'sdk.moduleload',
 	'service.windowEventsFactory'
 ]);;
@@ -32932,376 +32933,6 @@ angular.module('sdk.moduleload', [])
 
     return factory;
 }]);;
-angular.module('sdk.project', []).factory('$project', [ '$rootScope', '$file', function ( $rootScope, $file) {
-	
-	var factory = {};
-	
-	factory.path = false;
-
-	factory.update = function(project_dir) {	   
-    	var filetree = readdirSyncRecursive( project_dir, true );	
-
-        return filetree;
-    }
-
-    factory.load = function(project_dir){
-        window.localStorage.project_dir = project_dir;
-
-		return factory.update(project_dir);
-        
-    }
-    
-    factory.select = function(){
-	    var self = this;
-        var directorychooser = document.getElementById('directorychooser');
-        directorychooser.addEventListener("change", function(evt) {
-            self.load( this.value );
-        }, false)
-        directorychooser.click();
-    }
-
-    return factory;
-    
-}]);;
-var gui			= require('nw.gui');
-var path_		= require('path'); // auch
-
-var open		= require("open");
-var fs			= require('fs-extra')
-var trash		= require('trash');
-var watchTree 	= require("fs-watch-tree").watchTree;
-	
-angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '$project', '$http', '$timeout', '$q', function ($rootScope, $file, $project, $http, $timeout, $q) {
-	var factory = {};
-	
-	// various
-	factory.renaming = false;
-
-	// Selected items
-	factory.selected = [];
-	
-    factory.select = function(path, event) {
-
-        // multiple selection
-        if( event.metaKey || event.ctrlKey ) {
-            if( factory.selected.indexOf(path) > -1 ) {
-                factory.selected = factory.selected.filter(function(path_) {
-                    return path_ != path;
-                });
-            }
-            else {
-                factory.selected.push( path );
-            }
-        }
-        else {
-            factory.selected = [ path ];
-        }
-    }
-
-    factory.isSelected = function( path ) {
-        return factory.selected.indexOf(path) > -1;
-    }
-    
-    // Expanded items
-	factory.expanded = [];
-	
-    factory.expand = function( path, expanded ) {
-	    if( expanded ) {
-        	factory.expanded.push( path );	    
-		} else {
-			var index = factory.expanded.indexOf(path);	
-			factory.expanded.splice(index, 1);	
-		}
-    }
-
-    factory.isExpanded = function( path ) {
-        return factory.expanded.indexOf(path) > -1;
-    }
-
-    // rename a file
-    factory.isRenaming = function( path ){
-	    return factory.renaming === path;
-    }
-    factory.rename = function( item ){
-	    var newName = item.name;
-        var itemFolder = path_.dirname( item.path );
-        var newPath = path_.join( itemFolder, newName );
-        
-        if( fs.existsSync( newPath ) ) {
-	       return alert("That filename already exists!");
-        }
-
-        fs.rename( item.path, newPath, function(){
-	        factory.update();
-        });
-
-        factory.renaming = false;
-	    
-    }
-
-	// open a file (or directory)
-	factory.open = function( path ) {
-		if( fs.lstatSync( path ).isDirectory() ) {
-            factory.expanded.push(path);
-        } else {
-            $file.open( path );
-        }
-	}
-
-    factory.keyPress = function( event, item ) {
-        console.log( event, item );
-    }
-
-    // factory.update = function( ) {	   
-    // 	$rootScope.$emit('service.sidebar.tree.update');
-
-    // 	var filetree = readdirSyncRecursive( $project.path, true );	
-    // 	console.log('return', filetree)
-
-    //     return filetree;
-    // }
-
-    factory.dropped = function( event, file, dropped_path ) {
-	    
-	    dropped_path = dropped_path || $project.path;
-	    
-	    // console.log('event', event, 'file', file, 'dropped_path', dropped_path)
-	    
-        var filename = path_.basename( file.path );
-
-        // if dropped on a file, get the file's parent folder
-        if( fs.lstatSync(dropped_path).isFile() ) {
-            var new_path = path_.dirname( dropped_path );
-        }
-        else {
-            var new_path = path_.join( dropped_path, filename );
-        }
-
-        // prevent overwriting
-        if( fs.existsSync( new_path ) ) {
-            if( !confirm('Overwrite `' + filename + '`?') ) return;
-        }
-
-        fs.copy( file.path, new_path, {}, function(err){});
-    }
-    
-	factory.showCtxMenu = function( item, event ){
-		
-		// Create an empty menu
-		var ctxmenu = new gui.Menu();
-		
-		// Add some items
-		if( item ) {
-		
-			// multiple selection
-			if( factory.isSelected(item.path) ) {
-				if( event.metaKey || event.ctrlKey ) {
-					factory.selected.push( item.path );
-				} else {
-					factory.selected = [ item.path ];
-				}
-			}
-			
-			ctxmenu.append(new gui.MenuItem({ label: 'Open', click: function(){
-				factory.selected.forEach(function( item_path ){
-					$file.open( item_path );					
-				});				
-			}}));
-			ctxmenu.append(new gui.MenuItem({ label: 'Open With Default Editor', click: function(){
-				factory.selected.forEach(function( item_path ){
-					open( item_path );
-				});
-			}}));
-			ctxmenu.append(new gui.MenuItem({ label: 'Open File Location', click: function(){
-				factory.selected.forEach(function( item_path ){
-					open( path_.dirname( item_path ) );
-				});
-			}}));
-			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
-			ctxmenu.append(new gui.MenuItem({ label: 'Move to Trash...', click: function(){
-				
-				if( factory.selected.length > 1 ) {
-					if( confirm( "Are you sure you want to remove " + factory.selected.length + " items to the trash?" ) ) {
-						factory.selected.forEach(function( item_path ){
-							trash([ item_path ]);
-						});
-					}				
-				} else {
-					if( confirm( "Are you sure you want to remove `" + item.name + "` to the trash?" ) ) {
-						trash([ item.path ]);
-					}
-				}
-			}}));
-			
-			// single file options
-			if( factory.selected.length == 1 ) {
-				ctxmenu.append(new gui.MenuItem({ label: 'Rename...', click: function(){
-					factory.renaming = item.path;
-				}}));
-			}
-			
-			ctxmenu.append(new gui.MenuItem({ label: 'Duplicate', click: function(){
-				
-				factory.selected.forEach(function( item_path ){
-					var new_path = newPath( item_path );
-					
-					var i = 2;
-					while( fs.existsSync( new_path ) ) {
-						new_path = newPath( item_path, i++ );
-					}
-									
-					fs.copySync( item_path, new_path );
-				});
-				
-			}}));
-			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
-		}
-		
-		// always visible options
-		ctxmenu.append(new gui.MenuItem({ label: 'New Folder', click: function(){		
-			var newFolderName = 'Untitled Folder';			
-			
-			if( typeof item == 'undefined' ) {
-				var folder = $project.path;
-			} else {
-				var folder = item.path;
-			}
-			
-			fs.ensureDir( path_.join( folder, newFolderName) );
-		}}));
-		ctxmenu.append(new gui.MenuItem({ label: 'New File', click: function(){
-		
-			var newFileName = 'Untitled File';
-			
-			if( typeof item == 'undefined' ) {
-				var folder = $project.path;
-			} else {
-				
-				if( fs.statSync( item.path ).isFile() ) {
-					var folder = path_.dirname( item.path );
-				} else {
-					var folder = item.path;
-				}
-			}
-			
-			var newFilePath = path_.join( folder, newFileName);
-									
-			fs.ensureFile( newFilePath );
-			factory.renaming = newFilePath;
-			// TODO: focus rename element
-			
-		} }));
-		
-		// Popup as context menu
-		ctxmenu.popup( event.clientX, event.clientY );
-	}
-
-	// factory.getFiletree = function(){
-	// 	console.log('loaded this project ready');
-	   	
-	// 	// filetree
-	// 	// watch for changes
-	// 	var watch = watchTree($project.path, function (event) {
-	// 		return factory.update();
-	// 	});
-	
-	// 	// initial scan
-	// 	return factory.update();
-	// }
-	
- //    $rootScope.$on('service.project.ready', function(){
-
- //    	console.log('loaded this project ready');
-	   	
-	// 	// filetree
-	// 	// watch for changes
-	// 	var watch = watchTree($project.path, function (event) {
-	// 		factory.filetree = factory.update();
-	// 	});
-	
-	// 	// initial scan
-	// 	factory.filetree = factory.update();
-		
-	// });
-
-    return factory;
-    
-}]);
-
-// Duplicate file or folder, but create `filename copy[ n]`
-// when a duplicate already exists.
-// This was fun to do :)
-function newPath( file_path, index ) {
-    index = index || false;
-
-    var filename = path_.basename( file_path );
-    var folder = path_.dirname( file_path );
-
-    if( fs.statSync( file_path ).isFile() ) {
-        var ext = path_.extname( filename );
-        var base = path_.basename( filename, ext );
-
-        if( index ) {
-            var new_filename = base + ' copy ' + index.toString() + ext;
-        }
-        else {
-            var new_filename = base + ' copy' + ext;
-        }
-
-    }
-    else {
-        var new_filename = filename + ' copy'
-        if( index ) new_filename += ' ' + index.toString();
-    }
-
-    var new_path = path_.join( folder, new_filename );
-    return new_path;
-}
-
-// read a dir's contents recursively
-function readdirSyncRecursive( dir, root ) {
-    root = root || false;
-    var result = [];
-    var contents = fs.readdirSync( dir );
-
-    contents.forEach(function(item) {
-        var item_path = path_.join(dir, item);
-        var item_stats = fs.lstatSync( item_path );
-
-        if( item_stats.isDirectory() ) {
-            result.push({
-                name: item,
-                path: path_.join(dir, item),
-                type: 'folder',
-                stats: item_stats,
-                children: readdirSyncRecursive( item_path )
-            });
-
-        }
-        else {
-            result.push({
-                name: item,
-                path: path_.join(dir, item),
-                type: 'file',
-                stats: item_stats,
-                ext: path_.extname(item).replace(".", ""),
-            });
-        }
-    });
-
-    if( root ) {
-        return [{
-            type: 'folder',
-            name: path_.basename( dir ),
-            path: dir,
-            children: result,
-            stats: fs.lstatSync( dir )
-        }];
-    }
-    else {
-        return result;
-    }
-};
 angular.module('sdk.stoplight', [])
     .factory('$stoplight', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {   
 	var factory = {};
@@ -33353,51 +32984,36 @@ angular.module('service.windowEventsFactory', [])
 	return result;
 
 }]);;
-// require('nw.gui').Window.get().showDevTools();
-
-// local dirname
-// var dirname = require('path').join( require('./js/util.js').dirname, '..' );
-
-// prevent default behavior from changing page on dropped file
 window.ondragover = function(e) { e.preventDefault(); return false };
 window.ondrop = function(e) { e.preventDefault(); return false };
 
 var app = angular.module('app', ['module.core', 'module.modules']);
 var modules = ['ng'];
-
 var angularModules = [];
 
 angular.element(document).ready(function() {
     require('nw.gui').Window.get().showDevTools();
-
     setTimeout(function()
     { 
         modules.push('app');
         angular.bootstrap(document, modules);
     }, 200);
-
-    
 });
 
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {
-	$sceDelegateProvider.resourceUrlWhitelist(window.AUTH.whitelist);
+	$sceDelegateProvider.resourceUrlWhitelist(window.CONFIG.whitelist);
 });
 
 app.config(function ($controllerProvider) {
-    // app.controller = $controllerProvider.register;
-
-    app.controller = function (name, constructor)
-    {
+    app.controller = function (name, constructor) {
         $controllerProvider.register(name, constructor);
         return (this);
     }
 });
 
-
 // add Bearer token to $http requests
 app.run(['$rootScope', '$injector', function($rootScope, $injector) {
-
     $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
         if ($rootScope.user) {
         	headersGetter()['Authorization'] = "Bearer " + window.localStorage.access_token;
@@ -33410,33 +33026,11 @@ app.run(['$rootScope', '$injector', function($rootScope, $injector) {
 
 // run all angular defined modules
 app.run(['$rootScope', '$timeout', '$templateCache', '$module', function($rootScope, $timeout, $templateCache, $module) {
-    // console.log(angularModules, angularModules.size());
-
     $rootScope.modules = {};
-
-    // console.log('rootscope');
-
-    // $timeout(function() {
-        console.log(angularModules);
-        for(i in angularModules) {
-            // angularModules[i];
-            var result = angularModules[i];
-
-            $module.load(result.module, result.type, result.dir);
-
-            // $templateCache.put(result.html_path, result.data);
-
-            // $rootScope.modules[result.type] = $rootScope.modules[result.type] || {};
-            // $rootScope.modules[result.type][result.module] = result.html_path;
-            console.log('function', result.module, result.type, result.dir);
-        }
-    // }, 200);
-
-    
-    // angularModules.forEach(function(callback) {
-    //     console.log('something loaded', callback);
-    //     callback();
-    // });
+    for(i in angularModules) {
+        var result = angularModules[i];
+        $module.load(result.module, result.type, result.dir);
+    }
 }]);
 
 if(typeof angular !== 'undefined' && window.DEBUG) {
@@ -34276,31 +33870,30 @@ app.directive('fileDrop', function ( $parse ) {
  
 //CORE
 // editors
-loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']);
+loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']); // inject an angularjs dependency as 4th parameter
 
 // widgets
-//loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
+loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
 loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 
 // headers
 // nope..
 
 // themes
-// nope..
+loadModule('formide', 		'theme',	'./core/components/themes/formide/');
 
 // APP
 // editors
-loadModule('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
+loadModule('manifest', 		'editor',	'./app_example/components/editors/devkit-homey-editor-manifest/');
 
 // headers
-loadModule('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
-loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-title/');
+loadModule('title', 		'header',	'./app_example/components/headers/devkit-homey-header-title/');
 
 // widgets
 // nope..
 
 // themes
-//loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+loadModule('custom_icons',	'theme',	'./app_example/components/themes/custom_icons/');
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools
@@ -34419,169 +34012,6 @@ app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $eve
     }
 
 });;
-var AuthController = function($scope, $auth)
-{
-
-	/*
-	// listen for a message from the iframe
-	window.addEventListener('message', function(e)
-	{
-		$scope.$apply(function(){
-
-			// save tokens to localStorage
-			window.localStorage.access_token = e.data.accessToken;
-			window.localStorage.refresh_token = e.data.refreshToken;
-
-			$scope.setBlur(false);
-			$scope.setPopup('', false);
-
-			$auth.getUserInfo().then(function(result) 
-			{
-				$scope.user = result.data;
-			});
-		});
-	});
-
-	if(	typeof $scope.user == 'undefined' ) {
-		$scope.user = {};
-
-		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' )
-		{
-			$scope.user.status = 'logged-out';
-			$scope.user.statusMessage = 'Log in';
-		}
-		else
-		{
-			$auth.getUserInfo().then(function(result) 
-			{
-				$scope.user = result.data;
-			});	
-		}
-	}
-
-	$scope.login = function()
-	{
-		$scope.setPopup(window.PATH.auth.loginUrl, true);
-
-		$scope.user = $auth.login();
-	}
-
-	$scope.logout  = function()
-	{
-		$scope.user = $auth.logout();
-	}
-	*/
-}
-
-AuthController.$inject = ['$scope', '$auth'];
-
-app.controller("AuthController", AuthController);;
-app.factory('$auth', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
-	var factory = {};
-
-   factory.login = function() {
-   		var user = {};
-		user.status = 'logging-in';
-
-		$timeout(function() {
-			$rootScope.$emit('devkit.blur', true);
-		}, 1);
-
-		return user;
-
-	}
-
-	factory.logout = function() {
-		var user = {};
-		user.status = 'logged-out';
-		user.statusMessage = 'Log in';
-
-		delete window.localStorage.access_token;
-		delete window.localStorage.refresh_token;
-
-		return user;
-	}
-
-	factory.getUserInfo = function() {
-		var promise = $http({
-			method: 'GET',
-	        url:  window.PATH.auth.userInfo,
-	        headers: {
-	          'Authorization': 'Bearer ' + window.localStorage.access_token
-	        },
-	        withCredentials: true
-	    })
-	    .success(function(data){
-	        user = data;
-			user.status = 'logged-in';
-
-			return user;
-	    })
-	    .error(function(){
-	        user.status = 'logged-out';
-			user.statusMessage = 'Error logging in!';
-
-			return user;
-	    });
-
-	    return promise;
-	}
-
-    return factory;
-}]);;
-var PlayController = function($scope, $rootScope)
-{
-
-	$scope.status = {};
-	$scope.shouldBeEnabled = false;
-
-	$scope.playstop = function() 
-	{
-		console.log('playstop');
-		$rootScope.$emit('play.playstop', $scope.status);
-	};
-
-	$rootScope.$on('play.enable', function() 
-	{
-		$scope.shouldBeEnabled = true;
-	});
-
-	$rootScope.$on('play.disable', function() 
-	{
-		$scope.shouldBeEnabled = false;
-	});
-
-	$rootScope.$on('play.status', function(e, status) 
-	{
-		console.log(status);
-		$scope.status = status;
-	});
-}
-
-PlayController.$inject = ['$scope', '$rootScope'];
-
-app.controller("PlayController", PlayController);;
-angular.module('sdk.play', []).factory('$play', ['$rootScope', function ($rootScope) {
-	var factory = {};
-
-	factory.playstop = function(status) {
-		$rootScope.$emit('play.playstop', status);
-	};
-
-	factory.status = function(status) {
-		$rootScope.$emit('play.status', status);
-	};
-
-	factory.enable = function() {
-		$rootScope.$emit('play.enable');
-	};
-
-	factory.disable = function() {
-		$rootScope.$emit('play.disable');
-	};
-
-    return factory;
-}]);;
 var TitleController = function($scope, $auth)
 {
 	$scope.name = 'foo';
@@ -34591,6 +34021,54 @@ var TitleController = function($scope, $auth)
 TitleController.$inject = ['$scope'];
 
 app.controller("TitleController", TitleController);;
+window.AUTH = window.AUTH || {};
+
+window.AUTH.whitelist = [
+	'self',
+	'file://',
+	'http://localhost:8080/**',
+	'http://*.formide.com/**',
+	'https://*.formide.com/**'
+];;
+if(window.ENV.type == 'development' || window.ENV.type == 'testing')
+{
+  console.groupCollapsed("Development- or Testing Mode");
+   	if(window.DEBUG)
+   	{
+   		console.log("Debugging Mode: On");
+   	}
+   	else
+   	{
+   		console.log("Debugging Mode: Off", "color: red;");
+   	}
+
+    console.group("App", window.ENV.name);
+       	console.log("Environment", window.ENV);
+    	console.log("Paths", window.PATH);
+    console.groupEnd();
+
+  console.groupEnd();
+}
+else if(window.DEBUG)
+{
+	console.log("Debugging Mode: On", "color: blue;");
+}
+
+if (window.DEBUG) {
+	console.time("Angular loaded");
+};
+// Put general configuration here.
+
+window.ENV 	= window.ENV || {};
+
+window.ENV.name 			=	'devkit';
+
+window.ENV.type				= 	'development'; //development || testing || production
+
+window.DEBUG				=	(window.ENV.type == 'development' || window.ENV.type == 'testing') ? true : false;;
+function distOrSrcPath(env) {
+	return (env == 'development') ? '/src' : '/dist';
+};
 
 window.LANG = window.LANG  || [
 	{
@@ -34613,4 +34091,13 @@ window.LANG = window.LANG  || [
 		code: 'es',
 		name: 'Spanish'
 	}
-];
+];;
+//Set main paths here.
+window.PATH = window.PATH || {};
+
+window.PATH.root 			=	window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
+
+window.PATH.auth			= {
+	loginUrl: 'https://sdk.formide.com',
+	userInfo: 'https://api2.formide.com/auth/me'
+}
