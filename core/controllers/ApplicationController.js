@@ -4,10 +4,12 @@ var path		= require('path');
 
 var events 		= {};
 
-var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, windowEventsFactory, $templateCache, ngDialog)
+var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, windowEventsFactory, $templateCache, ngDialog, $http)
 {
 	var gui = require('nw.gui');
 	var win = gui.Window.get();
+
+	var hook = Hook('global');
 
 	$scope.loaded = false;
 	$scope.platform = os.platform();
@@ -37,10 +39,34 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 		{ name: "Light Theme", id: "light" }
 	];
 
+	var obj = {content:null};
+
+    $http.get('./package.json').success(function(data) {
+        $scope.settings.package = data;
+    });  
+
 	$scope.$watch('settings', function(newVal, oldVal){
-		console.log('settings changed');
 	    window.localStorage.sdk_settings = JSON.stringify($scope.settings);
+
+	    hook.call('onSettingsChanged', $scope.settings);
 	}, true);
+
+	hook.register('onSettingsChanged',
+		function (e) {
+			console.log('settings changed', e);
+			return true;
+		}
+	);
+
+	$scope.$watch(
+		function () { 
+			return window.localStorage.sdk_settings; 
+		},
+		function(newVal,oldVal) {
+
+			console.log('Local Storage Changed!');
+		}
+	)
 
 	$scope.toggleSettings = function() {
 		ngDialog.open({ 
@@ -331,6 +357,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 
 }
 
-ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', 'windowEventsFactory', '$templateCache', 'ngDialog'];
+ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', 'windowEventsFactory', '$templateCache', 'ngDialog', '$http'];
 
 app.controller("ApplicationController", ApplicationController);

@@ -13,9 +13,7 @@ var FormideUploadController = function($scope, $rootScope) {
 	var manifest = fs.readFileSync(window.localStorage.project_dir + '/app.json', 'utf8');
 	manifest = JSON.parse(manifest);
 
-
 	$scope.manifest = manifest;
-	console.log('manifest', manifest);
 
 	$scope.run = function() {
 		$scope.status = "checking"; // change status to checking
