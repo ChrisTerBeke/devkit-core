@@ -1,14 +1,19 @@
 var fs 		= require('fs-extra');
 var path 	= require('path');
 
-app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $events ){
+app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $events, $timeout ){
 
 	$scope.manifest = angular.fromJson( $scope.file.code );
-	//$rootScope.project.metadata = $scope.manifest;
-	$scope.file._changed = false;
-
 	var code;
 
+	$timeout(function() {
+		$scope.init();
+	});
+
+	$scope.init = function() {
+		$scope.file._changed = false;
+	}
+	
 	$scope.$watch('manifest', function(){
 		$scope.file._changed = true;
 	}, true);
