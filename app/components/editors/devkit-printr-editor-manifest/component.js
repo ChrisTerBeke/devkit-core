@@ -6,6 +6,8 @@ app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $eve
 	$scope.manifest = angular.fromJson( $scope.file.code );
 	var code;
 
+	var hook = Hook('global');
+
 	$timeout(function() {
 		$scope.init();
 	});
@@ -16,11 +18,16 @@ app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $eve
 	
 	$scope.$watch('manifest', function(){
 		$scope.file._changed = true;
+
+		hook.call('onManifestChange', $scope.manifest);
 	}, true);
 
 	$events.beforeSave($scope.file.path, function(cb) {
+		var manifest = $scope.manifest;
+		hook.call('onManifestSave', manifest);
+
 		cb({
-			code: angular.toJson( $scope.manifest, true )
+			code: angular.toJson( manifest, true )
 		});
 	});
 });

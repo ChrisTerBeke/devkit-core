@@ -9,11 +9,21 @@ var FormideUploadController = function($scope, $rootScope) {
 	$scope.status = "idle";
 	$scope.manifest = "";
 	$scope.message = "";
+
+	var hook = Hook('global');
 	
 	var manifest = fs.readFileSync(window.localStorage.project_dir + '/app.json', 'utf8');
 	manifest = JSON.parse(manifest);
 
 	$scope.manifest = manifest;
+
+	hook.register('onManifestSave',
+		function (e) {
+			$scope.manifest = e;
+			console.log('save manifest called');
+			return false;
+		}
+	);
 
 	$scope.run = function() {
 		$scope.status = "checking"; // change status to checking

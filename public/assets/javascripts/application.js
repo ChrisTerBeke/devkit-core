@@ -34344,15 +34344,8 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	$scope.$watch('settings', function(newVal, oldVal){
 	    window.localStorage.sdk_settings = JSON.stringify($scope.settings);
 
-	    hook.call('onSettingsChanged', $scope.settings);
+	    // hook.call('onSettingsChange', $scope.settings);
 	}, true);
-
-	hook.register('onSettingsChanged',
-		function (e) {
-			console.log('settings changed', e);
-			return true;
-		}
-	);
 
 	$scope.$watch(
 		function () { 
@@ -35255,6 +35248,8 @@ app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $eve
 	$scope.manifest = angular.fromJson( $scope.file.code );
 	var code;
 
+	var hook = Hook('global');
+
 	$timeout(function() {
 		$scope.init();
 	});
@@ -35265,11 +35260,16 @@ app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $eve
 	
 	$scope.$watch('manifest', function(){
 		$scope.file._changed = true;
+
+		hook.call('onManifestChange', $scope.manifest);
 	}, true);
 
 	$events.beforeSave($scope.file.path, function(cb) {
+		var manifest = $scope.manifest;
+		hook.call('onManifestSave', manifest);
+
 		cb({
-			code: angular.toJson( $scope.manifest, true )
+			code: angular.toJson( manifest, true )
 		});
 	});
 });;
@@ -35875,11 +35875,21 @@ var FormideUploadController = function($scope, $rootScope) {
 	$scope.status = "idle";
 	$scope.manifest = "";
 	$scope.message = "";
+
+	var hook = Hook('global');
 	
 	var manifest = fs.readFileSync(window.localStorage.project_dir + '/app.json', 'utf8');
 	manifest = JSON.parse(manifest);
 
 	$scope.manifest = manifest;
+
+	hook.register('onManifestSave',
+		function (e) {
+			$scope.manifest = e;
+			console.log('save manifest called');
+			return false;
+		}
+	);
 
 	$scope.run = function() {
 		$scope.status = "checking"; // change status to checking

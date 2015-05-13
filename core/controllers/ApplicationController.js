@@ -48,15 +48,8 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	$scope.$watch('settings', function(newVal, oldVal){
 	    window.localStorage.sdk_settings = JSON.stringify($scope.settings);
 
-	    hook.call('onSettingsChanged', $scope.settings);
+	    // hook.call('onSettingsChange', $scope.settings);
 	}, true);
-
-	hook.register('onSettingsChanged',
-		function (e) {
-			console.log('settings changed', e);
-			return true;
-		}
-	);
 
 	$scope.$watch(
 		function () { 
