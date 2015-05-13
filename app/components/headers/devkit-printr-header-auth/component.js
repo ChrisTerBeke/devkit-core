@@ -15,7 +15,7 @@ var AuthController = function($scope, $rootScope, $http)
 	};
 	
 	$scope.login = function() {
-		$scope.$parent.setPopup(window.PATH.auth.loginUrl, true);
+		$scope.$parent.setPopup(window.CONFIG.paths.login, true);
 		$rootScope.$emit('devkit.blur', true);
 	};
 
@@ -29,7 +29,7 @@ var AuthController = function($scope, $rootScope, $http)
 	$scope.getUserInfo = function() {
 		$http({
 			method: 'GET',
-	        url: window.PATH.auth.userInfo,
+	        url: window.CONFIG.paths.user,
 	        headers: {
 	          'Authorization': 'Bearer ' + window.localStorage.access_token
 	        },
@@ -76,7 +76,7 @@ var AuthController = function($scope, $rootScope, $http)
 		var projectDir = window.localStorage.project_dir;
 		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
 		manifest = JSON.parse(manifest);
-		gui.Shell.openExternal(window.PATH.appManager + "?app_id=" + manifest.id);
+		gui.Shell.openExternal(window.CONFIG.paths.appManager + "/apps?app_id=" + manifest.id);
 	};
 	
 	// listen for a message from the iframe

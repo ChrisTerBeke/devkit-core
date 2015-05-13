@@ -12,7 +12,7 @@ if(window.ENV.type == 'development' || window.ENV.type == 'testing')
 
     console.group("App", window.ENV.name);
        	console.log("Environment", window.ENV);
-    	console.log("Paths", window.PATH);
+    	console.log("Paths", window.CONFIG.paths);
     console.groupEnd();
 
   console.groupEnd();

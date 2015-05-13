@@ -8,8 +8,13 @@
 
 .devkit-printr-header-title {
 	display: block;
+<<<<<<< HEAD
 	text-align: center;
 	width: 320px;
 	font-size: 14px;
 	margin: 14px auto;
+=======
+	width: 320px;
+	margin: 0 auto;
+>>>>>>> b8eb1148cdc20fb314c8a790525e536cdaaf6841
 }

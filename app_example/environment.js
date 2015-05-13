@@ -1,3 +1,7 @@
+function distOrSrcPath(env) {
+	return (env == 'development') ? '/src' : '/dist';
+}
+
 // Put general configuration here.
 
 window.ENV 	= window.ENV || {};
