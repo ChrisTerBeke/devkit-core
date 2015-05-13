@@ -1,3 +1,6 @@
+@import url('../bower_components/ngDialog/css/ngDialog.css');
+@import url('../bower_components/ngDialog/css/ngDialog-theme-default.css');
+
 /* reset */
 * {
 	margin: 0;
@@ -376,7 +379,6 @@ content {
 			bottom: 0;*/
 			height: 100%;
 			display: block;
-			border: 1px solid rgba(0,0,0,0.25);
 			border-bottom-width: 0;
 			border-right-width: 0;
 		}

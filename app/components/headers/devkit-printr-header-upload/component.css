@@ -13,3 +13,12 @@
 	font-size: 14px;
 	margin: 14px auto;
 }
+
+.devkit-printr-header-title .version {
+	border: 1px solid #46B1E6;
+	border-radius: 3px;
+	color: #46B1E6;
+	font-size: 12px;
+	padding: 3px 4px 2px;
+	line-height: 0;
+}

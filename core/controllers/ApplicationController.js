@@ -4,14 +4,22 @@ var path		= require('path');
 
 var events 		= {};
 
-
-var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, windowEventsFactory, $templateCache)
+var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, windowEventsFactory, $templateCache, ngDialog)
 {
-	var gui 		= require('nw.gui');
-	var win 		= gui.Window.get();
+	var gui = require('nw.gui');
+	var win = gui.Window.get();
 
 	$scope.loaded = false;
 	$scope.platform = os.platform();
+
+	if(window.localStorage.sdk_settings) {
+		$scope.settings = JSON.parse(window.localStorage.sdk_settings);
+	}
+	else {
+		$scope.settings = {};
+		$scope.settings.theme = 'dark';
+	}
+	// console.log('settings', JSON.parse(window.localStorage.sdk_settings));
 
 	$scope.focus = true;
 	$scope.blurred = false;
@@ -23,6 +31,23 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	$scope.files = {}; // files open
 	$scope.fileHistory = [];
 	$scope.path = false; // current project path
+
+	$scope.themes = [
+		{ name: "Dark Theme", id: "dark" }, 
+		{ name: "Light Theme", id: "light" }
+	];
+
+	$scope.$watch('settings', function(newVal, oldVal){
+		console.log('settings changed');
+	    window.localStorage.sdk_settings = JSON.stringify($scope.settings);
+	}, true);
+
+	$scope.toggleSettings = function() {
+		ngDialog.open({ 
+			template: 'SDKSettings',
+			scope: $scope
+		});
+	};
 
 	$scope.setBlur = function(blur)
 	{
@@ -139,7 +164,9 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Preferences...',
 		click: function() {
-			alert('preferences');
+			$scope.$apply(function() {
+				$scope.toggleSettings();
+			});
 		},
 		key: ',',
 		modifiers: 'cmd'
@@ -304,6 +331,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 
 }
 
-ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', 'windowEventsFactory', '$templateCache'];
+ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', 'windowEventsFactory', '$templateCache', 'ngDialog'];
 
 app.controller("ApplicationController", ApplicationController);

@@ -1,12 +1,12 @@
-<div ng-controller="AuthController" ng-init="init()">
-	<span ng-click="login()">
+<div ng-controller="AuthController" class="devkit-printr-header-auth" ng-init="init()">
+	<span ng-click="login()" class="account">
 		<div class="name">
-			<span>{{ user.username }}</span>
+			<span>{{ user.firstname }}</span>
 		</div>
 		<img ng-src="{{user.avatar || 'app/assets/images/avatar-fallback.jpg'}}?size=30" />
 	</span>
 
 	<a class="btn" ng-click="logout()" title="Logout">
-		<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/manager.svg)"></span>
+		<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/logout.svg)"></span>
 	</a>
 </div>

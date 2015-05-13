@@ -38,6 +38,8 @@ var AuthController = function($scope, $rootScope, $http)
 	    .then(function(result) {
 			if(result.status == 200) {
 				$scope.user = result.data;
+
+				console.log('user', $scope.user);
 				window.localStorage.user = JSON.stringify(result.data);
 			}
 			else {

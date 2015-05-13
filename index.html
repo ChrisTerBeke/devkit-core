@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html ng-controller="ApplicationController">
+<html ng-controller="ApplicationController" ng-class="{'dark-theme': (settings.theme == 'dark'), 'light-theme': (settings.theme == 'light')}">
     <head>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
 
         <!-- Include Resources -->
         <link rel="stylesheet" href="./core/app.css" id="stylesheets" />
-<!--         <link rel="stylesheet" href="./bower_components/css-base/dist/compiled_formide.css" id="stylesheets" /> --><!-- Gives some styling issues -->
+		<!--         <link rel="stylesheet" href="./bower_components/css-base/dist/compiled_formide.css" id="stylesheets" /> --><!-- Gives some styling issues -->
         <script src="./public/assets/javascripts/application.js" id="javascripts"></script>
         
     </head>
@@ -13,7 +13,6 @@
 		class="os-{{platform}}"
 		ng-class="{ 'maximized': maximized, 'loaded': loaded, 'focus': focus }"
 	>
-
 		<wrap
 			ng-class="{ 'blurred': blurred }"
 			ng-click="blurred && closePopup()"
@@ -88,7 +87,7 @@
 					</ul>
 					
 					<div id="sidebar-helper">
-						<div class="button button-add" ng-click="ctxmenu.newfile()">+</div>
+						<div class="btn btn-add" ng-click="ctxmenu.newfile()">+</div>
 					</div>
 
 				</sidebar>
@@ -168,5 +167,11 @@
 			<input id="directorychooser" type="file" webkitdirectory />
 		</util>
 
+		<script type="text/ng-template" id="SDKSettings">
+			<div class="settings">
+				<select ng-model="settings.theme" ng-options="theme.id as theme.name for theme in themes">
+			    </select>
+			</div>
+		</script>
 	</body>
 </html>

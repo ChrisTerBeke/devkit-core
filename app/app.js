@@ -14,7 +14,7 @@ loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-mark
 // nope..
 
 // themes
-loadModule('formide', 		'theme',	'./core/components/themes/formide/');
+
 
 // APP
 // editors
@@ -29,8 +29,10 @@ loadModule('upload', 		'header',	'./app/components/headers/devkit-printr-header-
 // nope..
 
 // themes
+loadModule('theme_dark',	'theme',	'./app/components/themes/theme_dark/');
+loadModule('theme_light',	'theme',	'./app/components/themes/theme_light/');
 loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
-loadModule('custom_icons',	'theme',	'./app/components/themes/formide/');
+
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools

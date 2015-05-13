@@ -7,8 +7,16 @@ var semver			= require('semver');
 var FormideUploadController = function($scope, $rootScope) {
 	
 	$scope.status = "idle";
+	$scope.manifest = "";
 	$scope.message = "";
 	
+	var manifest = fs.readFileSync(window.localStorage.project_dir + '/app.json', 'utf8');
+	manifest = JSON.parse(manifest);
+
+
+	$scope.manifest = manifest;
+	console.log('manifest', manifest);
+
 	$scope.run = function() {
 		$scope.status = "checking"; // change status to checking
 		$scope.message = "";
@@ -34,7 +42,10 @@ var FormideUploadController = function($scope, $rootScope) {
 		var archive = archiver('zip');
 		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
 		manifest = JSON.parse(manifest);
-		
+
+
+		$scope.manifest = manifest;
+
 		if(semver.valid(manifest.version) == null) {
 			$scope.status = 'failed';
 			$scope.message = 'Invalid version number. Use semver!';
