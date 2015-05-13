@@ -26,7 +26,6 @@ html {
 	
 	border-radius: 3px;
 	overflow: hidden;
-	border: 1px solid #ccc;
 }
 
 body {
@@ -119,11 +118,9 @@ header {
     	flex: 1 1 auto;
 	    align-self: auto;
 	    height: 100%;
-	    position: relative;
-	    /*position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;*/
+	    position: absolute;
+		left: 220px;
+		right: 0;
 	}	
 
 wrap {
@@ -173,6 +170,7 @@ content {
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;
+					transition: all .2s ease-in-out;
 				}
 				#filetree li .label:hover {
 					background: rgba(0,0,0,0.03);
@@ -219,6 +217,7 @@ content {
 						font-size: 12px;
 						display: inline-block;
 						vertical-align: middle;
+						transition: all .2s ease-in-out;
 					}
 					#filetree li .label .name-renaming {
 						border: 1px solid rgba(0,0,0,0.1);
@@ -310,6 +309,7 @@ content {
 				font-size: 12px;
 				border-right: 1px solid #ccc;
 				color: #999;
+				transition: all .2s ease-in-out;
 			}
 			tabs tab.active + tab {
 				border-bottom-color: white;
@@ -330,6 +330,7 @@ content {
 					text-overflow: ellipsis;
 					max-width: 75%;
 					margin-left: 2em;
+					transition: all .2s ease-in-out;
 				}
 				tabs tab .close {
 					border-radius: 30px;
@@ -403,7 +404,6 @@ content {
 			right: 0;*/
 			height: 100%;
 			overflow: auto;
-			margin-left: 1px;
 		}
 		editorview .viewWrap {
 			width: 100%;

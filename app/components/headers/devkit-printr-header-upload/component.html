@@ -1,13 +1,20 @@
-<div class="devkit-printr-header-upload" ng-controller="FormideUploadController">
-	
-	<a class="btn" ng-click="run()">
-		<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/upload.svg)"></span>
-	</a>
+<div ng-controller="FormideUploadController">
+	<div class="devkit-printr-header-upload">
+		
+		<a class="btn" ng-click="run()" title="Publish App">
+			<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/upload.svg)"></span>
+		</a>
 
-	<a class="btn" ng-click="run()">
-		<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/upload.svg)"></span>
-	</a>
-	<!-- <span class="upload-status">{{ status }}</span> -->
-	<!-- <span class="upload-message">{{ message }}</span> -->
-	
+		<a class="btn" ng-click="run()" title="Preview App">
+			<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/view.svg)"></span>
+		</a>
+
+		<a class="btn" ng-click="run()" title="App Manager">
+			<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/manager.svg)"></span>
+		</a>
+	</div>
+
+	<section class="devkit-printr-header-title">
+		<div>File Lorem Ipsum Foo | {{status}}</div>
+	</section>
 </div>

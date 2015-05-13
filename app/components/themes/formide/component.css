@@ -1,41 +1,172 @@
-/*
-Error: Invalid CSS after "...mary-text-color": expected selector or at-rule, was ":"
-        on line 28 of /Users/Bouke/Sites/devkit-core/app/components/themes/formide/component.scss
+/*Dark Theme*/
+.btn {
+  font-size: 14px;
+  color: #DFE1E8;
+  background-color: #65737F;
+  padding: 2px 10px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.2s ease-out;
+  border-radius: 3px;
+  display: inline-block; }
+  .btn:hover, .btn:focus {
+    opacity: .8;
+    color: inherit; }
+  .btn, .btn:hover, .btn:active, .btn:focus {
+    outline: 0; }
+  .btn:disabled {
+    opacity: .2;
+    cursor: not-allowed; }
+  .btn .label {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 14px;
+    color: inherit; }
+  .btn .icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center center;
+    -webkit-mask-size: contain;
+    background: #DFE1E8;
+    margin-right: 3px; }
 
-23: 
-24: $primary-color:
-25: 
-26: 
-27: 
-28: $primary-text-color:
-29: $secondary-text-color:
-30: $active-text-color: 
-31: 
-32: $button-color:
-33: $icon-color:
+body {
+  background: #2B303B;
+  color: #DFE1E8; }
 
-Backtrace:
-/Users/Bouke/Sites/devkit-core/app/components/themes/formide/component.scss:28
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/scss/parser.rb:1165:in `expected'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/scss/parser.rb:1101:in `expected'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/scss/parser.rb:43:in `parse'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/engine.rb:393:in `_to_tree'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/engine.rb:368:in `_render_with_sourcemap'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/engine.rb:285:in `render_with_sourcemap'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:490:in `update_stylesheet'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:209:in `each'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:470:in `on_file_changed'
-/Library/Ruby/Gems/2.0.0/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:328:in `block in watch'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:291:in `call'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:291:in `_process_changes'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:255:in `block in _wait_for_changes'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:238:in `loop'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:238:in `_wait_for_changes'
-/Library/Ruby/Gems/2.0.0/gems/listen-2.10.0/lib/listen/listener.rb:327:in `block in _start_wait_thread'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: Invalid CSS after \"...mary-text-color\": expected selector or at-rule, was \":\"\A         on line 28 of /Users/Bouke/Sites/devkit-core/app/components/themes/formide/component.scss\A \A 23: \A 24: $primary-color:\A 25: \A 26: \A 27: \A 28: $primary-text-color:\A 29: $secondary-text-color:\A 30: $active-text-color: \A 31: \A 32: $button-color:\A 33: $icon-color:"; }
+header {
+  background: #1C1F26; }
+
+#header-stoplight {
+  padding: 0 12px; }
+
+sidebar {
+  background: #222830; }
+
+#filetree li .label .name,
+#filetree li .label .name-renaming {
+  color: #65737F; }
+
+#filetree li .label:hover,
+#filetree li .label.selected,
+#filetree li .label.file-drop-over {
+  background: #333D46; }
+  #filetree li .label:hover .name,
+  #filetree li .label:hover .name-renaming,
+  #filetree li .label.selected .name,
+  #filetree li .label.selected .name-renaming,
+  #filetree li .label.file-drop-over .name,
+  #filetree li .label.file-drop-over .name-renaming {
+    color: #DFE1E8; }
+
+#filetree li .label:hover {
+  background: rgba(51, 61, 70, 0.5); }
+
+#filetree li .label .icon {
+  background: #65737F; }
+
+#filetree li .label .expand:before {
+  border-left-color: #65737F; }
+
+tabs {
+  background: #222830;
+  border: none; }
+  tabs tab {
+    color: #65737F;
+    background: #222830;
+    border: none; }
+    tabs tab:hover, tabs tab.active {
+      color: #DFE1E8;
+      background: #2B303B; }
+    tabs tab .close {
+      box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5); }
+      tabs tab .close:before {
+        color: set-text-color(#2B303B); }
+    tabs tab.changed .close .changed {
+      background: #268BD2;
+      border: 1px solid #46B1E6; }
+
+/* e.g. var, function */
+.cm-keyword {
+  color: #DFE1E8; }
+
+/* e.g. #id */
+.cm-atom {
+  color: #DFE1E8; }
+
+/* e.g. 20 */
+.cm-number {
+  color: #d68056; }
+
+/* e.g. px, em */
+.cm-unit {
+  color: #d68056; }
+
+/* e.g. @include, [this] */
+.cm-def {
+  color: #8056d6; }
+
+/* e.g. $, i */
+.cm-variable {
+  color: #DFE1E8; }
+
+/* e.g. for key in [this], Markdown li */
+.cm-variable-2 {
+  color: #8056d6; }
+
+/* e.g. getElementbyId, CSS properties */
+.cm-property {
+  color: #c156d6; }
+
+/* e.g. CoffeeScript ->, CSS colons */
+.cm-operator {
+  color: #65737F; }
+
+/* e.g. // comments */
+.cm-comment {
+  color: #65737F; }
+
+/* e.g. "string" */
+.cm-string {
+  color: #6bd656; }
+
+/* e.g. some CSS values */
+.cm-string-2 {
+  color: #DFE1E8; }
+
+/* e.g. @font-face */
+.cm-meta {
+  color: #c156d6; }
+
+/*  */
+.cm-header {
+  color: #d68056; }
+
+/* e.g. HTML elements */
+.cm-tag {
+  color: #d6c156; }
+
+/* e.g. class="" id="" */
+.cm-attribute {
+  color: #d6c156; }
+
+/* e.g. .box */
+.cm-qualifier {
+  color: #DFE1E8; }
+
+.CodeMirror-linenumber {
+  color: #65737F; }
+
+.CodeMirror-gutters {
+  border-right: 1px solid #2B303B !important;
+  background: #2B303B !important; }
+
+.CodeMirror {
+  background: #2B303B !important;
+  color: #65737F !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important; }
+
+/*# sourceMappingURL=component.css.map */

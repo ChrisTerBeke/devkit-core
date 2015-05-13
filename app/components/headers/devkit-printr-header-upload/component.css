@@ -1,9 +1,15 @@
 .devkit-printr-header-upload {
 	position: absolute;
-	z-index: 3;
-	left: 10px;
-	top: 7px;
-	bottom: 10px;
+  	z-index: 3;
+  	top: 8px;
 	cursor: default;
 	-webkit-app-region: no-drag;
+}
+
+.devkit-printr-header-title {
+	display: block;
+	text-align: center;
+	width: 320px;
+	font-size: 14px;
+	margin: 14px auto;
 }
