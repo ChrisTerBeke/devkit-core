@@ -33843,9 +33843,11 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
 	$rootScope.editorConfig = [];
 
+	var hook = Hook('global');
+
     factory.open = function( file_path )
     {
-    	// console.log('open', file_path);
+    	console.log('open', file_path);
 
 	    // only load the file when it's not already open
 	    if( !factory.isOpen( file_path ) ) {
@@ -33873,6 +33875,8 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 			return file_path_history != file_path;
 		});
 	    factory.history.push( file_path );
+
+	    // hook.call('onFileOpened', file_path);
 		
 		// notify everyone
 	    $rootScope.$emit('service.file.open', file_path );
@@ -34293,7 +34297,7 @@ var path		= require('path');
 
 var events 		= {};
 
-var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, windowEventsFactory, $templateCache, ngDialog, $http)
+var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, $templateCache, ngDialog, $http)
 {
 	var gui = require('nw.gui');
 	var win = gui.Window.get();
@@ -34340,15 +34344,15 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	    // hook.call('onSettingsChange', $scope.settings);
 	}, true);
 
-	$scope.$watch(
-		function () { 
-			return window.localStorage.sdk_settings; 
-		},
-		function(newVal,oldVal) {
+	// $scope.$watch(
+	// 	function () { 
+	// 		return window.localStorage.sdk_settings; 
+	// 	},
+	// 	function(newVal,oldVal) {
 
-			console.log('Local Storage Changed!');
-		}
-	)
+	// 		console.log('Local Storage Changed!');
+	// 	}
+	// )
 
 	$scope.toggleSettings = function() {
 		ngDialog.open({ 
@@ -34413,19 +34417,19 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
     	$file.icon(file_path);
     }
 
-	win.on('close', function()
-	{
-		// hide ourselves first
-		$scope.$apply(function() {
-			$scope.loaded = false;
-		});
+	// win.on('close', function()
+	// {
+	// 	// hide ourselves first
+	// 	$scope.$apply(function() {
+	// 		$scope.loaded = false;
+	// 	});
 
-		// fire all callbacks
-		windowEventsFactory.runQueue('close');
+	// 	// fire all callbacks
+	// 	// windowEventsFactory.runQueue('close');
 
-		// close for real
-		this.close(true);
-	});
+	// 	// close for real
+	// 	this.close(true);
+	// });
 
 	window.addEventListener('load', function()
 	{
@@ -34621,24 +34625,65 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 
 }
 
-ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', 'windowEventsFactory', '$templateCache', 'ngDialog', '$http'];
+ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', '$templateCache', 'ngDialog', '$http'];
 
 app.controller("ApplicationController", ApplicationController);
 ;
-var EditorController = function($rootScope, $scope, $file, windowEventsFactory, $rootScope)
+var EditorController = function($rootScope, $scope, $file, $rootScope)
 {
-	// add close command to queue (why?)
-    windowEventsFactory.addToQueue('close', function() {
+	// add close command to queue (why?) 
+	// OBSELETE FUNCTION?
+  //   windowEventsFactory.addToQueue('close', function() {
+		// window.localStorage.files_open = '';
+
+		// var files_open = [];
+
+		// console.log('close command', $scope.files);
+
+		// for( var file_path in $scope.$parent.files ) {
+		// 	files_open.push( file_path );
+		// }
+
+		// window.localStorage.files_open = files_open.join(',');
+  //   });
+	var win = gui.Window.get();
+
+	win.on('close', function() {
+		this.hide(); // Pretend to be closed already
 		window.localStorage.files_open = '';
 
 		var files_open = [];
+
+		console.log('close command', $scope.files);
 
 		for( var file_path in $scope.files ) {
 			files_open.push( file_path );
 		}
 
 		window.localStorage.files_open = files_open.join(',');
-    });
+
+		this.close(true);
+	});
+
+
+	$scope.init = function() {
+		if(window.localStorage.files_open) {
+			var files_open = window.localStorage.files_open.split(',');
+			console.log(files_open);
+			for( var file_path in files_open) {
+				$file.open(files_open[file_path]);
+			}
+		}
+	}
+
+	$scope.init();
+	// var hook = Hook('global');
+
+	// hook.register('onFileOpened',
+	// 	function (e) {
+	//         $scope.update();
+	// 	}
+	// );
 
 	// open file
     $scope.open = function(file_path) {
@@ -34661,6 +34706,8 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 	$scope.update = function(){
 		$scope.files = $file.files;
 		$scope.active = $file.active;
+
+		console.log('files', $scope.files);
 	}
 	
 	$rootScope.$on('service.file.open', function(){
@@ -34672,7 +34719,7 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 	});
 }
 
-EditorController.$inject = ['$rootScope', '$scope', '$file', 'windowEventsFactory', '$rootScope'];
+EditorController.$inject = ['$rootScope', '$scope', '$file', '$rootScope'];
 
 app.controller("EditorController", EditorController);;
 var gui			= require('nw.gui');
@@ -34731,8 +34778,12 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
         // filetree
 		// watch for changes
 		watchTree($scope.$parent.path, function (event) { // $parent is ApplicationController
-			$scope.update();
+			$scope.$apply(function() {
+				$scope.update();
+			});
 		});
+
+		$scope.$parent.files = {};
 	
 		// initial scan
 		$scope.update();
@@ -34950,13 +35001,16 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 				if( $scope.selected.length > 1 ) {
 					if( confirm( "Are you sure you want to remove " + $scope.selected.length + " items to the trash?" ) ) {
 						$scope.selected.forEach(function( item_path ){
-							trash([ item_path ]);
+							$file.close(item_path);
 
+							trash([ item_path ]);
 						});
 					}				
 				}
 				else {
 					if( confirm( "Are you sure you want to remove `" + item.name + "` to the trash?" ) ) {
+						$file.close(item.path);
+
 						trash([ item.path ]);
 					}
 				}
@@ -35906,7 +35960,7 @@ var archiver 		= require('archiver');
 var request			= require('request');
 var semver			= require('semver');
 
-var FormideUploadController = function($scope, $rootScope) {
+var FormideUploadController = function($scope, $rootScope, $file) {
 	
 	$scope.status = "idle";
 	$scope.manifest = "";
@@ -35988,6 +36042,10 @@ var FormideUploadController = function($scope, $rootScope) {
         gui.Shell.openExternal("file:///" + projectDir + '/index.html');
 	};
 
+	$scope.openManifest = function() {
+		$file.open(window.localStorage.project_dir + '/app.json');
+	}
+
 	$scope.compressAndUpload = function() {
 		
 		var projectDir = window.localStorage.project_dir;
@@ -36059,6 +36117,6 @@ var FormideUploadController = function($scope, $rootScope) {
     });
 };
 
-FormideUploadController.$inject = ['$scope', '$rootScope'];
+FormideUploadController.$inject = ['$scope', '$rootScope', '$file'];
 
 app.controller("FormideUploadController", FormideUploadController);

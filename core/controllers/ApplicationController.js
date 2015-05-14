@@ -4,7 +4,7 @@ var path		= require('path');
 
 var events 		= {};
 
-var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, windowEventsFactory, $templateCache, ngDialog, $http)
+var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, $templateCache, ngDialog, $http)
 {
 	var gui = require('nw.gui');
 	var win = gui.Window.get();
@@ -51,15 +51,15 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	    // hook.call('onSettingsChange', $scope.settings);
 	}, true);
 
-	$scope.$watch(
-		function () { 
-			return window.localStorage.sdk_settings; 
-		},
-		function(newVal,oldVal) {
+	// $scope.$watch(
+	// 	function () { 
+	// 		return window.localStorage.sdk_settings; 
+	// 	},
+	// 	function(newVal,oldVal) {
 
-			console.log('Local Storage Changed!');
-		}
-	)
+	// 		console.log('Local Storage Changed!');
+	// 	}
+	// )
 
 	$scope.toggleSettings = function() {
 		ngDialog.open({ 
@@ -124,19 +124,19 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
     	$file.icon(file_path);
     }
 
-	win.on('close', function()
-	{
-		// hide ourselves first
-		$scope.$apply(function() {
-			$scope.loaded = false;
-		});
+	// win.on('close', function()
+	// {
+	// 	// hide ourselves first
+	// 	$scope.$apply(function() {
+	// 		$scope.loaded = false;
+	// 	});
 
-		// fire all callbacks
-		windowEventsFactory.runQueue('close');
+	// 	// fire all callbacks
+	// 	// windowEventsFactory.runQueue('close');
 
-		// close for real
-		this.close(true);
-	});
+	// 	// close for real
+	// 	this.close(true);
+	// });
 
 	window.addEventListener('load', function()
 	{
@@ -332,6 +332,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 
 }
 
-ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', 'windowEventsFactory', '$templateCache', 'ngDialog', '$http'];
+ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', '$templateCache', 'ngDialog', '$http'];
 
 app.controller("ApplicationController", ApplicationController);
