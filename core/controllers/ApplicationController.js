@@ -174,7 +174,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	var osxMenuBar = new gui.Menu({
 		type: "menubar"
 	});
-	osxMenuBar.createMacBuiltin("Homey Devkit", {
+	osxMenuBar.createMacBuiltin("Devkit", {
 		hideWindow: true
 	});
 
@@ -300,7 +300,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	project.insert(new gui.MenuItem({
 		label: 'Run',
 		click: function(){
-			//$rootScope.$emit('homey.run');
+			//TODO
 		},
 		key: 'r',
 		modifiers: 'cmd'
@@ -309,7 +309,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	project.insert(new gui.MenuItem({
 		label: 'Run and Break',
 		click: function(){
-			// $rootScope.$emit('homey.runbrk');
+			//TODO
 		},
 		key: 'r',
 		modifiers: 'cmd+shift'
