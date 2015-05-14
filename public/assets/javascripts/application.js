@@ -36097,6 +36097,10 @@ var FormideUploadController = function($scope, $rootScope, $file) {
 
 					alert('Failed ' + response.message);
 				}
+				
+                manifest.version = semver.inc(manifest.version, 'patch');
+				fs.writeFileSync(window.localStorage.project_dir + '/app.json', JSON.stringify(manifest), 'utf8');
+				
 				fs.unlink(zipFile);
 				$scope.$apply();
 			});
