@@ -272,6 +272,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save',
 		click: function() {
+    		$file.save();
     		$rootScope.$emit('service.file.save');
 		},
 		key: 's',

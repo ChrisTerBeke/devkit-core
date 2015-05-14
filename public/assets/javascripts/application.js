@@ -34561,6 +34561,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save',
 		click: function() {
+    		$file.save();
     		$rootScope.$emit('service.file.save');
 		},
 		key: 's',
@@ -34696,8 +34697,28 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		}
 	}
 	
+	/*
+	 * select a directory to create a new project in
+	 */
 	$scope.createProject = function() {
-    	
+    	var directorychooser = document.getElementById('directorychooser');
+        directorychooser.addEventListener("change", function(evt) {
+            var val = this.value;
+            $rootScope.$emit('service.project.createInDirectory', val);
+            $scope.loadProject(this.value);
+        }, false)
+        directorychooser.click();
+	}
+	
+	/*
+	 * select a project directory
+	 */
+	$scope.selectProject = function() {
+        var directorychooser = document.getElementById('directorychooser');
+        directorychooser.addEventListener("change", function(evt) {
+            $scope.loadProject(this.value);
+        }, false)
+        directorychooser.click();
 	}
 	
 	/*
@@ -34716,17 +34737,6 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		// initial scan
 		$scope.update();
         $rootScope.$emit('service.project.ready');
-	}
-	
-	/*
-	 * select a project directory
-	 */
-	$scope.selectProject = function() {
-        var directorychooser = document.getElementById('directorychooser');
-        directorychooser.addEventListener("change", function(evt) {
-            $scope.loadProject(this.value);
-        }, false)
-        directorychooser.click();
 	}
 
 	/*
@@ -34831,8 +34841,6 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		var newName = item.name;
         var itemFolder = path.dirname(item.path);
         var newPath = path.join(itemFolder, newName);
-
-        console.log('item', item, newPath);
         
         if(fs_extra.existsSync(newPath) && item.path != newPath) {
 	       return alert("That filename already exists!");
@@ -35002,11 +35010,11 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	}
 	
 	/*
-	 * Listen to create new project event
+	 * Listen to open new project event
 	 */
-    $rootScope.$on('service.project.create', function() {
-        $scope.createProject();
-    });
+	$rootScope.$on('service.project.create', function() {
+		$scope.createProject();
+	});
 	
 	/*
 	 * Listen to open new project event
@@ -35903,6 +35911,16 @@ var FormideUploadController = function($scope, $rootScope) {
 	$scope.status = "idle";
 	$scope.manifest = "";
 	$scope.message = "";
+	$scope.manifestTemplate = {
+        "id": "Your app ID",
+        "version": "0.0.1",
+        "name": "Your app name",
+        "description": "This app does awesome things!",
+        "author": {
+            "name": "Your name",
+            "email": "Your email"
+        }
+    };
 
 	var hook = Hook('global');
 	
@@ -35924,6 +35942,22 @@ var FormideUploadController = function($scope, $rootScope) {
 			});
 		}
 	);
+	
+	$scope.createApp = function(rootPath) { // do custom things when creating a new project
+    	fs.readdir(rootPath, function(err, files) {
+        	if (err) return console.log(err);
+        	
+        	if(files.length > 0 && !confirm("This directory is not empty. Are you sure to create a new project here?")) {
+            	return;
+            }
+            
+        	fs.mkdirSync(rootPath + "/assets");
+            fs.writeFileSync(rootPath + "/app.json", JSON.stringify($scope.manifestTemplate));
+            fs.writeFileSync(rootPath + "/app.js", "");
+            fs.writeFileSync(rootPath + "/index.html", "");
+            fs.writeFileSync(rootPath + "/style.css", "");
+    	});
+	};
 
 	$scope.uploadApp = function() {
 		$scope.status = "checking"; // change status to checking
@@ -36015,6 +36049,14 @@ var FormideUploadController = function($scope, $rootScope) {
 			form.append('app_file', fs.createReadStream(zipFile, {filename: 'app.zip', contentType: 'application/zip'}));
 		});
 	};
+	
+	$rootScope.$on('project.run', function() { // TODO: maybe create a hook for this?
+    	$scope.viewApp();
+	});
+	
+	$rootScope.$on('service.project.createInDirectory', function(e, data) { // TODO: maybe create a hook for this?
+        $scope.createApp(data);
+    });
 };
 
 FormideUploadController.$inject = ['$scope', '$rootScope'];
