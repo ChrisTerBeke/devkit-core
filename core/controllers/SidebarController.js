@@ -54,8 +54,12 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
         // filetree
 		// watch for changes
 		watchTree($scope.$parent.path, function (event) { // $parent is ApplicationController
-			$scope.update();
+			$scope.$apply(function() {
+				$scope.update();
+			});
 		});
+
+		$scope.$parent.files = {};
 	
 		// initial scan
 		$scope.update();
@@ -273,13 +277,16 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 				if( $scope.selected.length > 1 ) {
 					if( confirm( "Are you sure you want to remove " + $scope.selected.length + " items to the trash?" ) ) {
 						$scope.selected.forEach(function( item_path ){
-							trash([ item_path ]);
+							$file.close(item_path);
 
+							trash([ item_path ]);
 						});
 					}				
 				}
 				else {
 					if( confirm( "Are you sure you want to remove `" + item.name + "` to the trash?" ) ) {
+						$file.close(item.path);
+
 						trash([ item.path ]);
 					}
 				}

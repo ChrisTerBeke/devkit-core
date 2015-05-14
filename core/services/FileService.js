@@ -8,6 +8,8 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
 	$rootScope.editorConfig = [];
 
+	var hook = Hook('global');
+
     factory.open = function( file_path )
     {
     	console.log('open', file_path);
@@ -38,6 +40,8 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 			return file_path_history != file_path;
 		});
 	    factory.history.push( file_path );
+
+	    // hook.call('onFileOpened', file_path);
 		
 		// notify everyone
 	    $rootScope.$emit('service.file.open', file_path );
