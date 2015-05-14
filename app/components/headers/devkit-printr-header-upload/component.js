@@ -9,6 +9,10 @@ var FormideUploadController = function($scope, $rootScope) {
 	$scope.status = "idle";
 	$scope.manifest = "";
 	$scope.message = "";
+	
+	$rootScope.$on('project.run', function() { // TODO: maybe create a hook for this?
+    	$scope.viewApp();
+	});
 
 	var hook = Hook('global');
 	

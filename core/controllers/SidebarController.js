@@ -20,6 +20,10 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		}
 	}
 	
+	$scope.createProject = function() {
+    	
+	}
+	
 	/*
 	 * load a project
 	 */
@@ -320,6 +324,13 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		// Popup as context menu
 		ctxmenu.popup( event.clientX, event.clientY );
 	}
+	
+	/*
+	 * Listen to create new project event
+	 */
+    $rootScope.$on('service.project.create', function() {
+        $scope.createProject();
+    });
 	
 	/*
 	 * Listen to open new project event

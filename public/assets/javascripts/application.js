@@ -33894,10 +33894,6 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     factory.close = function( file_path )
     {
 	    
-	    file_path = file_path || factory.active;
-
-	    console.log('path', file_path);
-	    
 	    // check for unsaved changes
 	    var should_delete = false;
 	    if( factory.files[ file_path ]._changed )
@@ -34467,7 +34463,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	var osxMenuBar = new gui.Menu({
 		type: "menubar"
 	});
-	osxMenuBar.createMacBuiltin("Homey Devkit", {
+	osxMenuBar.createMacBuiltin("Devkit", {
 		hideWindow: true
 	});
 
@@ -34490,7 +34486,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Check for updates...',
 		click: function() {
-			alert('Update');
+			alert('this feature will come soon...');
 		}
 	}), 1);
 
@@ -34523,7 +34519,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'Project...',
 		click: function() {
-			//project.create();
+			$rootScope.$emit('service.project.create');
 		},
 		key: 'n',
 		modifiers: 'cmd+shift'
@@ -34552,7 +34548,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Close tab',
 		click: function() {
-			$file.close();
+			$rootScope.$emit('service.file.close');
 		},
 		key: 'w',
 		modifiers: 'cmd'
@@ -34565,8 +34561,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save',
 		click: function() {
-			$scope.file.save();
-			// $rootScope.$emit('editor.saveRequest'); /*where is this called?*/
+    		$rootScope.$emit('service.file.save');
 		},
 		key: 's',
 		modifiers: 'cmd'
@@ -34575,7 +34570,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save All',
 		click: function() {
-			$rootScope.$emit('editor.saveall'); /* again, where is this called*/
+    		$rootScope.$emit('service.file.saveall');
 		},
 		key: 's',
 		modifiers: 'cmd+shift'
@@ -34593,29 +34588,11 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	project.insert(new gui.MenuItem({
 		label: 'Run',
 		click: function(){
-			//$rootScope.$emit('homey.run');
+			$rootScope.$emit('project.run');
 		},
 		key: 'r',
 		modifiers: 'cmd'
 	}), 0);
-
-	project.insert(new gui.MenuItem({
-		label: 'Run and Break',
-		click: function(){
-			// $rootScope.$emit('homey.runbrk');
-		},
-		key: 'r',
-		modifiers: 'cmd+shift'
-	}), 1);
-
-	project.insert(new gui.MenuItem({
-		label: 'REFRESH',
-		click: function(){
-			window.location.reload( true );
-		},
-		key: '§',
-		modifiers: 'cmd'
-	}),2);
 
 	win.menu.insert(new gui.MenuItem({
 		label: 'Project',
@@ -34717,6 +34694,10 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		if(typeof window.localStorage.project_dir == 'string') {
 			$scope.loadProject(window.localStorage.project_dir);
 		}
+	}
+	
+	$scope.createProject = function() {
+    	
 	}
 	
 	/*
@@ -35019,6 +35000,13 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		// Popup as context menu
 		ctxmenu.popup( event.clientX, event.clientY );
 	}
+	
+	/*
+	 * Listen to create new project event
+	 */
+    $rootScope.$on('service.project.create', function() {
+        $scope.createProject();
+    });
 	
 	/*
 	 * Listen to open new project event
@@ -35958,7 +35946,7 @@ var FormideUploadController = function($scope, $rootScope) {
 		var projectDir = window.localStorage.project_dir;
 		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
 		manifest = JSON.parse(manifest);
-		gui.Shell.openExternal(window.CONFIG.paths.appManager + "?app_id=" + manifest.id);
+		gui.Shell.openExternal(window.CONFIG.paths.appManager + "/apps?app_id=" + manifest.id);
 	};
 	
 	$scope.viewApp = function() {
