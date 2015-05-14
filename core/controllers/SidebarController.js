@@ -263,6 +263,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 					if( confirm( "Are you sure you want to remove " + $scope.selected.length + " items to the trash?" ) ) {
 						$scope.selected.forEach(function( item_path ){
 							trash([ item_path ]);
+
 						});
 					}				
 				}
@@ -271,7 +272,10 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 						trash([ item.path ]);
 					}
 				}
-				$scope.apply();
+
+				$scope.$apply(function() {
+					$scope.init();
+				});
 			}}));
 			
 			// single file options
@@ -291,9 +295,11 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 					while( fs_extra.existsSync( new_path ) ) {
 						new_path = newPath( item_path, i++ );
 					}
+
+					$scope.$apply(function() {
+						fs_extra.copySync( item_path, new_path );
+					});
 									
-					fs_extra.copySync( item_path, new_path );
-					$scope.apply();
 				});
 				
 			}}));
