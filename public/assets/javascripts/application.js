@@ -35889,7 +35889,6 @@ var	path			= require('path');
 var archiver 		= require('archiver');
 var request			= require('request');
 var semver			= require('semver');
-var tmp             = require('tmp');
 
 var FormideUploadController = function($scope, $rootScope) {
 	
@@ -35918,7 +35917,7 @@ var FormideUploadController = function($scope, $rootScope) {
 		}
 	);
 
-	$scope.run = function() {
+	$scope.uploadApp = function() {
 		$scope.status = "checking"; // change status to checking
 		$scope.message = "";
 		
@@ -35941,11 +35940,16 @@ var FormideUploadController = function($scope, $rootScope) {
 		manifest = JSON.parse(manifest);
 		gui.Shell.openExternal(window.CONFIG.paths.appManager + "?app_id=" + manifest.id);
 	};
+	
+	$scope.viewApp = function() {
+    	var projectDir = window.localStorage.project_dir;
+        gui.Shell.openExternal("file:///" + projectDir + '/index.html');
+	};
 
 	$scope.compressAndUpload = function() {
 		
 		var projectDir = window.localStorage.project_dir;
-		var zipFile = tmp.fileSync();
+		var zipFile = projectDir + '/app.zip';
 		var zip = fs.createWriteStream(zipFile);
 		var archive = archiver('zip');
 		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
@@ -35976,7 +35980,6 @@ var FormideUploadController = function($scope, $rootScope) {
 		});
 		
 		zip.on('close', function() {
-			console.log( window.CONFIG.paths.apiRoot + '/apps/upload?access_token=' + window.localStorage.access_token);
 			var r = request({
 				url: window.CONFIG.paths.apiRoot + '/apps/upload?access_token=' + window.localStorage.access_token,
 				method: 'post',
@@ -35994,7 +35997,7 @@ var FormideUploadController = function($scope, $rootScope) {
 
 					alert('Failed ' + response.message);
 				}
-				zipFile.removeCallback();
+				fs.unlink(zipFile);
 				$scope.$apply();
 			});
 			
