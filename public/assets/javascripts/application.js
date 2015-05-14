@@ -33845,7 +33845,7 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
     factory.open = function( file_path )
     {
-    	// console.log('open', file_path);
+    	console.log('open', file_path);
 
 	    // only load the file when it's not already open
 	    if( !factory.isOpen( file_path ) ) {
@@ -35906,7 +35906,7 @@ var archiver 		= require('archiver');
 var request			= require('request');
 var semver			= require('semver');
 
-var FormideUploadController = function($scope, $rootScope) {
+var FormideUploadController = function($scope, $rootScope, $file) {
 	
 	$scope.status = "idle";
 	$scope.manifest = "";
@@ -35988,6 +35988,10 @@ var FormideUploadController = function($scope, $rootScope) {
         gui.Shell.openExternal("file:///" + projectDir + '/index.html');
 	};
 
+	$scope.openManifest = function() {
+		$file.open(window.localStorage.project_dir + '/app.json');
+	}
+
 	$scope.compressAndUpload = function() {
 		
 		var projectDir = window.localStorage.project_dir;
@@ -36039,6 +36043,10 @@ var FormideUploadController = function($scope, $rootScope) {
 
 					alert('Failed ' + response.message);
 				}
+				
+                manifest.version = semver.inc(manifest.version, 'patch');
+				fs.writeFileSync(window.localStorage.project_dir + '/app.json', JSON.stringify(manifest), 'utf8');
+				
 				fs.unlink(zipFile);
 				$scope.$apply();
 			});
@@ -36059,6 +36067,6 @@ var FormideUploadController = function($scope, $rootScope) {
     });
 };
 
-FormideUploadController.$inject = ['$scope', '$rootScope'];
+FormideUploadController.$inject = ['$scope', '$rootScope', '$file'];
 
 app.controller("FormideUploadController", FormideUploadController);
