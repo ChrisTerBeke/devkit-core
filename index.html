@@ -61,7 +61,7 @@
 							<span class="icon"></span>
 							<span class="name" ng-show="!isRenaming(item.path)">{{item.name}}</span>
 							<form ng-show="isRenaming(item.path)" ng-submit="rename( item )" style="display: inline-block;">
-								<input class="name-renaming" type="text" ng-model="item.name" />
+								<input class="name-renaming" ng-show="isRenaming(item.path)" show-focus="isRenaming(item.path)" type="text" ng-model="item.name" />
 								<input type="submit" style="display: none;" />
 							</form>
 						</span>

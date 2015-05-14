@@ -59,8 +59,6 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     factory.close = function( file_path )
     {
 	    
-	    file_path = file_path || factory.active;
-	    
 	    // check for unsaved changes
 	    var should_delete = false;
 	    if( factory.files[ file_path ]._changed )
