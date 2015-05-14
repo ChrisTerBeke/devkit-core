@@ -27,7 +27,7 @@
     border-radius: 3px;
     display: inline-block; }
     .light-theme .btn:hover, .light-theme .btn:focus {
-      opacity: .8;
+      opacity: .6;
       color: inherit; }
     .light-theme .btn, .light-theme .btn:hover, .light-theme .btn:active, .light-theme .btn:focus {
       outline: 0; }

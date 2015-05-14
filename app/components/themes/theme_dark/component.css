@@ -27,7 +27,7 @@
     border-radius: 3px;
     display: inline-block; }
     .dark-theme .btn:hover, .dark-theme .btn:focus {
-      opacity: .8;
+      opacity: .6;
       color: inherit; }
     .dark-theme .btn, .dark-theme .btn:hover, .dark-theme .btn:active, .dark-theme .btn:focus {
       outline: 0; }
