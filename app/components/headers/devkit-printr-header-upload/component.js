@@ -9,6 +9,16 @@ var FormideUploadController = function($scope, $rootScope, $file) {
 	$scope.status = "idle";
 	$scope.manifest = "";
 	$scope.message = "";
+	$scope.manifestTemplate = {
+        "id": "Your app ID",
+        "version": "0.0.1",
+        "name": "Your app name",
+        "description": "This app does awesome things!",
+        "author": {
+            "name": "Your name",
+            "email": "Your email"
+        }
+    };
 
 	var hook = Hook('global');
 	
@@ -30,6 +40,22 @@ var FormideUploadController = function($scope, $rootScope, $file) {
 			});
 		}
 	);
+	
+	$scope.createApp = function(rootPath) { // do custom things when creating a new project
+    	fs.readdir(rootPath, function(err, files) {
+        	if (err) return console.log(err);
+        	
+        	if(files.length > 0) {
+            	return alert("This directory is not empty!");
+            }
+            
+        	fs.mkdirSync(rootPath + "/assets");
+            fs.writeFileSync(rootPath + "/app.json", JSON.stringify($scope.manifestTemplate));
+            fs.writeFileSync(rootPath + "/app.js", "");
+            fs.writeFileSync(rootPath + "/index.html", "");
+            fs.writeFileSync(rootPath + "/style.css", "");
+    	});
+	};
 
 	$scope.uploadApp = function() {
 		$scope.status = "checking"; // change status to checking
@@ -125,6 +151,14 @@ var FormideUploadController = function($scope, $rootScope, $file) {
 			form.append('app_file', fs.createReadStream(zipFile, {filename: 'app.zip', contentType: 'application/zip'}));
 		});
 	};
+	
+	$rootScope.$on('project.run', function() { // TODO: maybe create a hook for this?
+    	$scope.viewApp();
+	});
+	
+	$rootScope.$on('service.project.createInDirectory', function(e, data) { // TODO: maybe create a hook for this?
+        $scope.createApp(data);
+    });
 };
 
 FormideUploadController.$inject = ['$scope', '$rootScope', '$file'];

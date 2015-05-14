@@ -21,6 +21,30 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	}
 	
 	/*
+	 * select a directory to create a new project in
+	 */
+	$scope.createProject = function() {
+    	var directorychooser = document.getElementById('directorychooser');
+        directorychooser.addEventListener("change", function(evt) {
+            var val = this.value;
+            $rootScope.$emit('service.project.createInDirectory', val);
+            $scope.loadProject(this.value);
+        }, false)
+        directorychooser.click();
+	}
+	
+	/*
+	 * select a project directory
+	 */
+	$scope.selectProject = function() {
+        var directorychooser = document.getElementById('directorychooser');
+        directorychooser.addEventListener("change", function(evt) {
+            $scope.loadProject(this.value);
+        }, false)
+        directorychooser.click();
+	}
+	
+	/*
 	 * load a project
 	 */
 	$scope.loadProject = function(rootPath) {
@@ -36,17 +60,6 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		// initial scan
 		$scope.update();
         $rootScope.$emit('service.project.ready');
-	}
-	
-	/*
-	 * select a project directory
-	 */
-	$scope.selectProject = function() {
-        var directorychooser = document.getElementById('directorychooser');
-        directorychooser.addEventListener("change", function(evt) {
-            $scope.loadProject(this.value);
-        }, false)
-        directorychooser.click();
 	}
 
 	/*
@@ -151,8 +164,6 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		var newName = item.name;
         var itemFolder = path.dirname(item.path);
         var newPath = path.join(itemFolder, newName);
-
-        console.log('item', item, newPath);
         
         if(fs_extra.existsSync(newPath) && item.path != newPath) {
 	       return alert("That filename already exists!");
@@ -320,6 +331,13 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		// Popup as context menu
 		ctxmenu.popup( event.clientX, event.clientY );
 	}
+	
+	/*
+	 * Listen to open new project event
+	 */
+	$rootScope.$on('service.project.create', function() {
+		$scope.createProject();
+	});
 	
 	/*
 	 * Listen to open new project event

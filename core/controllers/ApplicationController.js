@@ -197,7 +197,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Check for updates...',
 		click: function() {
-			alert('Update');
+			alert('this feature will come soon...');
 		}
 	}), 1);
 
@@ -230,7 +230,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'Project...',
 		click: function() {
-			//project.create();
+			$rootScope.$emit('service.project.create');
 		},
 		key: 'n',
 		modifiers: 'cmd+shift'
@@ -259,7 +259,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Close tab',
 		click: function() {
-			$file.close();
+			$rootScope.$emit('service.file.close');
 		},
 		key: 'w',
 		modifiers: 'cmd'
@@ -272,8 +272,8 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save',
 		click: function() {
-			$scope.file.save();
-			// $rootScope.$emit('editor.saveRequest'); /*where is this called?*/
+    		$file.save();
+    		$rootScope.$emit('service.file.save');
 		},
 		key: 's',
 		modifiers: 'cmd'
@@ -282,7 +282,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save All',
 		click: function() {
-			$rootScope.$emit('editor.saveall'); /* again, where is this called*/
+    		$rootScope.$emit('service.file.saveall');
 		},
 		key: 's',
 		modifiers: 'cmd+shift'
@@ -300,29 +300,11 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	project.insert(new gui.MenuItem({
 		label: 'Run',
 		click: function(){
-			//TODO
+			$rootScope.$emit('project.run');
 		},
 		key: 'r',
 		modifiers: 'cmd'
 	}), 0);
-
-	project.insert(new gui.MenuItem({
-		label: 'Run and Break',
-		click: function(){
-			//TODO
-		},
-		key: 'r',
-		modifiers: 'cmd+shift'
-	}), 1);
-
-	project.insert(new gui.MenuItem({
-		label: 'REFRESH',
-		click: function(){
-			window.location.reload( true );
-		},
-		key: '§',
-		modifiers: 'cmd'
-	}),2);
 
 	win.menu.insert(new gui.MenuItem({
 		label: 'Project',
