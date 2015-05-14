@@ -33845,7 +33845,7 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
     factory.open = function( file_path )
     {
-    	// console.log('open', file_path);
+    	console.log('open', file_path);
 
 	    // only load the file when it's not already open
 	    if( !factory.isOpen( file_path ) ) {
@@ -33893,10 +33893,6 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     // close an item
     factory.close = function( file_path )
     {
-	    
-	    file_path = file_path || factory.active;
-
-	    console.log('path', file_path);
 	    
 	    // check for unsaved changes
 	    var should_delete = false;
@@ -34467,7 +34463,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	var osxMenuBar = new gui.Menu({
 		type: "menubar"
 	});
-	osxMenuBar.createMacBuiltin("Homey Devkit", {
+	osxMenuBar.createMacBuiltin("Devkit", {
 		hideWindow: true
 	});
 
@@ -34593,7 +34589,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	project.insert(new gui.MenuItem({
 		label: 'Run',
 		click: function(){
-			//$rootScope.$emit('homey.run');
+			//TODO
 		},
 		key: 'r',
 		modifiers: 'cmd'
@@ -34602,7 +34598,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	project.insert(new gui.MenuItem({
 		label: 'Run and Break',
 		click: function(){
-			// $rootScope.$emit('homey.runbrk');
+			//TODO
 		},
 		key: 'r',
 		modifiers: 'cmd+shift'
@@ -35910,7 +35906,7 @@ var archiver 		= require('archiver');
 var request			= require('request');
 var semver			= require('semver');
 
-var FormideUploadController = function($scope, $rootScope) {
+var FormideUploadController = function($scope, $rootScope, $file) {
 	
 	$scope.status = "idle";
 	$scope.manifest = "";
@@ -35958,13 +35954,17 @@ var FormideUploadController = function($scope, $rootScope) {
 		var projectDir = window.localStorage.project_dir;
 		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
 		manifest = JSON.parse(manifest);
-		gui.Shell.openExternal(window.CONFIG.paths.appManager + "?app_id=" + manifest.id);
+		gui.Shell.openExternal(window.CONFIG.paths.appManager + "/apps?app_id=" + manifest.id);
 	};
 	
 	$scope.viewApp = function() {
     	var projectDir = window.localStorage.project_dir;
         gui.Shell.openExternal("file:///" + projectDir + '/index.html');
 	};
+
+	$scope.openManifest = function() {
+		$file.open(window.localStorage.project_dir + '/app.json');
+	}
 
 	$scope.compressAndUpload = function() {
 		
@@ -36029,6 +36029,6 @@ var FormideUploadController = function($scope, $rootScope) {
 	};
 };
 
-FormideUploadController.$inject = ['$scope', '$rootScope'];
+FormideUploadController.$inject = ['$scope', '$rootScope', '$file'];
 
 app.controller("FormideUploadController", FormideUploadController);

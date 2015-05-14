@@ -70,6 +70,7 @@
   },
   "window": {
     "title": "Development Kit",
+    "icon": "./icon.icns",
     "show": true,
     "toolbar": false,
     "frame": false,
