@@ -52,7 +52,7 @@ var FormideUploadController = function($scope, $rootScope) {
 		var projectDir = window.localStorage.project_dir;
 		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
 		manifest = JSON.parse(manifest);
-		gui.Shell.openExternal(window.CONFIG.paths.appManager + "?app_id=" + manifest.id);
+		gui.Shell.openExternal(window.CONFIG.paths.appManager + "/apps?app_id=" + manifest.id);
 	};
 	
 	$scope.viewApp = function() {
