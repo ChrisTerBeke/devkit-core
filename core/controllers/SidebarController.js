@@ -2,7 +2,7 @@ var gui			= require('nw.gui');
 var path		= require('path'); // auch
 
 var open		= require("open");
-var fs			= require('fs-extra')
+var fs_extra	= require('fs-extra')
 var trash		= require('trash');
 var watchTree 	= require("fs-watch-tree").watchTree;
 
@@ -83,7 +83,8 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	$scope.expand = function(filePath, expanded) {
 		if( expanded ) {
         	$scope.expanded.push(filePath);	    
-		} else {
+		} 
+		else {
 			var index = $scope.expanded.indexOf(filePath);	
 			$scope.expanded.splice(index, 1);	
 		}
@@ -96,7 +97,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 			var folder = $scope.$parent.path; // $parent is ApplicationController
 		}
 		else {
-			if( fs.statSync( item.path ).isFile() ) {
+			if( fs_extra.statSync( item.path ).isFile() ) {
 				var folder = path.dirname( item.path );
 			} else {
 				var folder = item.path;
@@ -104,9 +105,15 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		}
 		
 		var newFilePath = path.join( folder, newFileName);
-								
-		fs.ensureFile( newFilePath );
-		$scope.renaming = newFilePath;
+			
+		fs_extra.ensureFile( newFilePath, function (err) {
+			console.log(err);
+
+			$scope.$apply(function() {
+				$scope.init();
+				$scope.renaming = newFilePath;
+			});
+		});
 		
 		// TODO: focus rename element
 	}
@@ -121,7 +128,13 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 			var folder = item.path;
 		}
 		
-		fs.ensureDir( path.join( folder, newFolderName) );
+		fs_extra.ensureDir( path.join( folder, newFolderName) , function (err) {
+			console.log(err);
+
+			$scope.$apply(function() {
+				$scope.init();
+			});
+		});
 	}
 
 	/*
@@ -138,12 +151,14 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		var newName = item.name;
         var itemFolder = path.dirname(item.path);
         var newPath = path.join(itemFolder, newName);
+
+        console.log('item', item, newPath);
         
-        if(fs.existsSync(newPath)) {
+        if(fs_extra.existsSync(newPath) && item.path != newPath) {
 	       return alert("That filename already exists!");
         }
 
-        fs.rename(item.path, newPath, function() {
+        fs_extra.rename(item.path, newPath, function() {
 	        $scope.update();
         });
         
@@ -161,7 +176,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	 * open a file (or directory)
 	 */
 	$scope.open = function(filePath) {
-		if(fs.lstatSync(filePath).isDirectory()) {
+		if(fs_extra.lstatSync(filePath).isDirectory()) {
             $scope.expanded.push(path);
         }
         else {
@@ -187,7 +202,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
         var fileName = path.basename(file.path);
 
         // if dropped on a file, get the file's parent folder
-        if(fs.lstatSync(dropped_path).isFile()) {
+        if(fs_extra.lstatSync(dropped_path).isFile()) {
             var new_path = path.dirname(dropped_path);
         }
         else {
@@ -195,11 +210,11 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
         }
 
         // prevent overwriting
-        if(fs.existsSync(new_path)) {
+        if(fs_extra.existsSync(new_path)) {
             if( !confirm('Overwrite `' + fileName + '`?') ) return; // ask user to confirm file overwrite
         }
 
-        fs.copy(file.path, new_path, {}, function(err) {
+        fs_extra.copy(file.path, new_path, {}, function(err) {
 	        console.log(err); // an error occured when copying file, let us know in console
         });
 	};
@@ -262,8 +277,9 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 			// single file options
 			if( $scope.selected.length == 1 ) {
 				ctxmenu.append(new gui.MenuItem({ label: 'Rename...', click: function(){
-					$scope.renaming = item.path;
-					$scope.apply();
+					$scope.$apply(function() {
+						$scope.renaming = item.path;
+					});
 				}}));
 			}
 			
@@ -272,11 +288,11 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 					var new_path = newPath( item_path );
 					
 					var i = 2;
-					while( fs.existsSync( new_path ) ) {
+					while( fs_extra.existsSync( new_path ) ) {
 						new_path = newPath( item_path, i++ );
 					}
 									
-					fs.copySync( item_path, new_path );
+					fs_extra.copySync( item_path, new_path );
 					$scope.apply();
 				});
 				
@@ -343,7 +359,7 @@ function newPath( file_path, index ) {
     var filename = path.basename( file_path );
     var folder = path.dirname( file_path );
 
-    if( fs.statSync( file_path ).isFile() ) {
+    if( fs_extra.statSync( file_path ).isFile() ) {
         var ext = path.extname( filename );
         var base = path.basename( filename, ext );
 
@@ -370,11 +386,11 @@ function newPath( file_path, index ) {
 function readdirSyncRecursive( dir, root ) {
     root = root || false;
     var result = [];
-    var contents = fs.readdirSync( dir );
+    var contents = fs_extra.readdirSync( dir );
 
     contents.forEach(function(item) {
         var item_path = path.join(dir, item);
-        var item_stats = fs.lstatSync( item_path );
+        var item_stats = fs_extra.lstatSync( item_path );
 
         if( item_stats.isDirectory() ) {
             result.push({
@@ -403,7 +419,7 @@ function readdirSyncRecursive( dir, root ) {
             name: path.basename( dir ),
             path: dir,
             children: result,
-            stats: fs.lstatSync( dir )
+            stats: fs_extra.lstatSync( dir )
         }];
     }
     else {

@@ -12,16 +12,22 @@ var FormideUploadController = function($scope, $rootScope) {
 
 	var hook = Hook('global');
 	
-	var manifest = fs.readFileSync(window.localStorage.project_dir + '/app.json', 'utf8');
-	manifest = JSON.parse(manifest);
+	var manifest = JSON.parse(fs.readFileSync(window.localStorage.project_dir + '/app.json', 'utf8'));
 
 	$scope.manifest = manifest;
 
 	hook.register('onManifestSave',
 		function (e) {
-			$scope.manifest = e;
-			console.log('save manifest called');
-			return false;
+	        fs.readFile(window.localStorage.project_dir + '/app.json', 'utf8', function read(err, data) {
+			    if (err) {
+			        throw err;
+			    }
+			    manifest = JSON.parse(data);
+
+			    $scope.$apply(function() {
+					$scope.manifest = manifest;
+				});
+			});
 		}
 	);
 
@@ -57,7 +63,6 @@ var FormideUploadController = function($scope, $rootScope) {
 		var archive = archiver('zip');
 		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
 		manifest = JSON.parse(manifest);
-
 
 		$scope.manifest = manifest;
 
@@ -99,6 +104,8 @@ var FormideUploadController = function($scope, $rootScope) {
 				else {
 					$scope.status = "failed";
 					$scope.message = response.message;
+
+					alert('Failed ' + response.message);
 				}
 				fs.unlink(zipFile);
 				$scope.$apply();

@@ -1,10 +1,10 @@
 {
-  "id": "554e1b932c1b53747b3cd213",
-  "version": "1.0.3",
-  "name": "Hello World",
-  "description": "Hello World!",
+  "id": "5550bc9cf9f933754003ca08",
+  "version": "1.0.11",
+  "name": "Example App",
+  "description": "Lorem Ipsum",
   "author": {
-    "name": "Chris ter Beke",
-    "email": "chris@printr.nl"
+    "name": "Bouke Regnerus",
+    "email": "bouke@printr.nl"
   }
 }

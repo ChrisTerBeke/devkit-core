@@ -1,5 +1,6 @@
 var fs 		= require('fs-extra');
 var path 	= require('path');
+var semver	= require('semver');
 
 app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $events, $timeout ){
 
@@ -24,10 +25,18 @@ app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $eve
 
 	$events.beforeSave($scope.file.path, function(cb) {
 		var manifest = $scope.manifest;
-		hook.call('onManifestSave', manifest);
 
-		cb({
-			code: angular.toJson( manifest, true )
-		});
+		if(semver.valid(manifest.version)) {
+			hook.call('onManifestSave', manifest);
+
+			cb({
+				code: angular.toJson( manifest, true )
+			});
+		}
+		else {
+			//TODO: Add version number.
+			alert('Invalid Version Number');
+			// console.log('Invalid Version');
+		}
 	});
 });

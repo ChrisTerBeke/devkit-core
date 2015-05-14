@@ -5,11 +5,7 @@ function Hook(path) {
 
 	return {
 		register: function (name, callback ) {
-			console.log(path, name, callback);
-
 			if(typeof name != 'undefined') {
-				console.log('DEBUG REGISTER');
-
 				if( 'undefined' == typeof(hooks[path] ) )
 	      		hooks[path] = []
 	 
@@ -21,7 +17,6 @@ function Hook(path) {
 
 		call: function (name, arguments ) {
 			if(typeof name != 'undefined') {
-				console.log('DEBUG CALL');
 		      	if(typeof hooks[path][name] !== 'undefined') {
 		      		for( i = 0; i < hooks[path][name].length; ++i ) {
 		      			if( true != hooks[path][name][i]( arguments ) ) { 
