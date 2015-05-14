@@ -4,7 +4,7 @@ var archiver 		= require('archiver');
 var request			= require('request');
 var semver			= require('semver');
 
-var FormideUploadController = function($scope, $rootScope) {
+var FormideUploadController = function($scope, $rootScope, $file) {
 	
 	$scope.status = "idle";
 	$scope.manifest = "";
@@ -59,6 +59,10 @@ var FormideUploadController = function($scope, $rootScope) {
     	var projectDir = window.localStorage.project_dir;
         gui.Shell.openExternal("file:///" + projectDir + '/index.html');
 	};
+
+	$scope.openManifest = function() {
+		$file.open(window.localStorage.project_dir + '/app.json');
+	}
 
 	$scope.compressAndUpload = function() {
 		
@@ -123,6 +127,6 @@ var FormideUploadController = function($scope, $rootScope) {
 	};
 };
 
-FormideUploadController.$inject = ['$scope', '$rootScope'];
+FormideUploadController.$inject = ['$scope', '$rootScope', '$file'];
 
 app.controller("FormideUploadController", FormideUploadController);
