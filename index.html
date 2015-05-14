@@ -51,8 +51,8 @@
 					<script type="text/ng-template" id="filetreeTmpl">
 						<span
 							ng-click="!isRenaming(item.path) && select( item.path, $event )"
-							ng-dblclick="!isRenaming(item.path) && open( item.path )"
-							ng-right-click="showCtxMenu(item, $event)"
+							ng-dblclick="!root && !isRenaming(item.path) && open( item.path )"
+							ng-right-click="!root && showCtxMenu(item, $event)"
 							ng-class="{ 'selected': isSelected( item.path ) }"
 							file-drop="dropped( $event, file, item.path )"
 							class="label"
@@ -70,7 +70,7 @@
 					        	ng-repeat="item in item.children"
 					        	ng-include="'filetreeTmpl'"
 					        	ng-class="{ 'expanded': isExpanded( item.path ) }"
-					        	ng-init="selected = false; item.expanded = false;"
+					        	ng-init="selected = false; item.expanded = false; root = false"
 					        	class="type-{{item.type}} ext-{{item.ext}}"
 					        ></li>
 					    </ul>
@@ -81,7 +81,7 @@
 							ng-repeat="item in filetree"
 							ng-include="'filetreeTmpl'"
 							ng-class="{ 'expanded': isExpanded( item.path ) }"
-							ng-init="expand( item.path, true )"
+							ng-init="expand( item.path, true ); root = true"
 							class="type-{{item.type}}"
 						></li>
 					</ul>
