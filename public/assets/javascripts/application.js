@@ -35947,8 +35947,8 @@ var FormideUploadController = function($scope, $rootScope) {
     	fs.readdir(rootPath, function(err, files) {
         	if (err) return console.log(err);
         	
-        	if(files.length > 0 && !confirm("This directory is not empty. Are you sure to create a new project here?")) {
-            	return;
+        	if(files.length > 0) {
+            	return alert("This directory is not empty!");
             }
             
         	fs.mkdirSync(rootPath + "/assets");
