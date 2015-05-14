@@ -112,6 +112,7 @@ var FormideUploadController = function($scope, $rootScope) {
 
 					alert('Failed ' + response.message);
 				}
+				zipFile.removeCallback();
 				$scope.$apply();
 			});
 			
