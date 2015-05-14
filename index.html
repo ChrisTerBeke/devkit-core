@@ -87,7 +87,14 @@
 					</ul>
 					
 					<div id="sidebar-helper">
-						<div class="btn btn-add" ng-click="ctxmenu.newfile()">+</div>
+
+						<div class="btn btn-add" ng-click="newFile()">
+							<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/newfile.svg)"></span>
+						</div>
+
+						<div class="btn btn-add" ng-click="newFolder()">
+							<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/newfolder.svg)"></span>
+						</div>
 					</div>
 
 				</sidebar>

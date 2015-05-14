@@ -91,6 +91,14 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 		$scope.user.status = 'logged-out';
 	}
 
+	$scope.newFile = function() {
+		$rootScope.$emit('service.project.new.file');
+	}
+
+	$scope.newFolder = function() {
+		$rootScope.$emit('service.project.new.folder');
+	}
+
 	$scope.stoplight = $stoplight;
 
 	$scope.file = {};
@@ -212,7 +220,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'File',
 		click: function() {
-			$rootScope.$emit('service.project.new.file');
+			$scope.newFile();
 		},
 		key: 'n',
 		modifiers: 'cmd'
@@ -221,7 +229,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'Folder',
 		click: function() {
-			$rootScope.$emit('service.project.new.folder');
+			$scope.newFolder();
 		},
 		key: 'n',
 		modifiers: 'cmd+alt'
