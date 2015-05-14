@@ -95,7 +95,6 @@ var FormideUploadController = function($scope, $rootScope) {
 		});
 		
 		zip.on('close', function() {
-			console.log( window.CONFIG.paths.apiRoot + '/apps/upload?access_token=' + window.localStorage.access_token);
 			var r = request({
 				url: window.CONFIG.paths.apiRoot + '/apps/upload?access_token=' + window.localStorage.access_token,
 				method: 'post',
@@ -113,7 +112,6 @@ var FormideUploadController = function($scope, $rootScope) {
 
 					alert('Failed ' + response.message);
 				}
-				zipFile.removeCallback();
 				$scope.$apply();
 			});
 			
