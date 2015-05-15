@@ -36014,8 +36014,9 @@ var FormideUploadController = function($scope, $rootScope, $file) {
             }
             
         	fs.mkdirSync(rootPath + "/assets");
+        	fs.mkdirSync(rootPath + "/scripts");
             fs.writeFileSync(rootPath + "/app.json", JSON.stringify($scope.manifestTemplate));
-            fs.writeFileSync(rootPath + "/app.js", "");
+            fs.writeFileSync(rootPath + "/scripts/app.js", "");
             fs.writeFileSync(rootPath + "/index.html", "");
             fs.writeFileSync(rootPath + "/style.css", "");
     	});

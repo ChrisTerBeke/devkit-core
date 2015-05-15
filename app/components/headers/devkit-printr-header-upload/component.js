@@ -53,18 +53,7 @@ var FormideUploadController = function($scope, $rootScope, $file) {
         	fs.mkdirSync(rootPath + "/scripts");
             fs.writeFileSync(rootPath + "/app.json", JSON.stringify($scope.manifestTemplate));
             fs.writeFileSync(rootPath + "/scripts/app.js", "");
-            fs.writeFileSync(rootPath + "/index.html", '<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>My Awesome App</title>
-	<script data-main="scripts/app.js"></script>
-	<link rel="stylesheet" href="style.css">
-</head>
-<body>
-	<h1>Hello World!</h1>
-</body>
-</html>');
+            fs.writeFileSync(rootPath + "/index.html", "");
             fs.writeFileSync(rootPath + "/style.css", "");
     	});
 	};
@@ -95,7 +84,12 @@ var FormideUploadController = function($scope, $rootScope, $file) {
 	
 	$scope.viewApp = function() {
     	var projectDir = window.localStorage.project_dir;
-        gui.Shell.openExternal("file:///" + projectDir + '/index.html');
+        var previewWindow = gui.Window.open("file:///" + projectDir + '/index.html', {
+            position: 'center',
+            width: 800,
+            height: 600,
+            toolbar: false
+        });
 	};
 
 	$scope.openManifest = function() {
