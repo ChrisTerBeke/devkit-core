@@ -11,27 +11,24 @@ loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
 loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 
 // headers
-// nope..
+loadModule('header_title',	'header',	'./core/components/headers/devkit-example-header-title/');
 
 // themes
+loadModule('theme_dark',	'theme',	'./core/components/themes/theme_dark/');
+loadModule('theme_light',	'theme',	'./core/components/themes/theme_light/');
+
+loadModule('custom_icons',	'theme',	'./core/components/themes/custom_icons/');
 
 
 // APP
 // editors
-loadModule('manifest', 		'editor',	'./app/components/editors/devkit-printr-editor-manifest/');
-loadModule('viewer', 		'editor',	'./app/components/editors/devkit-printr-editor-viewer/', ['printr.viewer']);
 
 // headers
-loadModule('auth', 			'header',	'./app/components/headers/devkit-printr-header-auth/');
-loadModule('upload', 		'header',	'./app/components/headers/devkit-printr-header-upload/');
 
 // widgets
-// nope..
 
 // themes
-loadModule('theme_dark',	'theme',	'./app/components/themes/theme_dark/');
-loadModule('theme_light',	'theme',	'./app/components/themes/theme_light/');
-loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+
 
 
 /*
@@ -54,18 +51,6 @@ app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file
 			ext: ".md",
 			config: {
 				widgets: [ 'markdown' ]
-			}
-		},
-		{
-			ext: ".json",
-			config: {
-				editor: "manifest"
-			}
-		},
-		{
-			ext: ".stl",
-			config: {
-				editor: "viewer"
 			}
 		}
 	]);
