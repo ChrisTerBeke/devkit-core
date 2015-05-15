@@ -7,22 +7,30 @@ var TitleController = function($scope, $rootScope, $project)
 	$scope.name = '';
 	$scope.id = '';
 	
-	var manifest_path = path.join($project.path, 'app.json');
-	
-	fs.readFile( manifest_path, function( err, data ) {
-		if( err ) throw err;
+    
+    if( $project.path ) {
+    	update();
+    } else {
+	    $rootScope.$on('service.project.ready', function(){
+			update();
+	    });
+    }
+    
+    function update(){
+	    alert('update')
+		var manifest_path = path.join($project.path, 'app.json');
 		
-		var manifest = JSON.parse( data.toString() );
-		
-		$scope.$apply(function(){
-			$scope.name = manifest.name.en;
-			$scope.id	= manifest.id;
+		fs.readFile( manifest_path, function( err, data ) {
+			if( err ) throw err;
+			
+			var manifest = JSON.parse( data.toString() );
+			
+			$scope.$apply(function(){
+				$scope.name = manifest.name.en;
+				$scope.id	= manifest.id;
+			});
 		});
-	});
-	
-    $rootScope.$on('service.project.ready', function(){
-		alert($project.path)	    
-    });
+    }
     
     
 }
