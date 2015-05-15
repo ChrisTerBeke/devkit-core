@@ -5,7 +5,6 @@ app.controller("markdownWidgetCtrl", function( $scope, $rootScope, $timeout ){
 	}, 100);
 
 	$rootScope.$on('editor.change.' + $scope.file_path, function(){
-		console.log('test');
 		$timeout(function(){
 			$scope.update();
 		}, 100)

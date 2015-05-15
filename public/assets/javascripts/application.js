@@ -3,8 +3,6 @@ var fs		= require('fs');
 
 function injectDependency (filename, filetype)
 {
-
-	console.log('injectDependency');
     if (filetype == 'js')
     {
         var fileref = document.createElement('script');
@@ -38,8 +36,7 @@ function loadModule (module, type, dir, dependencies)
 	}
 
 	var self = this;
-    console.log('load');
-
+    
 	// load optional dependencies
 	var dependencies_path = path.join(dir, 'dependencies');
 	fs.exists(dependencies_path, function(exists) {
@@ -79,7 +76,8 @@ function loadModule (module, type, dir, dependencies)
 ;
 function distOrSrcPath(env) {
 	return (env == 'development') ? '/src' : '/dist';
-};
+}
+
 // Put general configuration here.
 
 window.ENV 	= window.ENV || {};
@@ -89,24 +87,23 @@ window.ENV.name 			=	'devkit';
 window.ENV.type				= 	'development'; //development || testing || production
 
 window.DEBUG				=	(window.ENV.type == 'development' || window.ENV.type == 'testing') ? true : false;;
-window.AUTH = window.AUTH || {};
+window.CONFIG = {};
 
-window.AUTH.whitelist = [
+// paths
+window.CONFIG.paths = {
+	root:		window.location.protocol + '//' + window.location.hostname + ':' + window.location.port,
+	login:		'',
+	user:		'',
+	appManager:	'',
+	apiRoot:	''
+};
+
+// url whitelist
+window.CONFIG.whitelist = [
 	'self',
 	'file://',
-	'http://localhost:8080/**',
-	'http://*.formide.com/**',
-	'https://*.formide.com/**'
+	'http://localhost:8080/**'
 ];;
-//Set main paths here.
-window.PATH = window.PATH || {};
-
-window.PATH.root 			=	window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
-
-window.PATH.auth			= {
-	loginUrl: 'https://sdk.formide.com',
-	userInfo: 'https://api2.formide.com/auth/me'
-};
 if(window.ENV.type == 'development' || window.ENV.type == 'testing')
 {
   console.groupCollapsed("Development- or Testing Mode");
@@ -121,7 +118,7 @@ if(window.ENV.type == 'development' || window.ENV.type == 'testing')
 
     console.group("App", window.ENV.name);
        	console.log("Environment", window.ENV);
-    	console.log("Paths", window.PATH);
+    	console.log("Paths", window.CONFIG.paths);
     console.groupEnd();
 
   console.groupEnd();
@@ -32579,13 +32576,1210 @@ tagsInput.run(["$templateCache", function($templateCache) {
 }]);
 
 }());;
+/*
+ * ngDialog - easy modals and popup windows
+ * http://github.com/likeastore/ngDialog
+ * (c) 2013-2015 MIT License, https://likeastore.com
+ */
+
+(function (root, factory) {
+    if (typeof module !== 'undefined' && module.exports) {
+        // CommonJS
+        module.exports = factory(require('angular'));
+    } else if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(['angular'], factory);
+    } else {
+        // Global Variables
+        factory(root.angular);
+    }
+}(this, function (angular) {
+    'use strict';
+
+    var m = angular.module('ngDialog', []);
+
+    var $el = angular.element;
+    var isDef = angular.isDefined;
+    var style = (document.body || document.documentElement).style;
+    var animationEndSupport = isDef(style.animation) || isDef(style.WebkitAnimation) || isDef(style.MozAnimation) || isDef(style.MsAnimation) || isDef(style.OAnimation);
+    var animationEndEvent = 'animationend webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend';
+    var focusableElementSelector = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]';
+    var forceBodyReload = false;
+    var scopes = {};
+    var openIdStack = [];
+    var keydownIsBound = false;
+
+    m.provider('ngDialog', function () {
+        var defaults = this.defaults = {
+            className: 'ngdialog-theme-default',
+            plain: false,
+            showClose: true,
+            closeByDocument: true,
+            closeByEscape: true,
+            closeByNavigation: false,
+            appendTo: false,
+            preCloseCallback: false,
+            overlay: true,
+            cache: true,
+            trapFocus: true,
+            preserveFocus: true,
+            ariaAuto: true,
+            ariaRole: null,
+            ariaLabelledById: null,
+            ariaLabelledBySelector: null,
+            ariaDescribedById: null,
+            ariaDescribedBySelector: null
+        };
+
+        this.setForceBodyReload = function (_useIt) {
+            forceBodyReload = _useIt || false;
+        };
+
+        this.setDefaults = function (newDefaults) {
+            angular.extend(defaults, newDefaults);
+        };
+
+        var globalID = 0, dialogsCount = 0, closeByDocumentHandler, defers = {};
+
+        this.$get = ['$document', '$templateCache', '$compile', '$q', '$http', '$rootScope', '$timeout', '$window', '$controller', '$injector',
+            function ($document, $templateCache, $compile, $q, $http, $rootScope, $timeout, $window, $controller, $injector) {
+                var $body = $document.find('body');
+                if (forceBodyReload) {
+                    $rootScope.$on('$locationChangeSuccess', function () {
+                        $body = $document.find('body');
+                    });
+                }
+
+                var privateMethods = {
+                    onDocumentKeydown: function (event) {
+                        if (event.keyCode === 27) {
+                            publicMethods.close('$escape');
+                        }
+                    },
+
+                    activate: function($dialog) {
+                        var options = $dialog.data('$ngDialogOptions');
+
+                        if (options.trapFocus) {
+                            $dialog.on('keydown', privateMethods.onTrapFocusKeydown);
+
+                            // Catch rogue changes (eg. after unfocusing everything by clicking a non-focusable element)
+                            $body.on('keydown', privateMethods.onTrapFocusKeydown);
+                        }
+                    },
+
+                    deactivate: function ($dialog) {
+                        $dialog.off('keydown', privateMethods.onTrapFocusKeydown);
+                        $body.off('keydown', privateMethods.onTrapFocusKeydown);
+                    },
+
+                    deactivateAll: function () {
+                        angular.forEach(function(el) {
+                            var $dialog = angular.element(el);
+                            privateMethods.deactivate($dialog);
+                        });
+                    },
+
+                    setBodyPadding: function (width) {
+                        var originalBodyPadding = parseInt(($body.css('padding-right') || 0), 10);
+                        $body.css('padding-right', (originalBodyPadding + width) + 'px');
+                        $body.data('ng-dialog-original-padding', originalBodyPadding);
+                    },
+
+                    resetBodyPadding: function () {
+                        var originalBodyPadding = $body.data('ng-dialog-original-padding');
+                        if (originalBodyPadding) {
+                            $body.css('padding-right', originalBodyPadding + 'px');
+                        } else {
+                            $body.css('padding-right', '');
+                        }
+                    },
+
+                    performCloseDialog: function ($dialog, value) {
+                        var id = $dialog.attr('id');
+                        var scope = scopes[id];
+
+                        if (!scope) {
+                            // Already closed
+                            return;
+                        }
+
+                        if (typeof $window.Hammer !== 'undefined') {
+                            var hammerTime = scope.hammerTime;
+                            hammerTime.off('tap', closeByDocumentHandler);
+                            hammerTime.destroy && hammerTime.destroy();
+                            delete scope.hammerTime;
+                        } else {
+                            $dialog.unbind('click');
+                        }
+
+                        if (dialogsCount === 1) {
+                            $body.unbind('keydown');
+                        }
+
+                        if (!$dialog.hasClass('ngdialog-closing')){
+                            dialogsCount -= 1;
+                        }
+
+                        var previousFocus = $dialog.data('$ngDialogPreviousFocus');
+                        if (previousFocus) {
+                            previousFocus.focus();
+                        }
+
+                        $rootScope.$broadcast('ngDialog.closing', $dialog);
+                        dialogsCount = dialogsCount < 0 ? 0 : dialogsCount;
+                        if (animationEndSupport) {
+                            scope.$destroy();
+                            $dialog.unbind(animationEndEvent).bind(animationEndEvent, function () {
+                                $dialog.remove();
+                                if (dialogsCount === 0) {
+                                    $body.removeClass('ngdialog-open');
+                                    privateMethods.resetBodyPadding();
+                                }
+                                $rootScope.$broadcast('ngDialog.closed', $dialog);
+                            }).addClass('ngdialog-closing');
+                        } else {
+                            scope.$destroy();
+                            $dialog.remove();
+                            if (dialogsCount === 0) {
+                                $body.removeClass('ngdialog-open');
+                                privateMethods.resetBodyPadding();
+                            }
+                            $rootScope.$broadcast('ngDialog.closed', $dialog);
+                        }
+                        if (defers[id]) {
+                            defers[id].resolve({
+                                id: id,
+                                value: value,
+                                $dialog: $dialog,
+                                remainingDialogs: dialogsCount
+                            });
+                            delete defers[id];
+                        }
+                        if (scopes[id]) {
+                            delete scopes[id];
+                        }
+                        openIdStack.splice(openIdStack.indexOf(id), 1);
+                        if (!openIdStack.length) {
+                            $body.unbind('keydown', privateMethods.onDocumentKeydown);
+                            keydownIsBound = false;
+                        }
+                    },
+
+                    closeDialog: function ($dialog, value) {
+                        var preCloseCallback = $dialog.data('$ngDialogPreCloseCallback');
+
+                        if (preCloseCallback && angular.isFunction(preCloseCallback)) {
+
+                            var preCloseCallbackResult = preCloseCallback.call($dialog, value);
+
+                            if (angular.isObject(preCloseCallbackResult)) {
+                                if (preCloseCallbackResult.closePromise) {
+                                    preCloseCallbackResult.closePromise.then(function () {
+                                        privateMethods.performCloseDialog($dialog, value);
+                                    });
+                                } else {
+                                    preCloseCallbackResult.then(function () {
+                                        privateMethods.performCloseDialog($dialog, value);
+                                    }, function () {
+                                        return;
+                                    });
+                                }
+                            } else if (preCloseCallbackResult !== false) {
+                                privateMethods.performCloseDialog($dialog, value);
+                            }
+                        } else {
+                            privateMethods.performCloseDialog($dialog, value);
+                        }
+                    },
+
+                    onTrapFocusKeydown: function(ev) {
+                        var el = angular.element(ev.currentTarget);
+                        var $dialog;
+
+                        if (el.hasClass('ngdialog')) {
+                            $dialog = el;
+                        } else {
+                            $dialog = privateMethods.getActiveDialog();
+
+                            if ($dialog === null) {
+                                return;
+                            }
+                        }
+
+                        var isTab = (ev.keyCode === 9);
+                        var backward = (ev.shiftKey === true);
+
+                        if (isTab) {
+                            privateMethods.handleTab($dialog, ev, backward);
+                        }
+                    },
+
+                    handleTab: function($dialog, ev, backward) {
+                        var focusableElements = privateMethods.getFocusableElements($dialog);
+
+                        if (focusableElements.length === 0) {
+                            if (document.activeElement) {
+                                document.activeElement.blur();
+                            }
+                            return;
+                        }
+
+                        var currentFocus = document.activeElement;
+                        var focusIndex = Array.prototype.indexOf.call(focusableElements, currentFocus);
+
+                        var isFocusIndexUnknown = (focusIndex === -1);
+                        var isFirstElementFocused = (focusIndex === 0);
+                        var isLastElementFocused = (focusIndex === focusableElements.length - 1);
+
+                        var cancelEvent = false;
+
+                        if (backward) {
+                            if (isFocusIndexUnknown || isFirstElementFocused) {
+                                focusableElements[focusableElements.length - 1].focus();
+                                cancelEvent = true;
+                            }
+                        } else {
+                            if (isFocusIndexUnknown || isLastElementFocused) {
+                                focusableElements[0].focus();
+                                cancelEvent = true;
+                            }
+                        }
+
+                        if (cancelEvent) {
+                            ev.preventDefault();
+                            ev.stopPropagation();
+                        }
+                    },
+
+                    autoFocus: function($dialog) {
+                        var dialogEl = $dialog[0];
+
+                        // Browser's (Chrome 40, Forefix 37, IE 11) don't appear to honor autofocus on the dialog, but we should
+                        var autoFocusEl = dialogEl.querySelector('*[autofocus]');
+                        if (autoFocusEl !== null) {
+                            autoFocusEl.focus();
+
+                            if (document.activeElement === autoFocusEl) {
+                                return;
+                            }
+
+                            // Autofocus element might was display: none, so let's continue
+                        }
+
+                        var focusableElements = privateMethods.getFocusableElements($dialog);
+
+                        if (focusableElements.length > 0) {
+                            focusableElements[0].focus();
+                            return;
+                        }
+
+                        // We need to focus something for the screen readers to notice the dialog
+                        var contentElements = privateMethods.filterVisibleElements(dialogEl.querySelectorAll('h1,h2,h3,h4,h5,h6,p,span'));
+
+                        if (contentElements.length > 0) {
+                            var contentElement = contentElements[0];
+                            $el(contentElement).attr('tabindex', '-1').css('outline', '0');
+                            contentElement.focus();
+                        }
+                    },
+
+                    getFocusableElements: function ($dialog) {
+                        var dialogEl = $dialog[0];
+
+                        var rawElements = dialogEl.querySelectorAll(focusableElementSelector);
+
+                        return privateMethods.filterVisibleElements(rawElements);
+                    },
+
+                    filterVisibleElements: function (els) {
+                        var visibleFocusableElements = [];
+
+                        for (var i = 0; i < els.length; i++) {
+                            var el = els[i];
+
+                            if (el.offsetWidth > 0 || el.offsetHeight > 0) {
+                                visibleFocusableElements.push(el);
+                            }
+                        }
+
+                        return visibleFocusableElements;
+                    },
+
+                    getActiveDialog: function () {
+                        var dialogs = document.querySelectorAll('.ngdialog');
+
+                        if (dialogs.length === 0) {
+                            return null;
+                        }
+
+                        // TODO: This might be incorrect if there are a mix of open dialogs with different 'appendTo' values
+                        return $el(dialogs[dialogs.length - 1]);
+                    },
+
+                    applyAriaAttributes: function ($dialog, options) {
+                        if (options.ariaAuto) {
+                            if (!options.ariaRole) {
+                                var detectedRole = (privateMethods.getFocusableElements($dialog).length > 0) ?
+                                    'dialog' :
+                                    'alertdialog';
+
+                                options.ariaRole = detectedRole;
+                            }
+
+                            if (!options.ariaLabelledBySelector) {
+                                options.ariaLabelledBySelector = 'h1,h2,h3,h4,h5,h6';
+                            }
+
+                            if (!options.ariaDescribedBySelector) {
+                                options.ariaDescribedBySelector = 'article,section,p';
+                            }
+                        }
+
+                        if (options.ariaRole) {
+                            $dialog.attr('role', options.ariaRole);
+                        }
+
+                        privateMethods.applyAriaAttribute(
+                            $dialog, 'aria-labelledby', options.ariaLabelledById, options.ariaLabelledBySelector);
+
+                        privateMethods.applyAriaAttribute(
+                            $dialog, 'aria-describedby', options.ariaDescribedById, options.ariaDescribedBySelector);
+                    },
+
+                    applyAriaAttribute: function($dialog, attr, id, selector) {
+                        if (id) {
+                            $dialog.attr(attr, id);
+                        }
+
+                        if (selector) {
+                            var dialogId = $dialog.attr('id');
+
+                            var firstMatch = $dialog[0].querySelector(selector);
+
+                            if (!firstMatch) {
+                                return;
+                            }
+
+                            var generatedId = dialogId + '-' + attr;
+
+                            $el(firstMatch).attr('id', generatedId);
+
+                            $dialog.attr(attr, generatedId);
+
+                            return generatedId;
+                        }
+                    }
+                };
+
+                var publicMethods = {
+
+                    /*
+                     * @param {Object} options:
+                     * - template {String} - id of ng-template, url for partial, plain string (if enabled)
+                     * - plain {Boolean} - enable plain string templates, default false
+                     * - scope {Object}
+                     * - controller {String}
+                     * - controllerAs {String}
+                     * - className {String} - dialog theme class
+                     * - showClose {Boolean} - show close button, default true
+                     * - closeByEscape {Boolean} - default true
+                     * - closeByDocument {Boolean} - default true
+                     * - preCloseCallback {String|Function} - user supplied function name/function called before closing dialog (if set)
+                     *
+                     * @return {Object} dialog
+                     */
+                    open: function (opts) {
+                        var options = angular.copy(defaults);
+                        var localID = ++globalID;
+                        var dialogID = 'ngdialog' + localID;
+                        openIdStack.push(dialogID);
+
+                        opts = opts || {};
+                        angular.extend(options, opts);
+
+                        var defer;
+                        defers[dialogID] = defer = $q.defer();
+
+                        var scope;
+                        scopes[dialogID] = scope = angular.isObject(options.scope) ? options.scope.$new() : $rootScope.$new();
+
+                        var $dialog, $dialogParent;
+
+                        var resolve = angular.extend({}, options.resolve);
+
+                        angular.forEach(resolve, function (value, key) {
+                            resolve[key] = angular.isString(value) ? $injector.get(value) : $injector.invoke(value, null, null, key);
+                        });
+
+                        $q.all({
+                            template: loadTemplate(options.template || options.templateUrl),
+                            locals: $q.all(resolve)
+                        }).then(function (setup) {
+                            var template = setup.template,
+                                locals = setup.locals;
+
+                            $templateCache.put(options.template || options.templateUrl, template);
+
+                            if (options.showClose) {
+                                template += '<div class="ngdialog-close"></div>';
+                            }
+
+                            $dialog = $el('<div id="ngdialog' + localID + '" class="ngdialog"></div>');
+                            $dialog.html((options.overlay ?
+                                '<div class="ngdialog-overlay"></div><div class="ngdialog-content" role="document">' + template + '</div>' :
+                                '<div class="ngdialog-content" role="document">' + template + '</div>'));
+
+                            $dialog.data('$ngDialogOptions', options);
+
+                            if (options.data && angular.isString(options.data)) {
+                                var firstLetter = options.data.replace(/^\s*/, '')[0];
+                                scope.ngDialogData = (firstLetter === '{' || firstLetter === '[') ? angular.fromJson(options.data) : options.data;
+                            } else if (options.data && angular.isObject(options.data)) {
+                                scope.ngDialogData = options.data;
+                            }
+
+                            if (options.controller && (angular.isString(options.controller) || angular.isArray(options.controller) || angular.isFunction(options.controller))) {
+
+                                var ctrl = options.controller;
+                                if (options.controllerAs && angular.isString(options.controllerAs)) {
+                                    ctrl += ' as ' + options.controllerAs;
+                                }
+
+                                var controllerInstance = $controller(ctrl, angular.extend(
+                                    locals,
+                                    {
+                                        $scope: scope,
+                                        $element: $dialog
+                                    }
+                                ));
+                                $dialog.data('$ngDialogControllerController', controllerInstance);
+                            }
+
+                            if (options.className) {
+                                $dialog.addClass(options.className);
+                            }
+
+                            if (options.appendTo && angular.isString(options.appendTo)) {
+                                $dialogParent = angular.element(document.querySelector(options.appendTo));
+                            } else {
+                                $dialogParent = $body;
+                            }
+
+                            privateMethods.applyAriaAttributes($dialog, options);
+
+                            if (options.preCloseCallback) {
+                                var preCloseCallback;
+
+                                if (angular.isFunction(options.preCloseCallback)) {
+                                    preCloseCallback = options.preCloseCallback;
+                                } else if (angular.isString(options.preCloseCallback)) {
+                                    if (scope) {
+                                        if (angular.isFunction(scope[options.preCloseCallback])) {
+                                            preCloseCallback = scope[options.preCloseCallback];
+                                        } else if (scope.$parent && angular.isFunction(scope.$parent[options.preCloseCallback])) {
+                                            preCloseCallback = scope.$parent[options.preCloseCallback];
+                                        } else if ($rootScope && angular.isFunction($rootScope[options.preCloseCallback])) {
+                                            preCloseCallback = $rootScope[options.preCloseCallback];
+                                        }
+                                    }
+                                }
+
+                                if (preCloseCallback) {
+                                    $dialog.data('$ngDialogPreCloseCallback', preCloseCallback);
+                                }
+                            }
+
+                            scope.closeThisDialog = function (value) {
+                                privateMethods.closeDialog($dialog, value);
+                            };
+
+                            $timeout(function () {
+                                var $activeDialogs = document.querySelectorAll('.ngdialog');
+                                privateMethods.deactivateAll($activeDialogs);
+
+                                $compile($dialog)(scope);
+                                var widthDiffs = $window.innerWidth - $body.prop('clientWidth');
+                                $body.addClass('ngdialog-open');
+                                var scrollBarWidth = widthDiffs - ($window.innerWidth - $body.prop('clientWidth'));
+                                if (scrollBarWidth > 0) {
+                                    privateMethods.setBodyPadding(scrollBarWidth);
+                                }
+                                $dialogParent.append($dialog);
+
+                                privateMethods.activate($dialog);
+
+                                if (options.trapFocus) {
+                                    privateMethods.autoFocus($dialog);
+                                }
+
+                                if (options.name) {
+                                    $rootScope.$broadcast('ngDialog.opened', {dialog: $dialog, name: options.name});
+                                } else {
+                                    $rootScope.$broadcast('ngDialog.opened', $dialog);
+                                }
+                            });
+
+                            if (!keydownIsBound) {
+                                $body.bind('keydown', privateMethods.onDocumentKeydown);
+                                keydownIsBound = true;
+                            }
+
+                            if (options.closeByNavigation) {
+                                $rootScope.$on('$locationChangeSuccess', function () {
+                                    privateMethods.closeDialog($dialog);
+                                });
+                            }
+
+                            if (options.preserveFocus) {
+                                $dialog.data('$ngDialogPreviousFocus', document.activeElement);
+                            }
+
+                            closeByDocumentHandler = function (event) {
+                                var isOverlay = options.closeByDocument ? $el(event.target).hasClass('ngdialog-overlay') : false;
+                                var isCloseBtn = $el(event.target).hasClass('ngdialog-close');
+
+                                if (isOverlay || isCloseBtn) {
+                                    publicMethods.close($dialog.attr('id'), isCloseBtn ? '$closeButton' : '$document');
+                                }
+                            };
+
+                            if (typeof $window.Hammer !== 'undefined') {
+                                var hammerTime = scope.hammerTime = $window.Hammer($dialog[0]);
+                                hammerTime.on('tap', closeByDocumentHandler);
+                            } else {
+                                $dialog.bind('click', closeByDocumentHandler);
+                            }
+
+                            dialogsCount += 1;
+
+                            return publicMethods;
+                        });
+
+                        return {
+                            id: dialogID,
+                            closePromise: defer.promise,
+                            close: function (value) {
+                                privateMethods.closeDialog($dialog, value);
+                            }
+                        };
+
+                        function loadTemplateUrl (tmpl, config) {
+                            return $http.get(tmpl, (config || {})).then(function(res) {
+                                return res.data || '';
+                            });
+                        }
+
+                        function loadTemplate (tmpl) {
+                            if (!tmpl) {
+                                return 'Empty template';
+                            }
+
+                            if (angular.isString(tmpl) && options.plain) {
+                                return tmpl;
+                            }
+
+                            if (typeof options.cache === 'boolean' && !options.cache) {
+                                return loadTemplateUrl(tmpl, {cache: false});
+                            }
+
+                            return $templateCache.get(tmpl) || loadTemplateUrl(tmpl, {cache: true});
+                        }
+                    },
+
+                    /*
+                     * @param {Object} options:
+                     * - template {String} - id of ng-template, url for partial, plain string (if enabled)
+                     * - plain {Boolean} - enable plain string templates, default false
+                     * - name {String}
+                     * - scope {Object}
+                     * - controller {String}
+                     * - controllerAs {String}
+                     * - className {String} - dialog theme class
+                     * - showClose {Boolean} - show close button, default true
+                     * - closeByEscape {Boolean} - default false
+                     * - closeByDocument {Boolean} - default false
+                     * - preCloseCallback {String|Function} - user supplied function name/function called before closing dialog (if set); not called on confirm
+                     *
+                     * @return {Object} dialog
+                     */
+                    openConfirm: function (opts) {
+                        var defer = $q.defer();
+
+                        var options = {
+                            closeByEscape: false,
+                            closeByDocument: false
+                        };
+                        angular.extend(options, opts);
+
+                        options.scope = angular.isObject(options.scope) ? options.scope.$new() : $rootScope.$new();
+                        options.scope.confirm = function (value) {
+                            defer.resolve(value);
+                            var $dialog = $el(document.getElementById(openResult.id));
+                            privateMethods.performCloseDialog($dialog, value);
+                        };
+
+                        var openResult = publicMethods.open(options);
+                        openResult.closePromise.then(function (data) {
+                            if (data) {
+                                return defer.reject(data.value);
+                            }
+                            return defer.reject();
+                        });
+
+                        return defer.promise;
+                    },
+
+                    isOpen: function(id) {
+                        var $dialog = $el(document.getElementById(id));
+                        return $dialog.length > 0;
+                    },
+
+                    /*
+                     * @param {String} id
+                     * @return {Object} dialog
+                     */
+                    close: function (id, value) {
+                        var $dialog = $el(document.getElementById(id));
+
+                        if ($dialog.length) {
+                            privateMethods.closeDialog($dialog, value);
+                        } else {
+                            if (id === '$escape') {
+                                var topDialogId = openIdStack[openIdStack.length - 1];
+                                $dialog = $el(document.getElementById(topDialogId));
+                                if ($dialog.data('$ngDialogOptions').closeByEscape) {
+                                    privateMethods.closeDialog($dialog, value);
+                                }
+                            }
+                        }
+
+                        return publicMethods;
+                    },
+
+                    closeAll: function (value) {
+                        var $all = document.querySelectorAll('.ngdialog');
+
+                        // Reverse order to ensure focus restoration works as expected
+                        for (var i = $all.length - 1; i >= 0; i--) {
+                            var dialog = $all[i];
+                            privateMethods.closeDialog($el(dialog), value);
+                        }
+                    },
+
+                    getDefaults: function () {
+                        return defaults;
+                    }
+                };
+
+                return publicMethods;
+            }];
+    });
+
+    m.directive('ngDialog', ['ngDialog', function (ngDialog) {
+        return {
+            restrict: 'A',
+            scope: {
+                ngDialogScope: '='
+            },
+            link: function (scope, elem, attrs) {
+                elem.on('click', function (e) {
+                    e.preventDefault();
+
+                    var ngDialogScope = angular.isDefined(scope.ngDialogScope) ? scope.ngDialogScope : 'noScope';
+                    angular.isDefined(attrs.ngDialogClosePrevious) && ngDialog.close(attrs.ngDialogClosePrevious);
+
+                    var defaults = ngDialog.getDefaults();
+
+                    ngDialog.open({
+                        template: attrs.ngDialog,
+                        className: attrs.ngDialogClass || defaults.className,
+                        controller: attrs.ngDialogController,
+                        controllerAs: attrs.ngDialogControllerAs,
+                        scope: ngDialogScope,
+                        data: attrs.ngDialogData,
+                        showClose: attrs.ngDialogShowClose === 'false' ? false : (attrs.ngDialogShowClose === 'true' ? true : defaults.showClose),
+                        closeByDocument: attrs.ngDialogCloseByDocument === 'false' ? false : (attrs.ngDialogCloseByDocument === 'true' ? true : defaults.closeByDocument),
+                        closeByEscape: attrs.ngDialogCloseByEscape === 'false' ? false : (attrs.ngDialogCloseByEscape === 'true' ? true : defaults.closeByEscape),
+                        preCloseCallback: attrs.ngDialogPreCloseCallback || defaults.preCloseCallback
+                    });
+                });
+            }
+        };
+    }]);
+
+    return m;
+}));
+;
+/**
+ * An Angular module that gives you access to the browsers local storage
+ * @version v0.2.0 - 2015-05-10
+ * @link https://github.com/grevory/angular-local-storage
+ * @author grevory <greg@gregpike.ca>
+ * @license MIT License, http://www.opensource.org/licenses/MIT
+ */
+(function ( window, angular, undefined ) {
+/*jshint globalstrict:true*/
+'use strict';
+
+var isDefined = angular.isDefined,
+  isUndefined = angular.isUndefined,
+  isNumber = angular.isNumber,
+  isObject = angular.isObject,
+  isArray = angular.isArray,
+  extend = angular.extend,
+  toJson = angular.toJson;
+
+
+// Test if string is only contains numbers
+// e.g '1' => true, "'1'" => true
+function isStringNumber(num) {
+  return  /^-?\d+\.?\d*$/.test(num.replace(/["']/g, ''));
+}
+
+var angularLocalStorage = angular.module('LocalStorageModule', []);
+
+angularLocalStorage.provider('localStorageService', function() {
+
+  // You should set a prefix to avoid overwriting any local storage variables from the rest of your app
+  // e.g. localStorageServiceProvider.setPrefix('yourAppName');
+  // With provider you can use config as this:
+  // myApp.config(function (localStorageServiceProvider) {
+  //    localStorageServiceProvider.prefix = 'yourAppName';
+  // });
+  this.prefix = 'ls';
+
+  // You could change web storage type localstorage or sessionStorage
+  this.storageType = 'localStorage';
+
+  // Cookie options (usually in case of fallback)
+  // expiry = Number of days before cookies expire // 0 = Does not expire
+  // path = The web path the cookie represents
+  this.cookie = {
+    expiry: 30,
+    path: '/'
+  };
+
+  // Send signals for each of the following actions?
+  this.notify = {
+    setItem: true,
+    removeItem: false
+  };
+
+  // Setter for the prefix
+  this.setPrefix = function(prefix) {
+    this.prefix = prefix;
+    return this;
+  };
+
+   // Setter for the storageType
+   this.setStorageType = function(storageType) {
+     this.storageType = storageType;
+     return this;
+   };
+
+  // Setter for cookie config
+  this.setStorageCookie = function(exp, path) {
+    this.cookie.expiry = exp;
+    this.cookie.path = path;
+    return this;
+  };
+
+  // Setter for cookie domain
+  this.setStorageCookieDomain = function(domain) {
+    this.cookie.domain = domain;
+    return this;
+  };
+
+  // Setter for notification config
+  // itemSet & itemRemove should be booleans
+  this.setNotify = function(itemSet, itemRemove) {
+    this.notify = {
+      setItem: itemSet,
+      removeItem: itemRemove
+    };
+    return this;
+  };
+
+  this.$get = ['$rootScope', '$window', '$document', '$parse', function($rootScope, $window, $document, $parse) {
+    var self = this;
+    var prefix = self.prefix;
+    var cookie = self.cookie;
+    var notify = self.notify;
+    var storageType = self.storageType;
+    var webStorage;
+
+    // When Angular's $document is not available
+    if (!$document) {
+      $document = document;
+    } else if ($document[0]) {
+      $document = $document[0];
+    }
+
+    // If there is a prefix set in the config lets use that with an appended period for readability
+    if (prefix.substr(-1) !== '.') {
+      prefix = !!prefix ? prefix + '.' : '';
+    }
+    var deriveQualifiedKey = function(key) {
+      return prefix + key;
+    };
+    // Checks the browser to see if local storage is supported
+    var browserSupportsLocalStorage = (function () {
+      try {
+        var supported = (storageType in $window && $window[storageType] !== null);
+
+        // When Safari (OS X or iOS) is in private browsing mode, it appears as though localStorage
+        // is available, but trying to call .setItem throws an exception.
+        //
+        // "QUOTA_EXCEEDED_ERR: DOM Exception 22: An attempt was made to add something to storage
+        // that exceeded the quota."
+        var key = deriveQualifiedKey('__' + Math.round(Math.random() * 1e7));
+        if (supported) {
+          webStorage = $window[storageType];
+          webStorage.setItem(key, '');
+          webStorage.removeItem(key);
+        }
+
+        return supported;
+      } catch (e) {
+        storageType = 'cookie';
+        $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+        return false;
+      }
+    }());
+
+    // Reviver function for JSON.parse that will be called
+    // for every key and value at every level of the final string -> JSON transformation
+    function reviver(key, value) {
+      if (value === 'true' || value === 'false') return value === 'true';
+      return value;
+    }
+
+    // Directly adds a value to local storage
+    // If local storage is not available in the browser use cookies
+    // Example use: localStorageService.add('library','angular');
+    var addToLocalStorage = function (key, value) {
+      // Let's convert undefined values to null to get the value consistent
+      if (isUndefined(value)) {
+        value = null;
+      } else if (isObject(value) || isArray(value) || isNumber(+value || value)) {
+        value = toJson(value);
+      }
+
+      // If this browser does not support local storage use cookies
+      if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+        if (!browserSupportsLocalStorage) {
+            $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+        }
+
+        if (notify.setItem) {
+          $rootScope.$broadcast('LocalStorageModule.notification.setitem', {key: key, newvalue: value, storageType: 'cookie'});
+        }
+        return addToCookies(key, value);
+      }
+
+      try {
+        if (webStorage) {webStorage.setItem(deriveQualifiedKey(key), value)};
+        if (notify.setItem) {
+          $rootScope.$broadcast('LocalStorageModule.notification.setitem', {key: key, newvalue: value, storageType: self.storageType});
+        }
+      } catch (e) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+        return addToCookies(key, value);
+      }
+      return true;
+    };
+
+    // Directly get a value from local storage
+    // Example use: localStorageService.get('library'); // returns 'angular'
+    var getFromLocalStorage = function (key) {
+
+      if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+        if (!browserSupportsLocalStorage) {
+          $rootScope.$broadcast('LocalStorageModule.notification.warning','LOCAL_STORAGE_NOT_SUPPORTED');
+        }
+
+        return getFromCookies(key);
+      }
+
+      var item = webStorage ? webStorage.getItem(deriveQualifiedKey(key)) : null;
+      // angular.toJson will convert null to 'null', so a proper conversion is needed
+      // FIXME not a perfect solution, since a valid 'null' string can't be stored
+      if (!item || item === 'null') {
+        return null;
+      }
+
+      if (item.charAt(0) === "{" || item.charAt(0) === "[" || isStringNumber(item)) {
+        return JSON.parse(item, reviver);
+      }
+
+      return item;
+    };
+
+    // Remove an item from local storage
+    // Example use: localStorageService.remove('library'); // removes the key/value pair of library='angular'
+    var removeFromLocalStorage = function () {
+      var i, key;
+      for (i=0; i<arguments.length; i++) {
+        key = arguments[i];
+        if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+          if (!browserSupportsLocalStorage) {
+            $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+          }
+
+          if (notify.removeItem) {
+            $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {key: key, storageType: 'cookie'});
+          }
+          removeFromCookies(key);
+        }
+        else {
+          try {
+            webStorage.removeItem(deriveQualifiedKey(key));
+            if (notify.removeItem) {
+              $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {
+                key: key,
+                storageType: self.storageType
+              });
+            }
+          } catch (e) {
+            $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+            removeFromCookies(key);
+          }
+        }
+      }
+    };
+
+    // Return array of keys for local storage
+    // Example use: var keys = localStorageService.keys()
+    var getKeysForLocalStorage = function () {
+
+      if (!browserSupportsLocalStorage) {
+        $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+        return false;
+      }
+
+      var prefixLength = prefix.length;
+      var keys = [];
+      for (var key in webStorage) {
+        // Only return keys that are for this app
+        if (key.substr(0,prefixLength) === prefix) {
+          try {
+            keys.push(key.substr(prefixLength));
+          } catch (e) {
+            $rootScope.$broadcast('LocalStorageModule.notification.error', e.Description);
+            return [];
+          }
+        }
+      }
+      return keys;
+    };
+
+    // Remove all data for this app from local storage
+    // Also optionally takes a regular expression string and removes the matching key-value pairs
+    // Example use: localStorageService.clearAll();
+    // Should be used mostly for development purposes
+    var clearAllFromLocalStorage = function (regularExpression) {
+
+      // Setting both regular expressions independently
+      // Empty strings result in catchall RegExp
+      var prefixRegex = !!prefix ? new RegExp('^' + prefix) : new RegExp();
+      var testRegex = !!regularExpression ? new RegExp(regularExpression) : new RegExp();
+
+      if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
+        if (!browserSupportsLocalStorage) {
+          $rootScope.$broadcast('LocalStorageModule.notification.warning', 'LOCAL_STORAGE_NOT_SUPPORTED');
+        }
+        return clearAllFromCookies();
+      }
+
+      var prefixLength = prefix.length;
+
+      for (var key in webStorage) {
+        // Only remove items that are for this app and match the regular expression
+        if (prefixRegex.test(key) && testRegex.test(key.substr(prefixLength))) {
+          try {
+            removeFromLocalStorage(key.substr(prefixLength));
+          } catch (e) {
+            $rootScope.$broadcast('LocalStorageModule.notification.error',e.message);
+            return clearAllFromCookies();
+          }
+        }
+      }
+      return true;
+    };
+
+    // Checks the browser to see if cookies are supported
+    var browserSupportsCookies = (function() {
+      try {
+        return $window.navigator.cookieEnabled ||
+          ("cookie" in $document && ($document.cookie.length > 0 ||
+          ($document.cookie = "test").indexOf.call($document.cookie, "test") > -1));
+      } catch (e) {
+          $rootScope.$broadcast('LocalStorageModule.notification.error', e.message);
+          return false;
+      }
+    }());
+
+    // Directly adds a value to cookies
+    // Typically used as a fallback is local storage is not available in the browser
+    // Example use: localStorageService.cookie.add('library','angular');
+    var addToCookies = function (key, value, daysToExpiry) {
+
+      if (isUndefined(value)) {
+        return false;
+      } else if(isArray(value) || isObject(value)) {
+        value = toJson(value);
+      }
+
+      if (!browserSupportsCookies) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error', 'COOKIES_NOT_SUPPORTED');
+        return false;
+      }
+
+      try {
+        var expiry = '',
+            expiryDate = new Date(),
+            cookieDomain = '';
+
+        if (value === null) {
+          // Mark that the cookie has expired one day ago
+          expiryDate.setTime(expiryDate.getTime() + (-1 * 24 * 60 * 60 * 1000));
+          expiry = "; expires=" + expiryDate.toGMTString();
+          value = '';
+        } else if (isNumber(daysToExpiry) && daysToExpiry !== 0) {
+          expiryDate.setTime(expiryDate.getTime() + (daysToExpiry * 24 * 60 * 60 * 1000));
+          expiry = "; expires=" + expiryDate.toGMTString();
+        } else if (cookie.expiry !== 0) {
+          expiryDate.setTime(expiryDate.getTime() + (cookie.expiry * 24 * 60 * 60 * 1000));
+          expiry = "; expires=" + expiryDate.toGMTString();
+        }
+        if (!!key) {
+          var cookiePath = "; path=" + cookie.path;
+          if(cookie.domain){
+            cookieDomain = "; domain=" + cookie.domain;
+          }
+          $document.cookie = deriveQualifiedKey(key) + "=" + encodeURIComponent(value) + expiry + cookiePath + cookieDomain;
+        }
+      } catch (e) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error',e.message);
+        return false;
+      }
+      return true;
+    };
+
+    // Directly get a value from a cookie
+    // Example use: localStorageService.cookie.get('library'); // returns 'angular'
+    var getFromCookies = function (key) {
+      if (!browserSupportsCookies) {
+        $rootScope.$broadcast('LocalStorageModule.notification.error', 'COOKIES_NOT_SUPPORTED');
+        return false;
+      }
+
+      var cookies = $document.cookie && $document.cookie.split(';') || [];
+      for(var i=0; i < cookies.length; i++) {
+        var thisCookie = cookies[i];
+        while (thisCookie.charAt(0) === ' ') {
+          thisCookie = thisCookie.substring(1,thisCookie.length);
+        }
+        if (thisCookie.indexOf(deriveQualifiedKey(key) + '=') === 0) {
+          var storedValues = decodeURIComponent(thisCookie.substring(prefix.length + key.length + 1, thisCookie.length))
+          try{
+            return JSON.parse(storedValues, reviver);
+          }catch(e){
+            return storedValues
+          }
+        }
+      }
+      return null;
+    };
+
+    var removeFromCookies = function (key) {
+      addToCookies(key,null);
+    };
+
+    var clearAllFromCookies = function () {
+      var thisCookie = null, thisKey = null;
+      var prefixLength = prefix.length;
+      var cookies = $document.cookie.split(';');
+      for(var i = 0; i < cookies.length; i++) {
+        thisCookie = cookies[i];
+
+        while (thisCookie.charAt(0) === ' ') {
+          thisCookie = thisCookie.substring(1, thisCookie.length);
+        }
+
+        var key = thisCookie.substring(prefixLength, thisCookie.indexOf('='));
+        removeFromCookies(key);
+      }
+    };
+
+    var getStorageType = function() {
+      return storageType;
+    };
+
+    // Add a listener on scope variable to save its changes to local storage
+    // Return a function which when called cancels binding
+    var bindToScope = function(scope, key, def, lsKey) {
+      lsKey = lsKey || key;
+      var value = getFromLocalStorage(lsKey);
+
+      if (value === null && isDefined(def)) {
+        value = def;
+      } else if (isObject(value) && isObject(def)) {
+        value = extend(def, value);
+      }
+
+      $parse(key).assign(scope, value);
+
+      return scope.$watch(key, function(newVal) {
+        addToLocalStorage(lsKey, newVal);
+      }, isObject(scope[key]));
+    };
+
+    // Return localStorageService.length
+    // ignore keys that not owned
+    var lengthOfLocalStorage = function() {
+      var count = 0;
+      var storage = $window[storageType];
+      for(var i = 0; i < storage.length; i++) {
+        if(storage.key(i).indexOf(prefix) === 0 ) {
+          count++;
+        }
+      }
+      return count;
+    };
+
+    return {
+      isSupported: browserSupportsLocalStorage,
+      getStorageType: getStorageType,
+      set: addToLocalStorage,
+      add: addToLocalStorage, //DEPRECATED
+      get: getFromLocalStorage,
+      keys: getKeysForLocalStorage,
+      remove: removeFromLocalStorage,
+      clearAll: clearAllFromLocalStorage,
+      bind: bindToScope,
+      deriveKey: deriveQualifiedKey,
+      length: lengthOfLocalStorage,
+      cookie: {
+        isSupported: browserSupportsCookies,
+        set: addToCookies,
+        add: addToCookies, //DEPRECATED
+        get: getFromCookies,
+        remove: removeFromCookies,
+        clearAll: clearAllFromCookies
+      }
+    };
+  }];
+});
+})( window, window.angular );;
 var module = module || {};
 
 module.angular = angular.module('module.angular', ['ngResource', 'ngAnimate']);
 ;
 var module = module || {};
 
-module.vendor = angular.module('module.vendor', ['ngTagsInput']);
+module.vendor = angular.module('module.vendor', ['ngTagsInput', 'ngDialog', 'LocalStorageModule']);
 ;
 var module = module || {};
 
@@ -32594,15 +33788,10 @@ module.filters = angular.module('module.filters', []);
 var module = module || {};
 
 module.services = angular.module('module.services', [
-	'sdk.project',
-	'sdk.auth',
 	'sdk.events',
 	'sdk.file',
-	'sdk.sidebar',
 	'sdk.stoplight',
-	'sdk.play',
-	'sdk.moduleload',
-	'service.windowEventsFactory'
+	'sdk.moduleload'
 ]);;
 var module = module || {};
 
@@ -32610,79 +33799,13 @@ module.core = angular.module('module.core', ['module.angular', 'module.vendor', 
 var module = module || {};
 
 module.modules = angular.module('module.modules', []);;
-angular.module('sdk.auth', [])
-    .factory('$auth', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
-	var factory = {};
-
-   factory.login = function() {
-   		var user = {};
-		user.status = 'logging-in';
-
-		$timeout(function() {
-			$rootScope.$emit('devkit.blur', true);
-		}, 1);
-
-		return user;
-
-	}
-
-	factory.logout = function() {
-		var user = {};
-		user.status = 'logged-out';
-		user.statusMessage = 'Log in';
-
-		delete window.localStorage.access_token;
-		delete window.localStorage.refresh_token;
-
-		return user;
-	}
-
-	factory.getUserInfo = function() {
-		var promise = $http({
-			method: 'GET',
-	        url:  window.PATH.auth.userInfo,
-	        headers: {
-	          'Authorization': 'Bearer ' + window.localStorage.access_token
-	        },
-	        withCredentials: true
-	    })
-	    .success(function(data){
-	        user = data;
-			user.status = 'logged-in';
-
-			return user;
-	    })
-	    .error(function(){
-	        user.status = 'logged-out';
-			user.statusMessage = 'Error logging in!';
-
-			return user;
-	    });
-
-	    return promise;
-	}
-
-    return factory;
-}]);;
 var events = events || {};
 
 var beforeSave = {};
 
 angular.module('sdk.events', []).factory('$events', ['$rootScope', '$q', function ($rootScope, $q) {
 	var factory = {};
-
-	// factory.beforeSave = function(path, callbackFunction) {
-	// 	beforeSave[path] = beforeSave[path] || [];
-	// 	beforeSave[path].push($q(function(resolve, reject) {
-	//     setTimeout(function() 
-	//     {
-	//     	var result = callbackFunction();
-	    	
-	//     	resolve(result);
-	//     }, 1000);
-	// 	}));
-	// };
-
+	
 	factory.beforeSave = function(path, callbackFunction) {
 		beforeSave[path] = beforeSave[path] || [];
 		beforeSave[path].push($q(function(resolve, reject) {
@@ -32702,9 +33825,10 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
 	$rootScope.editorConfig = [];
 
+	var hook = Hook('global');
+
     factory.open = function( file_path )
     {
-    	// console.log('open', file_path);
 
 	    // only load the file when it's not already open
 	    if( !factory.isOpen( file_path ) ) {
@@ -32732,6 +33856,8 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 			return file_path_history != file_path;
 		});
 	    factory.history.push( file_path );
+
+	    // hook.call('onFileOpened', file_path);
 		
 		// notify everyone
 	    $rootScope.$emit('service.file.open', file_path );
@@ -32752,8 +33878,6 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     // close an item
     factory.close = function( file_path )
     {
-	    
-	    file_path = file_path || factory.active;
 	    
 	    // check for unsaved changes
 	    var should_delete = false;
@@ -32901,6 +34025,38 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 		$rootScope.$emit('editor.saved.' + activeFile.path);
     }
 }]);;
+var hooks = hooks || [];
+
+function Hook(path) {
+	var path = path || {};
+
+	return {
+		register: function (name, callback ) {
+			if(typeof name != 'undefined') {
+				if( 'undefined' == typeof(hooks[path] ) )
+	      		hooks[path] = []
+	 
+				if( 'undefined' == typeof(hooks[path][name] ) )
+					hooks[path][name] = []
+				hooks[path][name].push( callback )
+			}
+		},
+
+		call: function (name, arguments ) {
+			if(typeof name != 'undefined') {
+		      	if(typeof hooks[path][name] !== 'undefined') {
+		      		for( i = 0; i < hooks[path][name].length; ++i ) {
+		      			if( true != hooks[path][name][i]( arguments ) ) { 
+		      				break; 
+		      			}
+		      		}
+		      	}
+		    }
+				    	
+		}
+	};
+}
+;
  var path	= require('path');
 var fs		= require('fs');
 
@@ -32912,62 +34068,9 @@ angular.module('sdk.moduleload', [])
 
     $rootScope.modules = {};
 
-    // factory.injectDependency = function(filename, filetype)
-    // {
-
-    // 	console.log('injectDependency');
-    //     if (filetype == 'js')
-    //     {
-    //         var fileref = document.createElement('script');
-    //         fileref.setAttribute('type','text/javascript');
-    //         fileref.setAttribute('src', filename);
-    //     }
-    //     else if (filetype == 'css')
-    //     {
-    //         var fileref = document.createElement('link');
-    //         fileref.setAttribute('rel', 'stylesheet');
-    //         fileref.setAttribute('type', 'text/css');
-    //         fileref.setAttribute('href', filename);
-    //     }
-
-    //     if (typeof fileref != 'undefined')
-    //         document.getElementsByTagName('head')[0].appendChild(fileref)
-    // }
 
     factory.load = function(module, type, dir)
     {
-  //       var self = this;
-  //       console.log('load');
-
-		// // load optional dependencies
-		// var dependencies_path = path.join(dir, 'dependencies');
-		// fs.exists(dependencies_path, function(exists) {
-		// 	if(!exists) return;
-		// 	fs.readdir(dependencies_path, function (err, files) {
-	 //            if (err) throw err;
-	            
-	 //            files.forEach(function(file){
-  //                   if( path.extname(file) == '.js') {
-  //                       self.injectDependency( path.join(dependencies_path, file), 'js');
-  //                   } else if( path.extname(file) == '.css') {
-  //                       self.injectDependency( path.join(dependencies_path, file), 'css');
-  //                   }			           
-		//         });
-	 //        });
-  //       });
-
-		// var css_path = path.join(dir, 'component.css');
-		// fs.exists(css_path, function(exists) {
-		// 	if(exists) {
-	 //        	self.injectDependency( css_path	, 'css');
-	 //        }	
-		// });
-		// var js_path = path.join(dir, 'component.js');
-		// fs.exists(js_path, function(exists) {
-		// 	if(exists) {
-	 //        	self.injectDependency( js_path	, 'js');
-	 //        }
-		// });
 
 		var html_path = path.join(dir, 'component.html');
 		fs.exists(html_path, function(exists) {
@@ -32989,376 +34092,6 @@ angular.module('sdk.moduleload', [])
 
     return factory;
 }]);;
-angular.module('sdk.project', []).factory('$project', [ '$rootScope', '$file', function ( $rootScope, $file) {
-	
-	var factory = {};
-	
-	factory.path = false;
-
-	factory.update = function(project_dir) {	   
-    	var filetree = readdirSyncRecursive( project_dir, true );	
-
-        return filetree;
-    }
-
-    factory.load = function(project_dir){
-        window.localStorage.project_dir = project_dir;
-
-		return factory.update(project_dir);
-        
-    }
-    
-    factory.select = function(){
-	    var self = this;
-        var directorychooser = document.getElementById('directorychooser');
-        directorychooser.addEventListener("change", function(evt) {
-            self.load( this.value );
-        }, false)
-        directorychooser.click();
-    }
-
-    return factory;
-    
-}]);;
-var gui			= require('nw.gui');
-var path_		= require('path'); // auch
-
-var open		= require("open");
-var fs			= require('fs-extra')
-var trash		= require('trash');
-var watchTree 	= require("fs-watch-tree").watchTree;
-	
-angular.module('sdk.sidebar', []).factory('$sidebar', [ '$rootScope', '$file', '$project', '$http', '$timeout', '$q', function ($rootScope, $file, $project, $http, $timeout, $q) {
-	var factory = {};
-	
-	// various
-	factory.renaming = false;
-
-	// Selected items
-	factory.selected = [];
-	
-    factory.select = function(path, event) {
-
-        // multiple selection
-        if( event.metaKey || event.ctrlKey ) {
-            if( factory.selected.indexOf(path) > -1 ) {
-                factory.selected = factory.selected.filter(function(path_) {
-                    return path_ != path;
-                });
-            }
-            else {
-                factory.selected.push( path );
-            }
-        }
-        else {
-            factory.selected = [ path ];
-        }
-    }
-
-    factory.isSelected = function( path ) {
-        return factory.selected.indexOf(path) > -1;
-    }
-    
-    // Expanded items
-	factory.expanded = [];
-	
-    factory.expand = function( path, expanded ) {
-	    if( expanded ) {
-        	factory.expanded.push( path );	    
-		} else {
-			var index = factory.expanded.indexOf(path);	
-			factory.expanded.splice(index, 1);	
-		}
-    }
-
-    factory.isExpanded = function( path ) {
-        return factory.expanded.indexOf(path) > -1;
-    }
-
-    // rename a file
-    factory.isRenaming = function( path ){
-	    return factory.renaming === path;
-    }
-    factory.rename = function( item ){
-	    var newName = item.name;
-        var itemFolder = path_.dirname( item.path );
-        var newPath = path_.join( itemFolder, newName );
-        
-        if( fs.existsSync( newPath ) ) {
-	       return alert("That filename already exists!");
-        }
-
-        fs.rename( item.path, newPath, function(){
-	        factory.update();
-        });
-
-        factory.renaming = false;
-	    
-    }
-
-	// open a file (or directory)
-	factory.open = function( path ) {
-		if( fs.lstatSync( path ).isDirectory() ) {
-            factory.expanded.push(path);
-        } else {
-            $file.open( path );
-        }
-	}
-
-    factory.keyPress = function( event, item ) {
-        console.log( event, item );
-    }
-
-    // factory.update = function( ) {	   
-    // 	$rootScope.$emit('service.sidebar.tree.update');
-
-    // 	var filetree = readdirSyncRecursive( $project.path, true );	
-    // 	console.log('return', filetree)
-
-    //     return filetree;
-    // }
-
-    factory.dropped = function( event, file, dropped_path ) {
-	    
-	    dropped_path = dropped_path || $project.path;
-	    
-	    // console.log('event', event, 'file', file, 'dropped_path', dropped_path)
-	    
-        var filename = path_.basename( file.path );
-
-        // if dropped on a file, get the file's parent folder
-        if( fs.lstatSync(dropped_path).isFile() ) {
-            var new_path = path_.dirname( dropped_path );
-        }
-        else {
-            var new_path = path_.join( dropped_path, filename );
-        }
-
-        // prevent overwriting
-        if( fs.existsSync( new_path ) ) {
-            if( !confirm('Overwrite `' + filename + '`?') ) return;
-        }
-
-        fs.copy( file.path, new_path, {}, function(err){});
-    }
-    
-	factory.showCtxMenu = function( item, event ){
-		
-		// Create an empty menu
-		var ctxmenu = new gui.Menu();
-		
-		// Add some items
-		if( item ) {
-		
-			// multiple selection
-			if( factory.isSelected(item.path) ) {
-				if( event.metaKey || event.ctrlKey ) {
-					factory.selected.push( item.path );
-				} else {
-					factory.selected = [ item.path ];
-				}
-			}
-			
-			ctxmenu.append(new gui.MenuItem({ label: 'Open', click: function(){
-				factory.selected.forEach(function( item_path ){
-					$file.open( item_path );					
-				});				
-			}}));
-			ctxmenu.append(new gui.MenuItem({ label: 'Open With Default Editor', click: function(){
-				factory.selected.forEach(function( item_path ){
-					open( item_path );
-				});
-			}}));
-			ctxmenu.append(new gui.MenuItem({ label: 'Open File Location', click: function(){
-				factory.selected.forEach(function( item_path ){
-					open( path_.dirname( item_path ) );
-				});
-			}}));
-			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
-			ctxmenu.append(new gui.MenuItem({ label: 'Move to Trash...', click: function(){
-				
-				if( factory.selected.length > 1 ) {
-					if( confirm( "Are you sure you want to remove " + factory.selected.length + " items to the trash?" ) ) {
-						factory.selected.forEach(function( item_path ){
-							trash([ item_path ]);
-						});
-					}				
-				} else {
-					if( confirm( "Are you sure you want to remove `" + item.name + "` to the trash?" ) ) {
-						trash([ item.path ]);
-					}
-				}
-			}}));
-			
-			// single file options
-			if( factory.selected.length == 1 ) {
-				ctxmenu.append(new gui.MenuItem({ label: 'Rename...', click: function(){
-					factory.renaming = item.path;
-				}}));
-			}
-			
-			ctxmenu.append(new gui.MenuItem({ label: 'Duplicate', click: function(){
-				
-				factory.selected.forEach(function( item_path ){
-					var new_path = newPath( item_path );
-					
-					var i = 2;
-					while( fs.existsSync( new_path ) ) {
-						new_path = newPath( item_path, i++ );
-					}
-									
-					fs.copySync( item_path, new_path );
-				});
-				
-			}}));
-			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
-		}
-		
-		// always visible options
-		ctxmenu.append(new gui.MenuItem({ label: 'New Folder', click: function(){		
-			var newFolderName = 'Untitled Folder';			
-			
-			if( typeof item == 'undefined' ) {
-				var folder = $project.path;
-			} else {
-				var folder = item.path;
-			}
-			
-			fs.ensureDir( path_.join( folder, newFolderName) );
-		}}));
-		ctxmenu.append(new gui.MenuItem({ label: 'New File', click: function(){
-		
-			var newFileName = 'Untitled File';
-			
-			if( typeof item == 'undefined' ) {
-				var folder = $project.path;
-			} else {
-				
-				if( fs.statSync( item.path ).isFile() ) {
-					var folder = path_.dirname( item.path );
-				} else {
-					var folder = item.path;
-				}
-			}
-			
-			var newFilePath = path_.join( folder, newFileName);
-									
-			fs.ensureFile( newFilePath );
-			factory.renaming = newFilePath;
-			// TODO: focus rename element
-			
-		} }));
-		
-		// Popup as context menu
-		ctxmenu.popup( event.clientX, event.clientY );
-	}
-
-	// factory.getFiletree = function(){
-	// 	console.log('loaded this project ready');
-	   	
-	// 	// filetree
-	// 	// watch for changes
-	// 	var watch = watchTree($project.path, function (event) {
-	// 		return factory.update();
-	// 	});
-	
-	// 	// initial scan
-	// 	return factory.update();
-	// }
-	
- //    $rootScope.$on('service.project.ready', function(){
-
- //    	console.log('loaded this project ready');
-	   	
-	// 	// filetree
-	// 	// watch for changes
-	// 	var watch = watchTree($project.path, function (event) {
-	// 		factory.filetree = factory.update();
-	// 	});
-	
-	// 	// initial scan
-	// 	factory.filetree = factory.update();
-		
-	// });
-
-    return factory;
-    
-}]);
-
-// Duplicate file or folder, but create `filename copy[ n]`
-// when a duplicate already exists.
-// This was fun to do :)
-function newPath( file_path, index ) {
-    index = index || false;
-
-    var filename = path_.basename( file_path );
-    var folder = path_.dirname( file_path );
-
-    if( fs.statSync( file_path ).isFile() ) {
-        var ext = path_.extname( filename );
-        var base = path_.basename( filename, ext );
-
-        if( index ) {
-            var new_filename = base + ' copy ' + index.toString() + ext;
-        }
-        else {
-            var new_filename = base + ' copy' + ext;
-        }
-
-    }
-    else {
-        var new_filename = filename + ' copy'
-        if( index ) new_filename += ' ' + index.toString();
-    }
-
-    var new_path = path_.join( folder, new_filename );
-    return new_path;
-}
-
-// read a dir's contents recursively
-function readdirSyncRecursive( dir, root ) {
-    root = root || false;
-    var result = [];
-    var contents = fs.readdirSync( dir );
-
-    contents.forEach(function(item) {
-        var item_path = path_.join(dir, item);
-        var item_stats = fs.lstatSync( item_path );
-
-        if( item_stats.isDirectory() ) {
-            result.push({
-                name: item,
-                path: path_.join(dir, item),
-                type: 'folder',
-                stats: item_stats,
-                children: readdirSyncRecursive( item_path )
-            });
-
-        }
-        else {
-            result.push({
-                name: item,
-                path: path_.join(dir, item),
-                type: 'file',
-                stats: item_stats,
-                ext: path_.extname(item).replace(".", ""),
-            });
-        }
-    });
-
-    if( root ) {
-        return [{
-            type: 'folder',
-            name: path_.basename( dir ),
-            path: dir,
-            children: result,
-            stats: fs.lstatSync( dir )
-        }];
-    }
-    else {
-        return result;
-    }
-};
 angular.module('sdk.stoplight', [])
     .factory('$stoplight', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {   
 	var factory = {};
@@ -33390,71 +34123,41 @@ angular.module('sdk.stoplight', [])
 
     return factory;
 }]);;
-angular.module('service.windowEventsFactory', [])
-	.factory('windowEventsFactory', [function () {
-
-	var result = {};
-	var queue = {};
-
-	result.addToQueue = function( event, callback ){
-		if( !Array.isArray(queue[ event ]) ) queue[ event ] = [];
-		queue[ event ].push( callback );
-	}
-
-	result.runQueue = function( event ) {
-		queue[ event ].forEach(function(callback){
-			callback.call();
-		});
-	}
-
-	return result;
-
-}]);;
-// require('nw.gui').Window.get().showDevTools();
-
-// local dirname
-// var dirname = require('path').join( require('./js/util.js').dirname, '..' );
-
-// prevent default behavior from changing page on dropped file
 window.ondragover = function(e) { e.preventDefault(); return false };
 window.ondrop = function(e) { e.preventDefault(); return false };
 
 var app = angular.module('app', ['module.core', 'module.modules']);
 var modules = ['ng'];
-
 var angularModules = [];
 
 angular.element(document).ready(function() {
     require('nw.gui').Window.get().showDevTools();
-
     setTimeout(function()
     { 
         modules.push('app');
         angular.bootstrap(document, modules);
     }, 200);
-
-    
 });
 
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {
-	$sceDelegateProvider.resourceUrlWhitelist(window.AUTH.whitelist);
+	$sceDelegateProvider.resourceUrlWhitelist(window.CONFIG.whitelist);
+});
+
+app.config(function (localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('sdk');
 });
 
 app.config(function ($controllerProvider) {
-    // app.controller = $controllerProvider.register;
-
-    app.controller = function (name, constructor)
-    {
+    app.controller = function (name, constructor) {
         $controllerProvider.register(name, constructor);
         return (this);
     }
 });
 
-
 // add Bearer token to $http requests
 app.run(['$rootScope', '$injector', function($rootScope, $injector) {
-
     $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
         if ($rootScope.user) {
         	headersGetter()['Authorization'] = "Bearer " + window.localStorage.access_token;
@@ -33467,33 +34170,11 @@ app.run(['$rootScope', '$injector', function($rootScope, $injector) {
 
 // run all angular defined modules
 app.run(['$rootScope', '$timeout', '$templateCache', '$module', function($rootScope, $timeout, $templateCache, $module) {
-    // console.log(angularModules, angularModules.size());
-
     $rootScope.modules = {};
-
-    // console.log('rootscope');
-
-    // $timeout(function() {
-        console.log(angularModules);
-        for(i in angularModules) {
-            // angularModules[i];
-            var result = angularModules[i];
-
-            $module.load(result.module, result.type, result.dir);
-
-            // $templateCache.put(result.html_path, result.data);
-
-            // $rootScope.modules[result.type] = $rootScope.modules[result.type] || {};
-            // $rootScope.modules[result.type][result.module] = result.html_path;
-            console.log('function', result.module, result.type, result.dir);
-        }
-    // }, 200);
-
-    
-    // angularModules.forEach(function(callback) {
-    //     console.log('something loaded', callback);
-    //     callback();
-    // });
+    for(i in angularModules) {
+        var result = angularModules[i];
+        $module.load(result.module, result.type, result.dir);
+    }
 }]);
 
 if(typeof angular !== 'undefined' && window.DEBUG) {
@@ -33505,14 +34186,23 @@ var path		= require('path');
 
 var events 		= {};
 
-
-var ApplicationController = function($scope, $timeout, $project, $auth, $stoplight, $sidebar, $file, $events, windowEventsFactory, $templateCache)
+var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, $templateCache, ngDialog, $http)
 {
-	var gui 		= require('nw.gui');
-	var win 		= gui.Window.get();
+	var gui = require('nw.gui');
+	var win = gui.Window.get();
+
+	var hook = Hook('global');
 
 	$scope.loaded = false;
 	$scope.platform = os.platform();
+
+	if(window.localStorage.sdk_settings) {
+		$scope.settings = JSON.parse(window.localStorage.sdk_settings);
+	}
+	else {
+		$scope.settings = {};
+		$scope.settings.theme = 'dark';
+	}
 
 	$scope.focus = true;
 	$scope.blurred = false;
@@ -33523,6 +34213,31 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 
 	$scope.files = {}; // files open
 	$scope.fileHistory = [];
+	$scope.path = false; // current project path
+
+	$scope.themes = [
+		{ name: "Dark Theme", id: "dark" }, 
+		{ name: "Light Theme", id: "light" }
+	];
+
+	var obj = {content:null};
+
+    $http.get('./package.json').success(function(data) {
+        $scope.settings.package = data;
+    });  
+
+	$scope.$watch('settings', function(newVal, oldVal){
+	    window.localStorage.sdk_settings = JSON.stringify($scope.settings);
+
+	    // hook.call('onSettingsChange', $scope.settings);
+	}, true);
+
+	$scope.toggleSettings = function() {
+		ngDialog.open({ 
+			template: 'SDKSettings',
+			scope: $scope
+		});
+	};
 
 	$scope.setBlur = function(blur)
 	{
@@ -33545,6 +34260,14 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 		$scope.setBlur(false);
 		$scope.setPopup('', false);
 		$scope.user.status = 'logged-out';
+	}
+
+	$scope.newFile = function() {
+		$rootScope.$emit('service.project.new.file');
+	}
+
+	$scope.newFolder = function() {
+		$rootScope.$emit('service.project.new.folder');
 	}
 
 	$scope.stoplight = $stoplight;
@@ -33579,37 +34302,11 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	{
     	$file.icon(file_path);
     }
-
-	win.on('close', function()
+    
+	window.addEventListener('load', function()
 	{
-		// hide ourselves first
-		$scope.$apply(function() {
-			$scope.loaded = false;
-		});
-
-		// fire all callbacks
-		windowEventsFactory.runQueue('close');
-
-		// close for real
-		this.close(true);
-	});
-
-	// window.addEventListener('load', function()
-	// {
 		$scope.loaded = true;
-
-		// load previous project, if available
-		if( typeof window.localStorage.project_dir == 'string' )
-		{
-			$scope.filetree = $project.load( window.localStorage.project_dir );
-
-			var watch = watchTree(window.localStorage.project_dir, function (event) {
-
-				$scope.filetree = $project.load( window.localStorage.project_dir );
-				// return factory.update(project_dir);
-			});
-		}
-	// });
+	});
 
     /* TODO: Merge this somehow, make it more elegeant*/
 
@@ -33642,7 +34339,7 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	var osxMenuBar = new gui.Menu({
 		type: "menubar"
 	});
-	osxMenuBar.createMacBuiltin("Homey Devkit", {
+	osxMenuBar.createMacBuiltin("Devkit", {
 		hideWindow: true
 	});
 
@@ -33651,7 +34348,9 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Preferences...',
 		click: function() {
-			alert('preferences');
+			$scope.$apply(function() {
+				$scope.toggleSettings();
+			});
 		},
 		key: ',',
 		modifiers: 'cmd'
@@ -33663,7 +34362,7 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Check for updates...',
 		click: function() {
-			alert('Update');
+			alert('this feature will come soon...');
 		}
 	}), 1);
 
@@ -33678,16 +34377,25 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	newSubmenu.append(new gui.MenuItem({
 		label: 'File',
 		click: function() {
-			project.create();
+			$scope.newFile();
 		},
 		key: 'n',
 		modifiers: 'cmd'
+	}));
+	
+	newSubmenu.append(new gui.MenuItem({
+		label: 'Folder',
+		click: function() {
+			$scope.newFolder();
+		},
+		key: 'n',
+		modifiers: 'cmd+alt'
 	}));
 
 	newSubmenu.append(new gui.MenuItem({
 		label: 'Project...',
 		click: function() {
-			project.create();
+			$rootScope.$emit('service.project.create');
 		},
 		key: 'n',
 		modifiers: 'cmd+shift'
@@ -33703,11 +34411,7 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	file.insert(new gui.MenuItem({
 		label: 'Open Project',
 		click: function() {
-			$project.select();
-
-			$scope.$apply(function () {
-	            $scope.filetree = $project.load(window.localStorage.project_dir);
-	        });
+			$rootScope.$emit('service.project.open');
 		},
 		key: 'o',
 		modifiers: 'cmd'
@@ -33720,7 +34424,7 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	file.insert(new gui.MenuItem({
 		label: 'Close tab',
 		click: function() {
-			$file.close();
+			$rootScope.$emit('service.file.close');
 		},
 		key: 'w',
 		modifiers: 'cmd'
@@ -33733,8 +34437,8 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	file.insert(new gui.MenuItem({
 		label: 'Save',
 		click: function() {
-			$scope.file.save();
-			// $rootScope.$emit('editor.saveRequest'); /*where is this called?*/
+    		$file.save();
+    		$rootScope.$emit('service.file.save');
 		},
 		key: 's',
 		modifiers: 'cmd'
@@ -33743,7 +34447,7 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	file.insert(new gui.MenuItem({
 		label: 'Save All',
 		click: function() {
-			$rootScope.$emit('editor.saveall'); /* again, where is this called*/
+    		$rootScope.$emit('service.file.saveall');
 		},
 		key: 's',
 		modifiers: 'cmd+shift'
@@ -33761,29 +34465,11 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 	project.insert(new gui.MenuItem({
 		label: 'Run',
 		click: function(){
-			$rootScope.$emit('homey.run');
+			$rootScope.$emit('project.run');
 		},
 		key: 'r',
 		modifiers: 'cmd'
 	}), 0);
-
-	project.insert(new gui.MenuItem({
-		label: 'Run and Break',
-		click: function(){
-			// $rootScope.$emit('homey.runbrk');
-		},
-		key: 'r',
-		modifiers: 'cmd+shift'
-	}), 1);
-
-	project.insert(new gui.MenuItem({
-		label: 'REFRESH',
-		click: function(){
-			window.location.reload( true );
-		},
-		key: '§',
-		modifiers: 'cmd'
-	}),2);
 
 	win.menu.insert(new gui.MenuItem({
 		label: 'Project',
@@ -33811,14 +34497,16 @@ var ApplicationController = function($scope, $timeout, $project, $auth, $stoplig
 
 }
 
-ApplicationController.$inject = ['$scope', '$timeout', '$project', '$auth', '$stoplight', '$sidebar', '$file', '$events', 'windowEventsFactory', '$templateCache'];
+ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', '$templateCache', 'ngDialog', '$http'];
 
 app.controller("ApplicationController", ApplicationController);
 ;
-var EditorController = function($rootScope, $scope, $file, windowEventsFactory, $rootScope)
+var EditorController = function($rootScope, $scope, $file, $rootScope)
 {
-	// add close command to queue (why?)
-    windowEventsFactory.addToQueue('close', function() {
+	var win = gui.Window.get();
+
+	win.on('close', function() {
+		this.hide(); // Pretend to be closed already
 		window.localStorage.files_open = '';
 
 		var files_open = [];
@@ -33828,7 +34516,21 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 		}
 
 		window.localStorage.files_open = files_open.join(',');
-    });
+
+		this.close(true);
+	});
+
+
+	$scope.init = function() {
+		if(window.localStorage.files_open) {
+			var files_open = window.localStorage.files_open.split(',');
+			for( var file_path in files_open) {
+				$file.open(files_open[file_path]);
+			}
+		}
+	}
+
+	$scope.init();
 
 	// open file
     $scope.open = function(file_path) {
@@ -33851,7 +34553,6 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 	$scope.update = function(){
 		$scope.files = $file.files;
 		$scope.active = $file.active;
-		$scope.$apply();
 	}
 	
 	$rootScope.$on('service.file.open', function(){
@@ -33863,71 +34564,466 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 	});
 }
 
-EditorController.$inject = ['$rootScope', '$scope', '$file', 'windowEventsFactory', '$rootScope'];
+EditorController.$inject = ['$rootScope', '$scope', '$file', '$rootScope'];
 
 app.controller("EditorController", EditorController);;
-var SidebarController = function($scope, $rootScope, $sidebar, $timeout)
-{
+var gui			= require('nw.gui');
+var path		= require('path'); // auch
 
-	$scope.select = function(path, event)
-	{
-		$sidebar.select(path, event);
-	}
+var open		= require("open");
+var fs_extra	= require('fs-extra')
+var trash		= require('trash');
+var watchTree 	= require("fs-watch-tree").watchTree;
 
-	$scope.isSelected = function(path)
-	{
-		return $sidebar.isSelected(path);
+var SidebarController = function($scope, $rootScope, $file, $timeout) {
+	
+	$scope.selected = [];
+	$scope.renaming = false;
+	$scope.expanded = [];
+	$scope.filetree = {};
+	
+	$scope.init = function() {
+		// load previous project, if available
+		if(typeof window.localStorage.project_dir == 'string') {
+			$scope.loadProject(window.localStorage.project_dir);
+		}
 	}
 	
-	$scope.expand = function(path, expanded)
-	{
-		$sidebar.expand(path, expanded);
-	}
-
-	$scope.isExpanded = function(path)
-	{
-		return $sidebar.isExpanded(path);
-	}
-
-	$scope.rename = function( item )
-	{
-		$sidebar.rename( item );
+	/*
+	 * select a directory to create a new project in
+	 */
+	$scope.createProject = function() {
+    	var directorychooser = document.getElementById('directorychooser');
+        directorychooser.addEventListener("change", function(evt) {
+            var val = this.value;
+            $rootScope.$emit('service.project.createInDirectory', val);
+            $scope.loadProject(this.value);
+        }, false)
+        directorychooser.click();
 	}
 	
-	$scope.isRenaming = function( path )
-	{
-		return $sidebar.isRenaming( path );
-	}
-
-	$scope.open = function( path )
-	{
-		$sidebar.open( path );
-	}
-
-	// $scope.update = function()
-	// {
-	// 	$scope.filetree = $sidebar.filetree;
-	// 	$scope.$apply()
-	// }
-
-	$scope.dropped = function( event, file, dropped_path )
-	{		
-		$sidebar.dropped(event, file, dropped_path);
-	}
-
-	$scope.showCtxMenu = function( item, event ){
-		$sidebar.showCtxMenu( item, event );
+	/*
+	 * select a project directory
+	 */
+	$scope.selectProject = function() {
+        var directorychooser = document.getElementById('directorychooser');
+        directorychooser.addEventListener("change", function(evt) {
+            $scope.loadProject(this.value);
+        }, false)
+        directorychooser.click();
 	}
 	
-	// $rootScope.$on('service.sidebar.tree.update', function(){
+	/*
+	 * load a project
+	 */
+	$scope.loadProject = function(rootPath) {
+		window.localStorage.project_dir = rootPath;
+        $scope.$parent.path = rootPath;
+        
+        // filetree
+		// watch for changes
+		watchTree($scope.$parent.path, function (event) { // $parent is ApplicationController
+			$scope.$apply(function() {
+				$scope.update();
+			});
+		});
+
+		$scope.$parent.files = {};
+	
+		// initial scan
+		$scope.update();
+        $rootScope.$emit('service.project.ready');
+	}
+
+	/*
+	 * select filepath
+	 */
+	$scope.select = function(filePath, event) {
 		
-	// 	$scope.update();
-	// });
+		// multiple selection
+        if( event.metaKey || event.ctrlKey ) {
+            if( $scope.selected.indexOf(filePath) > -1 ) {
+                $scope.selected = $scope.selected.filter(function(path) {
+                    return path != filePath;
+                });
+            }
+            else {
+                $scope.selected.push(filePath);
+            }
+        }
+        else {
+            $scope.selected = [filePath];
+        }
+	}
+
+	/*
+	 * check if given filePath is currently selected
+	 */
+	$scope.isSelected = function(filePath) {
+		return $scope.selected.indexOf(filePath) > -1;
+	}
+	
+	/*
+	 * expand filePath
+	 */
+	$scope.expand = function(filePath, expanded) {
+		if( expanded ) {
+        	$scope.expanded.push(filePath);	    
+		} 
+		else {
+			var index = $scope.expanded.indexOf(filePath);	
+			$scope.expanded.splice(index, 1);	
+		}
+	}
+	
+	$scope.newFile = function() {
+		var newFileName = 'Untitled File';
+			
+		if(typeof item == 'undefined') {
+			var folder = $scope.$parent.path; // $parent is ApplicationController
+		}
+		else {
+			if( fs_extra.statSync( item.path ).isFile() ) {
+				var folder = path.dirname( item.path );
+			} else {
+				var folder = item.path;
+			}
+		}
+		
+		var newFilePath = path.join( folder, newFileName);
+			
+		fs_extra.ensureFile( newFilePath, function (err) {
+			console.log(err);
+
+			$scope.$apply(function() {
+				$scope.init();
+				$scope.renaming = newFilePath;
+			});
+		});
+		
+		// TODO: focus rename element
+	}
+	
+	$scope.newFolder = function() {
+		var newFolderName = 'Untitled Folder';			
+			
+		if(typeof item == 'undefined') {
+			var folder = $scope.$parent.path; // $parent is ApplicationController
+		}
+		else {
+			var folder = item.path;
+		}
+		
+		fs_extra.ensureDir( path.join( folder, newFolderName) , function (err) {
+			console.log(err);
+
+			$scope.$apply(function() {
+				$scope.init();
+			});
+		});
+	}
+
+	/*
+	 * check if filePath is extended in sidebar
+	 */
+	$scope.isExpanded = function(filePath) {
+		return $scope.expanded.indexOf(filePath) > -1;
+	}
+	
+	/*
+	 * rename a file
+	 */
+	$scope.rename = function(item) {
+		var newName = item.name;
+        var itemFolder = path.dirname(item.path);
+        var newPath = path.join(itemFolder, newName);
+        
+        if(fs_extra.existsSync(newPath) && item.path != newPath) {
+	       return alert("That filename already exists!");
+        }
+
+        fs_extra.rename(item.path, newPath, function() {
+	        $scope.update();
+        });
+        
+        $scope.renaming = false;
+	}
+	
+	/*
+	 * check if given filePath is currently being renamed
+	 */
+	$scope.isRenaming = function(filePath) {
+		return $scope.renaming === filePath;
+	}
+
+	/*
+	 * open a file (or directory)
+	 */
+	$scope.open = function(filePath) {
+		if(fs_extra.lstatSync(filePath).isDirectory()) {
+            $scope.expanded.push(path);
+        }
+        else {
+            $file.open(filePath);
+        }
+	}
+
+	/*
+	 * Update scope
+	 */
+	$scope.update = function() {
+		$scope.filetree = readdirSyncRecursive( $scope.$parent.path, true ); // $parent is ApplicationController
+	}
+	
+	/*
+	 * On drop event
+	 */
+	$scope.dropped = function(event, file, dropped_path) {
+		dropped_path = dropped_path || $scope.$parent.path;  // $parent is ApplicationController
+	    
+        var fileName = path.basename(file.path);
+
+        // if dropped on a file, get the file's parent folder
+        if(fs_extra.lstatSync(dropped_path).isFile()) {
+            var new_path = path.dirname(dropped_path);
+        }
+        else {
+            var new_path = path.join(dropped_path, fileName);
+        }
+
+        // prevent overwriting
+        if(fs_extra.existsSync(new_path)) {
+            if( !confirm('Overwrite `' + fileName + '`?') ) return; // ask user to confirm file overwrite
+        }
+
+        fs_extra.copy(file.path, new_path, {}, function(err) {
+	        console.log(err); // an error occured when copying file, let us know in console
+        });
+	};
+	
+	/*
+	 * Show a custom context menu for the sidebar (aka the right mouse button menu)
+	 * TODO: create a nicer global method to construct menus
+	 */
+	$scope.showCtxMenu = function(item, event) {
+		// Create an empty menu
+		var ctxmenu = new gui.Menu();
+		
+		// Add some items
+		if( item ) {
+			// multiple selection
+			if( $scope.isSelected(item.path) ) {
+				if( event.metaKey || event.ctrlKey ) {
+					$scope.selected.push( item.path );
+				} else {
+					$scope.selected = [ item.path ];
+				}
+			}
+			
+			ctxmenu.append(new gui.MenuItem({ label: 'Open', click: function(){
+				$scope.selected.forEach(function( item_path ){
+					$file.open( item_path );					
+				});				
+			}}));
+			
+			ctxmenu.append(new gui.MenuItem({ label: 'Open With Default Editor', click: function(){
+				$scope.selected.forEach(function( item_path ){
+					open( item_path );
+				});
+			}}));
+			
+			ctxmenu.append(new gui.MenuItem({ label: 'Open File Location', click: function(){
+				$scope.selected.forEach(function( item_path ){
+					open(path.dirname(item_path));
+				});
+			}}));
+			
+			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
+			
+			ctxmenu.append(new gui.MenuItem({ label: 'Move to Trash...', click: function(){
+				if( $scope.selected.length > 1 ) {
+					if( confirm( "Are you sure you want to remove " + $scope.selected.length + " items to the trash?" ) ) {
+						$scope.selected.forEach(function( item_path ){
+							$file.close(item_path);
+
+							trash([ item_path ]);
+						});
+					}				
+				}
+				else {
+					if( confirm( "Are you sure you want to remove `" + item.name + "` to the trash?" ) ) {
+						$file.close(item.path);
+
+						trash([ item.path ]);
+					}
+				}
+
+				$scope.$apply(function() {
+					$scope.init();
+				});
+			}}));
+			
+			// single file options
+			if( $scope.selected.length == 1 ) {
+				ctxmenu.append(new gui.MenuItem({ label: 'Rename...', click: function(){
+					$scope.$apply(function() {
+						$scope.renaming = item.path;
+					});
+				}}));
+			}
+			
+			ctxmenu.append(new gui.MenuItem({ label: 'Duplicate', click: function(){
+				$scope.selected.forEach(function( item_path ){
+					var new_path = newPath( item_path );
+					
+					var i = 2;
+					while( fs_extra.existsSync( new_path ) ) {
+						new_path = newPath( item_path, i++ );
+					}
+
+					$scope.$apply(function() {
+						fs_extra.copySync( item_path, new_path );
+					});
+									
+				});
+				
+			}}));
+			
+			ctxmenu.append(new gui.MenuItem({ type: 'separator' }));
+		}
+		
+		// always visible options
+		ctxmenu.append(new gui.MenuItem({ label: 'New Folder', click: function() {		
+			$scope.newFolder();
+		}}));
+		
+		// new file menu item
+		ctxmenu.append(new gui.MenuItem({ label: 'New File', click: function(){
+			$scope.newFile();
+		} }));
+		
+		// Popup as context menu
+		ctxmenu.popup( event.clientX, event.clientY );
+	}
+	
+	/*
+	 * Listen to open new project event
+	 */
+	$rootScope.$on('service.project.create', function() {
+		$scope.createProject();
+	});
+	
+	/*
+	 * Listen to open new project event
+	 */
+	$rootScope.$on('service.project.open', function() {
+		$scope.selectProject();
+	});
+	
+	/*
+	 * Listen to new file event
+	 */
+	$rootScope.$on('service.project.new.file', function() {
+		$scope.newFile();
+	});
+	
+	/*
+	 * Listen to new folder event
+	 */
+	$rootScope.$on('service.project.new.folder', function() {
+		$scope.newFolder();
+	});
+
+	/*
+	 * Listen to sidebar tree update event
+	 */
+	$rootScope.$on('service.sidebar.tree.update', function(){
+		$scope.update();
+	});
 }
 
-SidebarController.$inject = ['$scope', '$rootScope', '$sidebar', '$timeout'];
+SidebarController.$inject = ['$scope', '$rootScope', '$file', '$timeout'];
 
-app.controller("SidebarController", SidebarController);;
+app.controller("SidebarController", SidebarController);
+
+/*
+ * Duplicate file or folder, but create `filename copy[n]`
+ * when a duplicate already exists.
+ * This was fun to do :)
+ */
+function newPath( file_path, index ) {
+    index = index || false;
+
+    var filename = path.basename( file_path );
+    var folder = path.dirname( file_path );
+
+    if( fs_extra.statSync( file_path ).isFile() ) {
+        var ext = path.extname( filename );
+        var base = path.basename( filename, ext );
+
+        if( index ) {
+            var new_filename = base + ' copy ' + index.toString() + ext;
+        }
+        else {
+            var new_filename = base + ' copy' + ext;
+        }
+
+    }
+    else {
+        var new_filename = filename + ' copy'
+        if( index ) new_filename += ' ' + index.toString();
+    }
+
+    var new_path = path.join( folder, new_filename );
+    return new_path;
+}
+
+/*
+ * Read a dir's contents recursively
+ */
+function readdirSyncRecursive( dir, root ) {
+    root = root || false;
+    var result = [];
+    var contents = fs_extra.readdirSync( dir );
+
+    contents.forEach(function(item) {
+        var item_path = path.join(dir, item);
+        var item_stats = fs_extra.lstatSync( item_path );
+
+        if( item_stats.isDirectory() ) {
+            result.push({
+                name: item,
+                path: path.join(dir, item),
+                type: 'folder',
+                stats: item_stats,
+                children: readdirSyncRecursive( item_path )
+            });
+
+        }
+        else {
+            result.push({
+                name: item,
+                path: path.join(dir, item),
+                type: 'file',
+                stats: item_stats,
+                ext: path.extname(item).replace(".", ""),
+            });
+        }
+    });
+
+    if( root ) {
+        return [{
+            type: 'folder',
+            name: path.basename( dir ),
+            path: dir,
+            children: result,
+            stats: fs_extra.lstatSync( dir )
+        }];
+    }
+    else {
+        return result;
+    }
+};
 var WidgetController = function($scope, $rootScope)
 {
 	$scope.getWidgetPath = function( name ) {
@@ -33983,6 +35079,18 @@ app.directive('fileDrop', function ( $parse ) {
 			});
 		});
 	};
+});
+
+app.directive('showFocus', function($timeout) {
+  return function(scope, element, attrs) {
+    scope.$watch(attrs.showFocus, 
+      function (newValue) { 
+        $timeout(function() {
+            newValue && element[0].focus();
+            element[0].select();
+        });
+      },true);
+  };    
 });;
 /*
  * Use this area to load your modules. Some module have been pre-loaded for you like codemirror, some widgets and custom icons
@@ -33997,24 +35105,25 @@ loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
 loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 
 // headers
-// nope..
+loadModule('header_title',	'header',	'./core/components/headers/devkit-example-header-title/');
 
 // themes
-// nope..
+loadModule('theme_dark',	'theme',	'./core/components/themes/theme_dark/');
+loadModule('theme_light',	'theme',	'./core/components/themes/theme_light/');
+
+loadModule('custom_icons',	'theme',	'./core/components/themes/custom_icons/');
+
 
 // APP
 // editors
-loadModule('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
 
 // headers
-loadModule('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
-loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-title/');
 
 // widgets
-// nope..
 
 // themes
-loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+
+
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools
@@ -34037,294 +35146,6 @@ app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file
 			config: {
 				widgets: [ 'markdown' ]
 			}
-		},
-		{
-			ext: ".json",
-			config: {
-				editor: "manifest"
-			}
 		}
 	]);
-}]);;
-var fs 		= require('fs-extra');
-var path 	= require('path');
-
-app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $events ){
-	console.log('manifest path', $scope.file.path);
-	$scope.manifest = angular.fromJson( $scope.file.code );
-	//$rootScope.project.metadata = $scope.manifest;
-	$scope.file._changed = false;
-
-	var code;
-	//$scope.iconUrlTemplate = $rootScope.project.path + '/assets/icon.svg';
-
-	//$scope.languages = $rootScope.languages;
-	$scope.activeLanguage = 'en';
-
-	$scope.iconUrl = $scope.iconUrlTemplate + '?r=' + Math.random();
-
-	$scope.$watch('manifest', function(){
-		$scope.file._changed = true;
-	}, true);
-
-	// $events.beforeSave($scope.file.path, function() {
-	// 	// var manifest = angular.copy( $scope.manifest );
-
-	// 	// console.log('manifest data', $scope.manifest);
-
-	// 	return {
-	// 		code: angular.toJson( $scope.manifest, true )
-	// 	}
-	// });
-
-	$events.beforeSave($scope.file.path, function(cb) {
-		cb({
-			code: angular.toJson( $scope.manifest, true )
-		});
-	})
-
-  //   $rootScope.$on('editor.saveRequest.' + $scope.file.path, function(){
-
-  //   	console.log('save request');
-
-	 //    var manifest = angular.copy( $scope.manifest );
-
-		// manifest.permissions = manifest.permissions.filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
-
-		// manifest.interfaces.speech.triggers.forEach(function( trigger ){
-		// 	for( var synonym_lang in trigger.synonyms ) {
-		// 		var synonyms = trigger.synonyms[synonym_lang].filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
-		// 		if( synonyms.length > 0 ) {
-		// 			trigger.synonyms[synonym_lang] = synonyms;
-		// 		} else {
-		// 			delete trigger.synonyms[synonym_lang];
-		// 		}
-		// 	}
-		// });
-
-		// $scope.file.code = angular.toJson( manifest, true );
-		// $rootScope.$emit('editor.performSave');
-  //   });
-
-    $scope.received = function( event, file ) {
-
-	    if( file.type != 'image/svg+xml' ) {
-		    alert('Only svg files are allowed for your app icon');
-		    return;
-	    }
-
-	    var assets_path = path.join( $rootScope.project.path, 'assets' );
-	    var icon_path 	= path.join( assets_path, 'icon.svg' );
-
-		if( fs.existsSync( icon_path ) ) {
-			if( ! confirm("Overwrite existing icon?") ) {
-				return;
-			}
-		}
-
-		fs.ensureDirSync( assets_path );
-
-		fs.copy( file.path, icon_path, {}, function( err  ){
-			if (err) return console.error(err)
-
-			$scope.iconUrl = $scope.iconUrlTemplate + '?r=' + Math.random();
-		});
-
-    }
-
-});;
-var AuthController = function($scope, $auth)
-{
-
-	/*
-	// listen for a message from the iframe
-	window.addEventListener('message', function(e)
-	{
-		$scope.$apply(function(){
-
-			// save tokens to localStorage
-			window.localStorage.access_token = e.data.accessToken;
-			window.localStorage.refresh_token = e.data.refreshToken;
-
-			$scope.setBlur(false);
-			$scope.setPopup('', false);
-
-			$auth.getUserInfo().then(function(result) 
-			{
-				$scope.user = result.data;
-			});
-		});
-	});
-
-	if(	typeof $scope.user == 'undefined' ) {
-		$scope.user = {};
-
-		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' )
-		{
-			$scope.user.status = 'logged-out';
-			$scope.user.statusMessage = 'Log in';
-		}
-		else
-		{
-			$auth.getUserInfo().then(function(result) 
-			{
-				$scope.user = result.data;
-			});	
-		}
-	}
-
-	$scope.login = function()
-	{
-		$scope.setPopup(window.PATH.auth.loginUrl, true);
-
-		$scope.user = $auth.login();
-	}
-
-	$scope.logout  = function()
-	{
-		$scope.user = $auth.logout();
-	}
-	*/
-}
-
-AuthController.$inject = ['$scope', '$auth'];
-
-app.controller("AuthController", AuthController);;
-// app.factory('$auth', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
-// 	var factory = {};
-
-//    factory.login = function() {
-//    		var user = {};
-// 		user.status = 'logging-in';
-
-// 		$timeout(function() {
-// 			$rootScope.$emit('devkit.blur', true);
-// 		}, 1);
-
-// 		return user;
-
-// 	}
-
-// 	factory.logout = function() {
-// 		var user = {};
-// 		user.status = 'logged-out';
-// 		user.statusMessage = 'Log in';
-
-// 		delete window.localStorage.access_token;
-// 		delete window.localStorage.refresh_token;
-
-// 		return user;
-// 	}
-
-// 	factory.getUserInfo = function() {
-// 		var promise = $http({
-// 			method: 'GET',
-// 	        url:  window.PATH.auth.userInfo,
-// 	        headers: {
-// 	          'Authorization': 'Bearer ' + window.localStorage.access_token
-// 	        },
-// 	        withCredentials: true
-// 	    })
-// 	    .success(function(data){
-// 	        user = data;
-// 			user.status = 'logged-in';
-
-// 			return user;
-// 	    })
-// 	    .error(function(){
-// 	        user.status = 'logged-out';
-// 			user.statusMessage = 'Error logging in!';
-
-// 			return user;
-// 	    });
-
-// 	    return promise;
-// 	}
-
-//     return factory;
-// }]);;
-var PlayController = function($scope, $rootScope)
-{
-
-	$scope.status = {};
-	$scope.shouldBeEnabled = false;
-
-	$scope.playstop = function() 
-	{
-		console.log('playstop');
-		$rootScope.$emit('play.playstop', $scope.status);
-	};
-
-	$rootScope.$on('play.enable', function() 
-	{
-		$scope.shouldBeEnabled = true;
-	});
-
-	$rootScope.$on('play.disable', function() 
-	{
-		$scope.shouldBeEnabled = false;
-	});
-
-	$rootScope.$on('play.status', function(e, status) 
-	{
-		console.log(status);
-		$scope.status = status;
-	});
-}
-
-PlayController.$inject = ['$scope', '$rootScope'];
-
-app.controller("PlayController", PlayController);;
-angular.module('sdk.play', []).factory('$play', ['$rootScope', function ($rootScope) {
-	var factory = {};
-
-	factory.playstop = function(status) {
-		$rootScope.$emit('play.playstop', status);
-	};
-
-	factory.status = function(status) {
-		$rootScope.$emit('play.status', status);
-	};
-
-	factory.enable = function() {
-		$rootScope.$emit('play.enable');
-	};
-
-	factory.disable = function() {
-		$rootScope.$emit('play.disable');
-	};
-
-    return factory;
-}]);;
-var TitleController = function($scope, $auth)
-{
-	$scope.name = 'foo';
-	$scope.bar = 'nl.athom.hello';
-}
-
-TitleController.$inject = ['$scope'];
-
-app.controller("TitleController", TitleController);;
-
-window.LANG = window.LANG  || [
-	{
-		code: 'en',
-		name: 'English'
-	},
-	{
-		code: 'nl',
-		name: 'Dutch'
-	},
-	{
-		code: 'fr',
-		name: 'French'
-	},
-	{
-		code: 'de',
-		name: 'German'
-	},
-	{
-		code: 'es',
-		name: 'Spanish'
-	}
-];
+}]);
