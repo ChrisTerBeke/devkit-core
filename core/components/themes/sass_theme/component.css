@@ -1,0 +1,34 @@
+body {
+  background: #417C9D;
+  color: #fff;
+  background-image: linear-gradient(to bottom, #1B5A80, #639BB8);
+  background-repeat: repeat;
+  background-position: 0 0;
+  background-size: cover; }
+
+#filetree li .label .name,
+#filetree li .label .name-renaming {
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
+
+#filetree li .label .icon {
+  background: #fff; }
+
+#filetree li .label .expand:before {
+  border-left-color: #fff; }
+
+tabs {
+  border-bottom: #3a6e8b; }
+  tabs tab {
+    color: #fff;
+    border-right-color: #3a6e8b;
+    background: #174661; }
+    tabs tab:hover, tabs tab.active {
+      color: #fff;
+      background: #093a56; }
+    tabs tab .close {
+      box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5); }
+    tabs tab.changed .close .changed {
+      background: #268BD2; }
+
+/*# sourceMappingURL=component.css.map */
