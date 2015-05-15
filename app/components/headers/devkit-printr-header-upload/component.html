@@ -1,0 +1,20 @@
+<div ng-controller="FormideUploadController">
+	<div class="devkit-printr-header-upload">
+		
+		<a class="btn" ng-click="uploadApp()" title="Publish App">
+			<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/upload.svg)"></span>
+		</a>
+
+		<a class="btn" ng-click="viewApp()" title="Preview App">
+			<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/view.svg)"></span>
+		</a>
+
+		<a class="btn" ng-click="goToAppManager()" title="App Manager">
+			<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/manager.svg)"></span>
+		</a>
+	</div>
+
+	<section class="devkit-printr-header-title">
+		<div>{{manifest.name}} | {{status}} <span class="version" ng-click="openManifest()">{{manifest.version}}</span></div>
+	</section>
+</div>

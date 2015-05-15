@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html ng-controller="ApplicationController">
+<html ng-controller="ApplicationController" ng-class="{'dark-theme': (settings.theme == 'dark'), 'light-theme': (settings.theme == 'light')}">
     <head>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
 
         <!-- Include Resources -->
         <link rel="stylesheet" href="./core/app.css" id="stylesheets" />
+		<!--         <link rel="stylesheet" href="./bower_components/css-base/dist/compiled_formide.css" id="stylesheets" /> --><!-- Gives some styling issues -->
         <script src="./public/assets/javascripts/application.js" id="javascripts"></script>
         
     </head>
@@ -12,7 +13,6 @@
 		class="os-{{platform}}"
 		ng-class="{ 'maximized': maximized, 'loaded': loaded, 'focus': focus }"
 	>
-
 		<wrap
 			ng-class="{ 'blurred': blurred }"
 			ng-click="blurred && closePopup()"
@@ -36,32 +36,6 @@
 						ng-attr-id="header-{{header}}"
 					></section>					
 				</div>
-				
-				<!--
-
-				<div id="chrome-title">
-					<span class="name">{{project.metadata.name.en}}</span>
-					<span class="id">{{project.metadata.id}}</span>
-				</div>
-
-				<div
-					id="play"
-					ng-controller="PlayController"
-					ng-class="{ 'active': status.length > 0, 'enabled': shouldBeEnabled }"
-				>
-					<div id="play-button" ng-click="playstop()"></div>
-
-					<div id="play-status" title="{{status}}">{{status}}</div>
-
-				</div>
-
-
-
-				<div id="user" ng-class="{ 'logging-in': user.status == 'logging-in' }">
-					<div ng-include="'app/views/header/account.html'"></div>
-				</div>
-				
-				-->
 
 			</header>
 
@@ -77,8 +51,8 @@
 					<script type="text/ng-template" id="filetreeTmpl">
 						<span
 							ng-click="!isRenaming(item.path) && select( item.path, $event )"
-							ng-dblclick="!isRenaming(item.path) && open( item.path )"
-							ng-right-click="showCtxMenu(item, $event)"
+							ng-dblclick="!root && !isRenaming(item.path) && open( item.path )"
+							ng-right-click="!root && showCtxMenu(item, $event)"
 							ng-class="{ 'selected': isSelected( item.path ) }"
 							file-drop="dropped( $event, file, item.path )"
 							class="label"
@@ -87,7 +61,7 @@
 							<span class="icon"></span>
 							<span class="name" ng-show="!isRenaming(item.path)">{{item.name}}</span>
 							<form ng-show="isRenaming(item.path)" ng-submit="rename( item )" style="display: inline-block;">
-								<input class="name-renaming" type="text" ng-model="item.name" />
+								<input class="name-renaming" ng-show="isRenaming(item.path)" show-focus="isRenaming(item.path)" type="text" ng-model="item.name" />
 								<input type="submit" style="display: none;" />
 							</form>
 						</span>
@@ -96,7 +70,7 @@
 					        	ng-repeat="item in item.children"
 					        	ng-include="'filetreeTmpl'"
 					        	ng-class="{ 'expanded': isExpanded( item.path ) }"
-					        	ng-init="selected = false; item.expanded = false;"
+					        	ng-init="selected = false; item.expanded = false; root = false"
 					        	class="type-{{item.type}} ext-{{item.ext}}"
 					        ></li>
 					    </ul>
@@ -107,13 +81,20 @@
 							ng-repeat="item in filetree"
 							ng-include="'filetreeTmpl'"
 							ng-class="{ 'expanded': isExpanded( item.path ) }"
-							ng-init="expand( item.path, true )"
+							ng-init="expand( item.path, true ); root = true"
 							class="type-{{item.type}}"
 						></li>
 					</ul>
 					
 					<div id="sidebar-helper">
-						<div class="button button-add" ng-click="ctxmenu.newfile()">+</div>
+
+						<div class="btn btn-add" ng-click="newFile()">
+							<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/newfile.svg)"></span>
+						</div>
+
+						<div class="btn btn-add" ng-click="newFolder()">
+							<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/newfolder.svg)"></span>
+						</div>
 					</div>
 
 				</sidebar>
@@ -193,5 +174,37 @@
 			<input id="directorychooser" type="file" webkitdirectory />
 		</util>
 
+		<script type="text/ng-template" id="SDKSettings">
+			<div class="settings">
+				<section>
+					<hgroup>
+						<h1>{{settings.package.name}}</h1>
+						<h4>{{settings.package.description}}</h4>
+					</hgroup>
+				</section>
+
+				<hr class="rule"/>
+
+				<section>
+					<h4>Author: {{settings.package.author}}</h4>
+
+					<div ng-repeat="contributer in settings.package.contributors">
+						<small>{{contributer.name}} (<a href="mailto:{{contributer.email}}">{{contributer.email}}</a>)</small>
+					</div>
+				</section>
+
+				<hr class="rule"/>
+
+				<section>
+					<h2>Settings</h2>
+
+					<label for="theme">SDK Theme </label>
+					<select name="theme" ng-model="settings.theme" ng-options="theme.id as theme.name for theme in themes">
+			    	</select>
+				</section>
+				
+				
+			</div>
+		</script>
 	</body>
 </html>

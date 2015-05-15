@@ -4,14 +4,24 @@ var path		= require('path');
 
 var events 		= {};
 
-
-var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, windowEventsFactory, $templateCache)
+var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, $templateCache, ngDialog, $http)
 {
-	var gui 		= require('nw.gui');
-	var win 		= gui.Window.get();
+	var gui = require('nw.gui');
+	var win = gui.Window.get();
+
+	var hook = Hook('global');
 
 	$scope.loaded = false;
 	$scope.platform = os.platform();
+
+	if(window.localStorage.sdk_settings) {
+		$scope.settings = JSON.parse(window.localStorage.sdk_settings);
+	}
+	else {
+		$scope.settings = {};
+		$scope.settings.theme = 'dark';
+	}
+	// console.log('settings', JSON.parse(window.localStorage.sdk_settings));
 
 	$scope.focus = true;
 	$scope.blurred = false;
@@ -23,6 +33,40 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	$scope.files = {}; // files open
 	$scope.fileHistory = [];
 	$scope.path = false; // current project path
+
+	$scope.themes = [
+		{ name: "Dark Theme", id: "dark" }, 
+		{ name: "Light Theme", id: "light" }
+	];
+
+	var obj = {content:null};
+
+    $http.get('./package.json').success(function(data) {
+        $scope.settings.package = data;
+    });  
+
+	$scope.$watch('settings', function(newVal, oldVal){
+	    window.localStorage.sdk_settings = JSON.stringify($scope.settings);
+
+	    // hook.call('onSettingsChange', $scope.settings);
+	}, true);
+
+	// $scope.$watch(
+	// 	function () { 
+	// 		return window.localStorage.sdk_settings; 
+	// 	},
+	// 	function(newVal,oldVal) {
+
+	// 		console.log('Local Storage Changed!');
+	// 	}
+	// )
+
+	$scope.toggleSettings = function() {
+		ngDialog.open({ 
+			template: 'SDKSettings',
+			scope: $scope
+		});
+	};
 
 	$scope.setBlur = function(blur)
 	{
@@ -45,6 +89,14 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 		$scope.setBlur(false);
 		$scope.setPopup('', false);
 		$scope.user.status = 'logged-out';
+	}
+
+	$scope.newFile = function() {
+		$rootScope.$emit('service.project.new.file');
+	}
+
+	$scope.newFolder = function() {
+		$rootScope.$emit('service.project.new.folder');
 	}
 
 	$scope.stoplight = $stoplight;
@@ -80,19 +132,19 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
     	$file.icon(file_path);
     }
 
-	win.on('close', function()
-	{
-		// hide ourselves first
-		$scope.$apply(function() {
-			$scope.loaded = false;
-		});
+	// win.on('close', function()
+	// {
+	// 	// hide ourselves first
+	// 	$scope.$apply(function() {
+	// 		$scope.loaded = false;
+	// 	});
 
-		// fire all callbacks
-		windowEventsFactory.runQueue('close');
+	// 	// fire all callbacks
+	// 	// windowEventsFactory.runQueue('close');
 
-		// close for real
-		this.close(true);
-	});
+	// 	// close for real
+	// 	this.close(true);
+	// });
 
 	window.addEventListener('load', function()
 	{
@@ -130,7 +182,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	var osxMenuBar = new gui.Menu({
 		type: "menubar"
 	});
-	osxMenuBar.createMacBuiltin("Homey Devkit", {
+	osxMenuBar.createMacBuiltin("Devkit", {
 		hideWindow: true
 	});
 
@@ -139,7 +191,9 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Preferences...',
 		click: function() {
-			alert('preferences');
+			$scope.$apply(function() {
+				$scope.toggleSettings();
+			});
 		},
 		key: ',',
 		modifiers: 'cmd'
@@ -151,7 +205,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Check for updates...',
 		click: function() {
-			alert('Update');
+			alert('this feature will come soon...');
 		}
 	}), 1);
 
@@ -166,7 +220,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'File',
 		click: function() {
-			$rootScope.$emit('service.project.new.file');
+			$scope.newFile();
 		},
 		key: 'n',
 		modifiers: 'cmd'
@@ -175,7 +229,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'Folder',
 		click: function() {
-			$rootScope.$emit('service.project.new.folder');
+			$scope.newFolder();
 		},
 		key: 'n',
 		modifiers: 'cmd+alt'
@@ -184,7 +238,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'Project...',
 		click: function() {
-			//project.create();
+			$rootScope.$emit('service.project.create');
 		},
 		key: 'n',
 		modifiers: 'cmd+shift'
@@ -213,7 +267,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Close tab',
 		click: function() {
-			$file.close();
+			$rootScope.$emit('service.file.close');
 		},
 		key: 'w',
 		modifiers: 'cmd'
@@ -226,8 +280,8 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save',
 		click: function() {
-			$scope.file.save();
-			// $rootScope.$emit('editor.saveRequest'); /*where is this called?*/
+    		$file.save();
+    		$rootScope.$emit('service.file.save');
 		},
 		key: 's',
 		modifiers: 'cmd'
@@ -236,7 +290,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save All',
 		click: function() {
-			$rootScope.$emit('editor.saveall'); /* again, where is this called*/
+    		$rootScope.$emit('service.file.saveall');
 		},
 		key: 's',
 		modifiers: 'cmd+shift'
@@ -254,29 +308,11 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	project.insert(new gui.MenuItem({
 		label: 'Run',
 		click: function(){
-			//$rootScope.$emit('homey.run');
+			$rootScope.$emit('project.run');
 		},
 		key: 'r',
 		modifiers: 'cmd'
 	}), 0);
-
-	project.insert(new gui.MenuItem({
-		label: 'Run and Break',
-		click: function(){
-			// $rootScope.$emit('homey.runbrk');
-		},
-		key: 'r',
-		modifiers: 'cmd+shift'
-	}), 1);
-
-	project.insert(new gui.MenuItem({
-		label: 'REFRESH',
-		click: function(){
-			window.location.reload( true );
-		},
-		key: '§',
-		modifiers: 'cmd'
-	}),2);
 
 	win.menu.insert(new gui.MenuItem({
 		label: 'Project',
@@ -304,6 +340,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 
 }
 
-ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', 'windowEventsFactory', '$templateCache'];
+ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', '$templateCache', 'ngDialog', '$http'];
 
 app.controller("ApplicationController", ApplicationController);
