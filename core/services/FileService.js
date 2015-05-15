@@ -8,9 +8,11 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
 	$rootScope.editorConfig = [];
 
+	var hook = Hook('global');
+
     factory.open = function( file_path )
     {
-    	// console.log('open', file_path);
+    	console.log('open', file_path);
 
 	    // only load the file when it's not already open
 	    if( !factory.isOpen( file_path ) ) {
@@ -38,6 +40,8 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 			return file_path_history != file_path;
 		});
 	    factory.history.push( file_path );
+
+	    // hook.call('onFileOpened', file_path);
 		
 		// notify everyone
 	    $rootScope.$emit('service.file.open', file_path );
@@ -58,8 +62,6 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     // close an item
     factory.close = function( file_path )
     {
-	    
-	    file_path = file_path || factory.active;
 	    
 	    // check for unsaved changes
 	    var should_delete = false;

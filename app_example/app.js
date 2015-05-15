@@ -56,6 +56,12 @@ app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file
 			config: {
 				editor: "manifest"
 			}
+		},
+		{
+			ext: ".stl",
+			config: {
+				editor: "viewer"
+			}
 		}
 	]);
 }]);
