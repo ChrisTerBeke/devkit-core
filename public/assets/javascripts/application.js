@@ -92,45 +92,18 @@ window.CONFIG = {};
 // paths
 window.CONFIG.paths = {
 	root:		window.location.protocol + '//' + window.location.hostname + ':' + window.location.port,
-	login:		'',
-	user:		'',
-	appManager:	'',
-	apiRoot:	''
+	login:		'https://devkit.athom.nl/auth',
+	apiRoot:	'https://api.athom.nl'
 };
 
 // url whitelist
 window.CONFIG.whitelist = [
 	'self',
 	'file://',
-	'http://localhost:8080/**'
+	'http://localhost:8080/**',
+	'http://*.athom.nl/**',
+	'https://*.athom.nl/**'
 ];;
-if(window.ENV.type == 'development' || window.ENV.type == 'testing')
-{
-  console.groupCollapsed("Development- or Testing Mode");
-   	if(window.DEBUG)
-   	{
-   		console.log("Debugging Mode: On");
-   	}
-   	else
-   	{
-   		console.log("Debugging Mode: Off", "color: red;");
-   	}
-
-    console.group("App", window.ENV.name);
-       	console.log("Environment", window.ENV);
-    	console.log("Paths", window.CONFIG.paths);
-    console.groupEnd();
-
-  console.groupEnd();
-}
-else if(window.DEBUG)
-{
-	console.log("Debugging Mode: On", "color: blue;");
-}
-
-if (window.DEBUG) {
-	console.time("Angular loaded");
-};
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -35104,26 +35077,22 @@ loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-cod
 loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
 loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 
-// headers
-loadModule('header_title',	'header',	'./core/components/headers/devkit-example-header-title/');
-
-// themes
-loadModule('theme_dark',	'theme',	'./core/components/themes/theme_dark/');
-loadModule('theme_light',	'theme',	'./core/components/themes/theme_light/');
-
-loadModule('custom_icons',	'theme',	'./core/components/themes/custom_icons/');
-
-
 // APP
 // editors
+loadModule('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
 
 // headers
+loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-title/');
+loadModule('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
+loadModule('play', 			'header',	'./app/components/headers/devkit-homey-header-play/');
 
 // widgets
+// nope..
 
 // themes
-
-
+loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+loadModule('athom',			'theme',	'./app/components/themes/athom/');
+loadModule('font-awesome',	'theme',	'./app/components/themes/font-awesome/');
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools
@@ -35146,6 +35115,235 @@ app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file
 			config: {
 				widgets: [ 'markdown' ]
 			}
+		},
+		{
+			ext: ".json",
+			config: {
+				editor: "manifest"
+			}
 		}
 	]);
-}]);
+}]);;
+var HeaderAuthController = function($scope, $rootScope, $http)
+{	
+	$scope.apiRoot = window.CONFIG.paths.apiRoot;
+	$scope.user = undefined;
+	
+	if(window.localStorage.user) {
+		$scope.user = JSON.parse(window.localStorage.user);
+	}
+	
+	$scope.init = function() {
+		if($scope.user == undefined) {
+			if(window.localStorage.access_token && window.localStorage.refresh_token) {
+				$scope.getUserInfo();
+			}
+		}
+	};
+	
+	$scope.login = function() {
+		$scope.$parent.setPopup(window.CONFIG.paths.login, true);
+		$rootScope.$emit('devkit.blur', true);
+	};
+
+	$scope.logout = function() {
+		delete window.localStorage.access_token;
+		delete window.localStorage.refresh_token;
+		delete window.localStorage.user;
+		$scope.user = undefined;
+	};
+	
+	$scope.getUserInfo = function() {
+		$http({
+			method: 'GET',
+	        url: window.CONFIG.paths.apiRoot + '/user/me',
+	        headers: {
+	          'Authorization': 'Bearer ' + window.localStorage.access_token
+	        },
+	        withCredentials: true
+	    })
+	    .then(function(result) {		    
+			if(result.status == 200) {
+				$scope.user = result.data;
+
+				console.log('user', $scope.user);
+				window.localStorage.user = JSON.stringify(result.data);
+			}
+			else {
+				$scope.refreshAccessToken();
+			}
+		});
+	};
+	
+	$scope.refreshAccessToken = function() {
+		$http({
+			method: 'POST',
+			url: window.PATH.auth.loginUrl + '/refresh',
+			data: {
+				refresh_token: window.localStorage.refresh_token
+			}
+		})
+		.then(function(result) {
+			if(result.status == 200) {
+				if(result.data.code != 200) {
+					console.log(result);
+				}
+				else {
+					// save tokens to localStorage
+					window.localStorage.access_token = result.data.accessToken;
+					window.localStorage.refresh_token = result.data.refreshToken;
+					$scope.getUserInfo();
+				}
+			}
+			else {
+				console.log(result);
+			}
+		});
+	};
+
+	$scope.goToAppManager = function() {
+		var projectDir = window.localStorage.project_dir;
+		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
+		manifest = JSON.parse(manifest);
+		gui.Shell.openExternal(window.CONFIG.paths.appManager + "/apps?app_id=" + manifest.id);
+	};
+	
+	// listen for a message from the iframe
+	window.addEventListener('message', function(e) {
+		$scope.$apply(function() {
+
+			// save tokens to localStorage
+			window.localStorage.access_token = e.data.accessToken;
+			window.localStorage.refresh_token = e.data.refreshToken;
+
+			// hide popup
+			$scope.$parent.setBlur(false);
+			$scope.$parent.setPopup('', false);
+
+			// set userinfo
+			$scope.getUserInfo();
+		});
+	});
+}
+
+HeaderAuthController.$inject = ['$scope', '$rootScope', '$http'];
+
+app.controller("HeaderAuthController", HeaderAuthController);
+
+
+/*
+	
+var AuthController = function($scope, $auth)
+{
+	
+	$scope.user = {};
+
+	// listen for a message from the iframe
+	window.addEventListener('message', function(e)
+	{
+		$scope.$apply(function(){
+
+			// save tokens to localStorage
+			window.localStorage.access_token = e.data.accessToken;
+			window.localStorage.refresh_token = e.data.refreshToken;
+
+			$scope.setBlur(false);
+			$scope.setPopup('', false);
+
+			$auth.getUserInfo().then(function(result) 
+			{
+				$scope.user = result.data;
+			});
+		});
+	});
+
+	if(	typeof $scope.user == 'undefined' ) {
+		$scope.user = {};
+
+		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' )
+		{
+			$scope.user.status = 'logged-out';
+			$scope.user.statusMessage = 'Log in';
+		}
+		else
+		{
+			$auth.getUserInfo().then(function(result) 
+			{
+				$scope.user = result.data;
+			});	
+		}
+	}
+
+	$scope.login = function()
+	{
+		$scope.setPopup(window.PATH.auth.loginUrl, true);
+
+		$scope.user = $auth.login();
+	}
+
+	$scope.logout  = function()
+	{
+		$scope.user = $auth.logout();
+	}
+}
+
+AuthController.$inject = ['$scope', '$auth'];
+
+app.controller("AuthController", AuthController);
+
+*/;
+var fs		= require('fs');
+var path	= require('path');
+
+var HeaderPlayController = function($scope, $rootScope)
+{
+	
+	
+    
+}
+
+HeaderPlayController.$inject = ['$scope', '$rootScope'];
+
+app.controller("HeaderPlayController", HeaderPlayController);;
+var fs		= require('fs');
+var path	= require('path');
+
+var HeaderTitleController = function($scope, $rootScope)
+{
+	
+	$scope.manifest = {};
+	
+    $scope.update = function(){
+	    
+	    if( typeof window.localStorage.project_dir == 'undefined' ) return;
+	    
+	    var manifestPath = path.join(window.localStorage.project_dir, 'app.json');
+	    
+	    if( fs.existsSync(manifestPath) ) {	    
+		    var manifestContents = fs.readFileSync( manifestPath ).toString();
+		    
+		    try {
+				$scope.manifest = JSON.parse(manifestContents);	    
+			} catch(e){
+				$scope.manifest.name.en = 'Warning: invalid app.json!';
+				$scope.manifest.id = e.toString();
+			}		
+		}
+    }
+
+	var hook = Hook('global');
+	hook.register('onManifestSave', function (e) {
+		$scope.update();
+	});
+
+	$rootScope.$on('service.project.ready', function(){
+		$scope.update();		
+	});
+
+	$scope.update();
+    
+}
+
+HeaderTitleController.$inject = ['$scope', '$rootScope'];
+
+app.controller("HeaderTitleController", HeaderTitleController);

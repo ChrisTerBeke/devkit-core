@@ -1,40 +1,42 @@
 var fs		= require('fs');
 var path	= require('path');
 
-var TitleController = function($scope, $rootScope, $project)
+var HeaderTitleController = function($scope, $rootScope)
 {
 	
-	$scope.name = '';
-	$scope.id = '';
+	$scope.manifest = {};
 	
-    
-    if( $project.path ) {
-    	update();
-    } else {
-	    $rootScope.$on('service.project.ready', function(){
-			update();
-	    });
+    $scope.update = function(){
+	    
+	    if( typeof window.localStorage.project_dir == 'undefined' ) return;
+	    
+	    var manifestPath = path.join(window.localStorage.project_dir, 'app.json');
+	    
+	    if( fs.existsSync(manifestPath) ) {	    
+		    var manifestContents = fs.readFileSync( manifestPath ).toString();
+		    
+		    try {
+				$scope.manifest = JSON.parse(manifestContents);	    
+			} catch(e){
+				$scope.manifest.name.en = 'Warning: invalid app.json!';
+				$scope.manifest.id = e.toString();
+			}		
+		}
     }
-    
-    function update(){
-	    alert('update')
-		var manifest_path = path.join($project.path, 'app.json');
-		
-		fs.readFile( manifest_path, function( err, data ) {
-			if( err ) throw err;
-			
-			var manifest = JSON.parse( data.toString() );
-			
-			$scope.$apply(function(){
-				$scope.name = manifest.name.en;
-				$scope.id	= manifest.id;
-			});
-		});
-    }
-    
+
+	var hook = Hook('global');
+	hook.register('onManifestSave', function (e) {
+		$scope.update();
+	});
+
+	$rootScope.$on('service.project.ready', function(){
+		$scope.update();		
+	});
+
+	$scope.update();
     
 }
 
-TitleController.$inject = ['$scope', '$rootScope', '$project'];
+HeaderTitleController.$inject = ['$scope', '$rootScope'];
 
-app.controller("TitleController", TitleController);
+app.controller("HeaderTitleController", HeaderTitleController);
