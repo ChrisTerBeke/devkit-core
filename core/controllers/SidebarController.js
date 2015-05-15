@@ -212,8 +212,6 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	$scope.dropped = function(event, file, dropped_path) {
 		dropped_path = dropped_path || $scope.$parent.path;  // $parent is ApplicationController
 	    
-	    // console.log('event', event, 'file', file, 'dropped_path', dropped_path)
-	    
         var fileName = path.basename(file.path);
 
         // if dropped on a file, get the file's parent folder
