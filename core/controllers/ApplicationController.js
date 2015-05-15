@@ -21,7 +21,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 		$scope.settings = {};
 		$scope.settings.theme = 'dark';
 	}
-	// console.log('settings', JSON.parse(window.localStorage.sdk_settings));
 
 	$scope.focus = true;
 	$scope.blurred = false;
@@ -50,16 +49,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 
 	    // hook.call('onSettingsChange', $scope.settings);
 	}, true);
-
-	// $scope.$watch(
-	// 	function () { 
-	// 		return window.localStorage.sdk_settings; 
-	// 	},
-	// 	function(newVal,oldVal) {
-
-	// 		console.log('Local Storage Changed!');
-	// 	}
-	// )
 
 	$scope.toggleSettings = function() {
 		ngDialog.open({ 
@@ -131,21 +120,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	{
     	$file.icon(file_path);
     }
-
-	// win.on('close', function()
-	// {
-	// 	// hide ourselves first
-	// 	$scope.$apply(function() {
-	// 		$scope.loaded = false;
-	// 	});
-
-	// 	// fire all callbacks
-	// 	// windowEventsFactory.runQueue('close');
-
-	// 	// close for real
-	// 	this.close(true);
-	// });
-
+    
 	window.addEventListener('load', function()
 	{
 		$scope.loaded = true;

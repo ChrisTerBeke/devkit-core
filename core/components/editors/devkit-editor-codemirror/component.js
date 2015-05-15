@@ -5,13 +5,6 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$event
 	var file_path = $scope.file.path;
 	var file_ext = path.extname( file_path );
 
-	/* Example Before Save Command
-	$events.beforeSave($scope.file.path, function() {
-		return {
-
-		}
-	});*/
-
 	$scope.codemirrorOpts = {
 		lineNumbers: true,
 		indentWithTabs: true,
