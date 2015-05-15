@@ -33,7 +33,3 @@ bower_components
 *.DS_Store
 .DS_Store
 *.lock
-
-
-app
-Gruntfile.js

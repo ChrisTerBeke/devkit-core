@@ -1,0 +1,43 @@
+<form ng-controller="manifestViewCtrl as manifestView">
+
+	<fieldset>
+		<legend>General</legend>
+		
+		<row>
+			<label>ID</label>
+			<input type="text" ng-model="manifest.id" placeholder="Your app id can be found in the app manager" />
+		</row>
+		
+		<row>
+			<label>Name</label>
+			<input type="text" ng-model="manifest.name" placeholder="Your app name" />
+		</row>
+
+		<row>
+			<label>Description</label>
+			<textarea ng-model="manifest.description" placeholder="Your app description" ></textarea>
+		</row>
+
+		<row>
+			<label>Version</label>
+			<input ng-model="manifest.version" placeholder="Your app version in semver format" />
+		</row>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Author</legend>
+
+		<row>
+			<label>Name</label>
+			<input type="text" ng-model="manifest.author.name" placeholder="John Doe" />
+		</row>
+
+		<row>
+			<label>Author's e-mail</label>
+			<input type="text" ng-model="manifest.author.email" placeholder="a.uthor@gmail.com" />
+		</row>
+
+	</fieldset>
+
+</form>
