@@ -80,7 +80,6 @@
 							ng-dblclick="!isRenaming(item.path) && open( item.path )"
 							ng-right-click="showCtxMenu(item, $event)"
 							ng-class="{ 'selected': isSelected( item.path ) }"
-							file-drop="dropped( $event, file, item.path )"
 							class="label"
 						>
 							<span class="expand" ng-click="!isRenaming(item.path) && expand( item.path, !isExpanded(item.path) )" stop-event></span>
@@ -91,18 +90,20 @@
 								<input type="submit" style="display: none;" />
 							</form>
 						</span>
-					    <ul ng-if="item.children" ng-show="isExpanded( item.path )">
+					    <ul ng-if="item.children" ng-show="isExpanded( item.path )" dnd-list dnd-drop="">
 					        <li
 					        	ng-repeat="item in item.children"
 					        	ng-include="'filetreeTmpl'"
 					        	ng-class="{ 'expanded': isExpanded( item.path ) }"
 					        	ng-init="selected = false; item.expanded = false;"
 					        	class="type-{{item.type}} ext-{{item.ext}}"
+					        	dnd-draggable="true"
+					        	dnd-selected=""
 					        ></li>
 					    </ul>
 					</script>
 
-					<ul id="filetree">
+					<ul id="filetree" dnd-list dnd-drop="">
 						<li
 							ng-repeat="item in filetree"
 							ng-include="'filetreeTmpl'"

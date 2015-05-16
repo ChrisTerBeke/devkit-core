@@ -176,9 +176,24 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		$scope.filetree = readdirSyncRecursive( $scope.$parent.path, true ); // $parent is ApplicationController
 	}
 	
+	
+	
+	
+	$scope.fileDragged = function(event, filePath) {
+		console.log(event);
+	}
+	
+	$scope.fileDropped = function(event, filePath) {
+		
+	}
+	
+	
+	
+	
 	/*
 	 * On drop event
 	 */
+/*
 	$scope.dropped = function(event, file, dropped_path) {
 		dropped_path = dropped_path || $scope.$parent.path;  // $parent is ApplicationController
 	    
@@ -203,6 +218,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	        console.log(err); // an error occured when copying file, let us know in console
         });
 	};
+*/
 	
 	/*
 	 * Show a custom context menu for the sidebar (aka the right mouse button menu)

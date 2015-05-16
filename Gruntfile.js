@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
 	window = {};
 
-	require("./app_example/config/environment.js");
+	require("./app_example/environment.js");
 
 	var json = {
 		/*
@@ -41,6 +41,7 @@ module.exports = function(grunt) {
 					 */
 					'./bower_components/angular-hotkeys/build/hotkeys.js',
 					'./bower_components/ng-tags-input/ng-tags-input.js',
+					'./bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js',
 
 					/*
 					 *	Load modules.

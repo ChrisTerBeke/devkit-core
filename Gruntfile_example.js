@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
 	window = {};
 
-	require("./app/config/environment.js");
+	require("./app/environment.js");
 
 	var json = {
 		/*
