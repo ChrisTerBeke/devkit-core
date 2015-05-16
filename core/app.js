@@ -19,6 +19,11 @@ app.config(function($sceDelegateProvider) {
 	$sceDelegateProvider.resourceUrlWhitelist(window.CONFIG.whitelist);
 });
 
+app.config(function (localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('sdk');
+});
+
 app.config(function ($controllerProvider) {
     app.controller = function (name, constructor) {
         $controllerProvider.register(name, constructor);

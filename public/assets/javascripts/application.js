@@ -3,8 +3,6 @@ var fs		= require('fs');
 
 function injectDependency (filename, filetype)
 {
-
-	console.log('injectDependency');
     if (filetype == 'js')
     {
         var fileref = document.createElement('script');
@@ -38,8 +36,7 @@ function loadModule (module, type, dir, dependencies)
 	}
 
 	var self = this;
-    console.log('load');
-
+    
 	// load optional dependencies
 	var dependencies_path = path.join(dir, 'dependencies');
 	fs.exists(dependencies_path, function(exists) {
@@ -95,19 +92,17 @@ window.CONFIG = {};
 // paths
 window.CONFIG.paths = {
 	root:		window.location.protocol + '//' + window.location.hostname + ':' + window.location.port,
-	login:		'https://sdk.formide.com',
-	user:		'https://api2.formide.com/auth/me',
-	appManager:	'https://apps.formide.com',
-	apiRoot:	'https://api2.formide.com'
+	login:		'',
+	user:		'',
+	appManager:	'',
+	apiRoot:	''
 };
 
 // url whitelist
 window.CONFIG.whitelist = [
 	'self',
 	'file://',
-	'http://localhost:8080/**',
-	'http://*.formide.com/**',
-	'https://*.formide.com/**'
+	'http://localhost:8080/**'
 ];;
 if(window.ENV.type == 'development' || window.ENV.type == 'testing')
 {
@@ -32589,7 +32584,7 @@ module.angular = angular.module('module.angular', ['ngResource', 'ngAnimate']);
 ;
 var module = module || {};
 
-module.vendor = angular.module('module.vendor', ['ngTagsInput']);
+module.vendor = angular.module('module.vendor', ['ngTagsInput', 'ngDialog', 'LocalStorageModule']);
 ;
 var module = module || {};
 
@@ -32601,8 +32596,7 @@ module.services = angular.module('module.services', [
 	'sdk.events',
 	'sdk.file',
 	'sdk.stoplight',
-	'sdk.moduleload',
-	'service.windowEventsFactory'
+	'sdk.moduleload'
 ]);;
 var module = module || {};
 
@@ -32616,19 +32610,7 @@ var beforeSave = {};
 
 angular.module('sdk.events', []).factory('$events', ['$rootScope', '$q', function ($rootScope, $q) {
 	var factory = {};
-
-	// factory.beforeSave = function(path, callbackFunction) {
-	// 	beforeSave[path] = beforeSave[path] || [];
-	// 	beforeSave[path].push($q(function(resolve, reject) {
-	//     setTimeout(function() 
-	//     {
-	//     	var result = callbackFunction();
-	    	
-	//     	resolve(result);
-	//     }, 1000);
-	// 	}));
-	// };
-
+	
 	factory.beforeSave = function(path, callbackFunction) {
 		beforeSave[path] = beforeSave[path] || [];
 		beforeSave[path].push($q(function(resolve, reject) {
@@ -32648,9 +32630,10 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
 	$rootScope.editorConfig = [];
 
+	var hook = Hook('global');
+
     factory.open = function( file_path )
     {
-    	// console.log('open', file_path);
 
 	    // only load the file when it's not already open
 	    if( !factory.isOpen( file_path ) ) {
@@ -32678,6 +32661,8 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 			return file_path_history != file_path;
 		});
 	    factory.history.push( file_path );
+
+	    // hook.call('onFileOpened', file_path);
 		
 		// notify everyone
 	    $rootScope.$emit('service.file.open', file_path );
@@ -32698,8 +32683,6 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     // close an item
     factory.close = function( file_path )
     {
-	    
-	    file_path = file_path || factory.active;
 	    
 	    // check for unsaved changes
 	    var should_delete = false;
@@ -32847,6 +32830,38 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 		$rootScope.$emit('editor.saved.' + activeFile.path);
     }
 }]);;
+var hooks = hooks || [];
+
+function Hook(path) {
+	var path = path || {};
+
+	return {
+		register: function (name, callback ) {
+			if(typeof name != 'undefined') {
+				if( 'undefined' == typeof(hooks[path] ) )
+	      		hooks[path] = []
+	 
+				if( 'undefined' == typeof(hooks[path][name] ) )
+					hooks[path][name] = []
+				hooks[path][name].push( callback )
+			}
+		},
+
+		call: function (name, arguments ) {
+			if(typeof name != 'undefined') {
+		      	if(typeof hooks[path][name] !== 'undefined') {
+		      		for( i = 0; i < hooks[path][name].length; ++i ) {
+		      			if( true != hooks[path][name][i]( arguments ) ) { 
+		      				break; 
+		      			}
+		      		}
+		      	}
+		    }
+				    	
+		}
+	};
+}
+;
  var path	= require('path');
 var fs		= require('fs');
 
@@ -32858,62 +32873,9 @@ angular.module('sdk.moduleload', [])
 
     $rootScope.modules = {};
 
-    // factory.injectDependency = function(filename, filetype)
-    // {
-
-    // 	console.log('injectDependency');
-    //     if (filetype == 'js')
-    //     {
-    //         var fileref = document.createElement('script');
-    //         fileref.setAttribute('type','text/javascript');
-    //         fileref.setAttribute('src', filename);
-    //     }
-    //     else if (filetype == 'css')
-    //     {
-    //         var fileref = document.createElement('link');
-    //         fileref.setAttribute('rel', 'stylesheet');
-    //         fileref.setAttribute('type', 'text/css');
-    //         fileref.setAttribute('href', filename);
-    //     }
-
-    //     if (typeof fileref != 'undefined')
-    //         document.getElementsByTagName('head')[0].appendChild(fileref)
-    // }
 
     factory.load = function(module, type, dir)
     {
-  //       var self = this;
-  //       console.log('load');
-
-		// // load optional dependencies
-		// var dependencies_path = path.join(dir, 'dependencies');
-		// fs.exists(dependencies_path, function(exists) {
-		// 	if(!exists) return;
-		// 	fs.readdir(dependencies_path, function (err, files) {
-	 //            if (err) throw err;
-	            
-	 //            files.forEach(function(file){
-  //                   if( path.extname(file) == '.js') {
-  //                       self.injectDependency( path.join(dependencies_path, file), 'js');
-  //                   } else if( path.extname(file) == '.css') {
-  //                       self.injectDependency( path.join(dependencies_path, file), 'css');
-  //                   }			           
-		//         });
-	 //        });
-  //       });
-
-		// var css_path = path.join(dir, 'component.css');
-		// fs.exists(css_path, function(exists) {
-		// 	if(exists) {
-	 //        	self.injectDependency( css_path	, 'css');
-	 //        }	
-		// });
-		// var js_path = path.join(dir, 'component.js');
-		// fs.exists(js_path, function(exists) {
-		// 	if(exists) {
-	 //        	self.injectDependency( js_path	, 'js');
-	 //        }
-		// });
 
 		var html_path = path.join(dir, 'component.html');
 		fs.exists(html_path, function(exists) {
@@ -32966,26 +32928,6 @@ angular.module('sdk.stoplight', [])
 
     return factory;
 }]);;
-angular.module('service.windowEventsFactory', [])
-	.factory('windowEventsFactory', [function () {
-
-	var result = {};
-	var queue = {};
-
-	result.addToQueue = function( event, callback ){
-		if( !Array.isArray(queue[ event ]) ) queue[ event ] = [];
-		queue[ event ].push( callback );
-	}
-
-	result.runQueue = function( event ) {
-		queue[ event ].forEach(function(callback){
-			callback.call();
-		});
-	}
-
-	return result;
-
-}]);;
 window.ondragover = function(e) { e.preventDefault(); return false };
 window.ondrop = function(e) { e.preventDefault(); return false };
 
@@ -33005,6 +32947,11 @@ angular.element(document).ready(function() {
 // whitelist for iframe and assets
 app.config(function($sceDelegateProvider) {
 	$sceDelegateProvider.resourceUrlWhitelist(window.CONFIG.whitelist);
+});
+
+app.config(function (localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('sdk');
 });
 
 app.config(function ($controllerProvider) {
@@ -33044,14 +32991,23 @@ var path		= require('path');
 
 var events 		= {};
 
-
-var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, windowEventsFactory, $templateCache)
+var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $file, $events, $templateCache, ngDialog, $http)
 {
-	var gui 		= require('nw.gui');
-	var win 		= gui.Window.get();
+	var gui = require('nw.gui');
+	var win = gui.Window.get();
+
+	var hook = Hook('global');
 
 	$scope.loaded = false;
 	$scope.platform = os.platform();
+
+	if(window.localStorage.sdk_settings) {
+		$scope.settings = JSON.parse(window.localStorage.sdk_settings);
+	}
+	else {
+		$scope.settings = {};
+		$scope.settings.theme = 'dark';
+	}
 
 	$scope.focus = true;
 	$scope.blurred = false;
@@ -33063,6 +33019,30 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	$scope.files = {}; // files open
 	$scope.fileHistory = [];
 	$scope.path = false; // current project path
+
+	$scope.themes = [
+		{ name: "Dark Theme", id: "dark" }, 
+		{ name: "Light Theme", id: "light" }
+	];
+
+	var obj = {content:null};
+
+    $http.get('./package.json').success(function(data) {
+        $scope.settings.package = data;
+    });  
+
+	$scope.$watch('settings', function(newVal, oldVal){
+	    window.localStorage.sdk_settings = JSON.stringify($scope.settings);
+
+	    // hook.call('onSettingsChange', $scope.settings);
+	}, true);
+
+	$scope.toggleSettings = function() {
+		ngDialog.open({ 
+			template: 'SDKSettings',
+			scope: $scope
+		});
+	};
 
 	$scope.setBlur = function(blur)
 	{
@@ -33085,6 +33065,14 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 		$scope.setBlur(false);
 		$scope.setPopup('', false);
 		$scope.user.status = 'logged-out';
+	}
+
+	$scope.newFile = function() {
+		$rootScope.$emit('service.project.new.file');
+	}
+
+	$scope.newFolder = function() {
+		$rootScope.$emit('service.project.new.folder');
 	}
 
 	$scope.stoplight = $stoplight;
@@ -33119,21 +33107,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	{
     	$file.icon(file_path);
     }
-
-	win.on('close', function()
-	{
-		// hide ourselves first
-		$scope.$apply(function() {
-			$scope.loaded = false;
-		});
-
-		// fire all callbacks
-		windowEventsFactory.runQueue('close');
-
-		// close for real
-		this.close(true);
-	});
-
+    
 	window.addEventListener('load', function()
 	{
 		$scope.loaded = true;
@@ -33170,7 +33144,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	var osxMenuBar = new gui.Menu({
 		type: "menubar"
 	});
-	osxMenuBar.createMacBuiltin("Homey Devkit", {
+	osxMenuBar.createMacBuiltin("Devkit", {
 		hideWindow: true
 	});
 
@@ -33179,7 +33153,9 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Preferences...',
 		click: function() {
-			alert('preferences');
+			$scope.$apply(function() {
+				$scope.toggleSettings();
+			});
 		},
 		key: ',',
 		modifiers: 'cmd'
@@ -33191,7 +33167,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Check for updates...',
 		click: function() {
-			alert('Update');
+			alert('this feature will come soon...');
 		}
 	}), 1);
 
@@ -33206,7 +33182,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'File',
 		click: function() {
-			$rootScope.$emit('service.project.new.file');
+			$scope.newFile();
 		},
 		key: 'n',
 		modifiers: 'cmd'
@@ -33215,7 +33191,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'Folder',
 		click: function() {
-			$rootScope.$emit('service.project.new.folder');
+			$scope.newFolder();
 		},
 		key: 'n',
 		modifiers: 'cmd+alt'
@@ -33224,7 +33200,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	newSubmenu.append(new gui.MenuItem({
 		label: 'Project...',
 		click: function() {
-			//project.create();
+			$rootScope.$emit('service.project.create');
 		},
 		key: 'n',
 		modifiers: 'cmd+shift'
@@ -33253,7 +33229,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Close tab',
 		click: function() {
-			$file.close();
+			$rootScope.$emit('service.file.close');
 		},
 		key: 'w',
 		modifiers: 'cmd'
@@ -33266,8 +33242,8 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save',
 		click: function() {
-			$scope.file.save();
-			// $rootScope.$emit('editor.saveRequest'); /*where is this called?*/
+    		$file.save();
+    		$rootScope.$emit('service.file.save');
 		},
 		key: 's',
 		modifiers: 'cmd'
@@ -33276,7 +33252,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save All',
 		click: function() {
-			$rootScope.$emit('editor.saveall'); /* again, where is this called*/
+    		$rootScope.$emit('service.file.saveall');
 		},
 		key: 's',
 		modifiers: 'cmd+shift'
@@ -33294,29 +33270,11 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	project.insert(new gui.MenuItem({
 		label: 'Run',
 		click: function(){
-			//$rootScope.$emit('homey.run');
+			$rootScope.$emit('project.run');
 		},
 		key: 'r',
 		modifiers: 'cmd'
 	}), 0);
-
-	project.insert(new gui.MenuItem({
-		label: 'Run and Break',
-		click: function(){
-			// $rootScope.$emit('homey.runbrk');
-		},
-		key: 'r',
-		modifiers: 'cmd+shift'
-	}), 1);
-
-	project.insert(new gui.MenuItem({
-		label: 'REFRESH',
-		click: function(){
-			window.location.reload( true );
-		},
-		key: '§',
-		modifiers: 'cmd'
-	}),2);
 
 	win.menu.insert(new gui.MenuItem({
 		label: 'Project',
@@ -33344,14 +33302,16 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 
 }
 
-ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', 'windowEventsFactory', '$templateCache'];
+ApplicationController.$inject = ['$scope', '$rootScope', '$timeout', '$stoplight', '$file', '$events', '$templateCache', 'ngDialog', '$http'];
 
 app.controller("ApplicationController", ApplicationController);
 ;
-var EditorController = function($rootScope, $scope, $file, windowEventsFactory, $rootScope)
+var EditorController = function($rootScope, $scope, $file, $rootScope)
 {
-	// add close command to queue (why?)
-    windowEventsFactory.addToQueue('close', function() {
+	var win = gui.Window.get();
+
+	win.on('close', function() {
+		this.hide(); // Pretend to be closed already
 		window.localStorage.files_open = '';
 
 		var files_open = [];
@@ -33361,7 +33321,21 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 		}
 
 		window.localStorage.files_open = files_open.join(',');
-    });
+
+		this.close(true);
+	});
+
+
+	$scope.init = function() {
+		if(window.localStorage.files_open) {
+			var files_open = window.localStorage.files_open.split(',');
+			for( var file_path in files_open) {
+				$file.open(files_open[file_path]);
+			}
+		}
+	}
+
+	$scope.init();
 
 	// open file
     $scope.open = function(file_path) {
@@ -33395,14 +33369,14 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 	});
 }
 
-EditorController.$inject = ['$rootScope', '$scope', '$file', 'windowEventsFactory', '$rootScope'];
+EditorController.$inject = ['$rootScope', '$scope', '$file', '$rootScope'];
 
 app.controller("EditorController", EditorController);;
 var gui			= require('nw.gui');
 var path		= require('path'); // auch
 
 var open		= require("open");
-var fs			= require('fs-extra')
+var fs_extra	= require('fs-extra')
 var trash		= require('trash');
 var watchTree 	= require("fs-watch-tree").watchTree;
 
@@ -33421,21 +33395,16 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	}
 	
 	/*
-	 * load a project
+	 * select a directory to create a new project in
 	 */
-	$scope.loadProject = function(rootPath) {
-		window.localStorage.project_dir = rootPath;
-        $scope.$parent.path = rootPath;
-        
-        // filetree
-		// watch for changes
-		watchTree($scope.$parent.path, function (event) { // $parent is ApplicationController
-			$scope.update();
-		});
-	
-		// initial scan
-		$scope.update();
-        $rootScope.$emit('service.project.ready');
+	$scope.createProject = function() {
+    	var directorychooser = document.getElementById('directorychooser');
+        directorychooser.addEventListener("change", function(evt) {
+            var val = this.value;
+            $rootScope.$emit('service.project.createInDirectory', val);
+            $scope.loadProject(this.value);
+        }, false)
+        directorychooser.click();
 	}
 	
 	/*
@@ -33447,6 +33416,28 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
             $scope.loadProject(this.value);
         }, false)
         directorychooser.click();
+	}
+	
+	/*
+	 * load a project
+	 */
+	$scope.loadProject = function(rootPath) {
+		window.localStorage.project_dir = rootPath;
+        $scope.$parent.path = rootPath;
+        
+        // filetree
+		// watch for changes
+		watchTree($scope.$parent.path, function (event) { // $parent is ApplicationController
+			$scope.$apply(function() {
+				$scope.update();
+			});
+		});
+
+		$scope.$parent.files = {};
+	
+		// initial scan
+		$scope.update();
+        $rootScope.$emit('service.project.ready');
 	}
 
 	/*
@@ -33483,7 +33474,8 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	$scope.expand = function(filePath, expanded) {
 		if( expanded ) {
         	$scope.expanded.push(filePath);	    
-		} else {
+		} 
+		else {
 			var index = $scope.expanded.indexOf(filePath);	
 			$scope.expanded.splice(index, 1);	
 		}
@@ -33496,7 +33488,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 			var folder = $scope.$parent.path; // $parent is ApplicationController
 		}
 		else {
-			if( fs.statSync( item.path ).isFile() ) {
+			if( fs_extra.statSync( item.path ).isFile() ) {
 				var folder = path.dirname( item.path );
 			} else {
 				var folder = item.path;
@@ -33504,9 +33496,15 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		}
 		
 		var newFilePath = path.join( folder, newFileName);
-								
-		fs.ensureFile( newFilePath );
-		$scope.renaming = newFilePath;
+			
+		fs_extra.ensureFile( newFilePath, function (err) {
+			console.log(err);
+
+			$scope.$apply(function() {
+				$scope.init();
+				$scope.renaming = newFilePath;
+			});
+		});
 		
 		// TODO: focus rename element
 	}
@@ -33521,7 +33519,13 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 			var folder = item.path;
 		}
 		
-		fs.ensureDir( path.join( folder, newFolderName) );
+		fs_extra.ensureDir( path.join( folder, newFolderName) , function (err) {
+			console.log(err);
+
+			$scope.$apply(function() {
+				$scope.init();
+			});
+		});
 	}
 
 	/*
@@ -33539,11 +33543,11 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
         var itemFolder = path.dirname(item.path);
         var newPath = path.join(itemFolder, newName);
         
-        if(fs.existsSync(newPath)) {
+        if(fs_extra.existsSync(newPath) && item.path != newPath) {
 	       return alert("That filename already exists!");
         }
 
-        fs.rename(item.path, newPath, function() {
+        fs_extra.rename(item.path, newPath, function() {
 	        $scope.update();
         });
         
@@ -33561,7 +33565,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	 * open a file (or directory)
 	 */
 	$scope.open = function(filePath) {
-		if(fs.lstatSync(filePath).isDirectory()) {
+		if(fs_extra.lstatSync(filePath).isDirectory()) {
             $scope.expanded.push(path);
         }
         else {
@@ -33597,12 +33601,10 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	$scope.dropped = function(event, file, dropped_path) {
 		dropped_path = dropped_path || $scope.$parent.path;  // $parent is ApplicationController
 	    
-	    // console.log('event', event, 'file', file, 'dropped_path', dropped_path)
-	    
         var fileName = path.basename(file.path);
 
         // if dropped on a file, get the file's parent folder
-        if(fs.lstatSync(dropped_path).isFile()) {
+        if(fs_extra.lstatSync(dropped_path).isFile()) {
             var new_path = path.dirname(dropped_path);
         }
         else {
@@ -33610,11 +33612,11 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
         }
 
         // prevent overwriting
-        if(fs.existsSync(new_path)) {
+        if(fs_extra.existsSync(new_path)) {
             if( !confirm('Overwrite `' + fileName + '`?') ) return; // ask user to confirm file overwrite
         }
 
-        fs.copy(file.path, new_path, {}, function(err) {
+        fs_extra.copy(file.path, new_path, {}, function(err) {
 	        console.log(err); // an error occured when copying file, let us know in console
         });
 	};
@@ -33663,23 +33665,31 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 				if( $scope.selected.length > 1 ) {
 					if( confirm( "Are you sure you want to remove " + $scope.selected.length + " items to the trash?" ) ) {
 						$scope.selected.forEach(function( item_path ){
+							$file.close(item_path);
+
 							trash([ item_path ]);
 						});
 					}				
 				}
 				else {
 					if( confirm( "Are you sure you want to remove `" + item.name + "` to the trash?" ) ) {
+						$file.close(item.path);
+
 						trash([ item.path ]);
 					}
 				}
-				$scope.apply();
+
+				$scope.$apply(function() {
+					$scope.init();
+				});
 			}}));
 			
 			// single file options
 			if( $scope.selected.length == 1 ) {
 				ctxmenu.append(new gui.MenuItem({ label: 'Rename...', click: function(){
-					$scope.renaming = item.path;
-					$scope.apply();
+					$scope.$apply(function() {
+						$scope.renaming = item.path;
+					});
 				}}));
 			}
 			
@@ -33688,12 +33698,14 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 					var new_path = newPath( item_path );
 					
 					var i = 2;
-					while( fs.existsSync( new_path ) ) {
+					while( fs_extra.existsSync( new_path ) ) {
 						new_path = newPath( item_path, i++ );
 					}
+
+					$scope.$apply(function() {
+						fs_extra.copySync( item_path, new_path );
+					});
 									
-					fs.copySync( item_path, new_path );
-					$scope.apply();
 				});
 				
 			}}));
@@ -33714,6 +33726,13 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		// Popup as context menu
 		ctxmenu.popup( event.clientX, event.clientY );
 	}
+	
+	/*
+	 * Listen to open new project event
+	 */
+	$rootScope.$on('service.project.create', function() {
+		$scope.createProject();
+	});
 	
 	/*
 	 * Listen to open new project event
@@ -33759,7 +33778,7 @@ function newPath( file_path, index ) {
     var filename = path.basename( file_path );
     var folder = path.dirname( file_path );
 
-    if( fs.statSync( file_path ).isFile() ) {
+    if( fs_extra.statSync( file_path ).isFile() ) {
         var ext = path.extname( filename );
         var base = path.basename( filename, ext );
 
@@ -33786,11 +33805,11 @@ function newPath( file_path, index ) {
 function readdirSyncRecursive( dir, root ) {
     root = root || false;
     var result = [];
-    var contents = fs.readdirSync( dir );
+    var contents = fs_extra.readdirSync( dir );
 
     contents.forEach(function(item) {
         var item_path = path.join(dir, item);
-        var item_stats = fs.lstatSync( item_path );
+        var item_stats = fs_extra.lstatSync( item_path );
 
         if( item_stats.isDirectory() ) {
             result.push({
@@ -33819,7 +33838,7 @@ function readdirSyncRecursive( dir, root ) {
             name: path.basename( dir ),
             path: dir,
             children: result,
-            stats: fs.lstatSync( dir )
+            stats: fs_extra.lstatSync( dir )
         }];
     }
     else {
@@ -33881,6 +33900,18 @@ app.directive('fileDrop', function ( $parse ) {
 			});
 		});
 	};
+});
+
+app.directive('showFocus', function($timeout) {
+  return function(scope, element, attrs) {
+    scope.$watch(attrs.showFocus, 
+      function (newValue) { 
+        $timeout(function() {
+            newValue && element[0].focus();
+            element[0].select();
+        });
+      },true);
+  };    
 });;
 /*
  * Use this area to load your modules. Some module have been pre-loaded for you like codemirror, some widgets and custom icons
@@ -33888,30 +33919,32 @@ app.directive('fileDrop', function ( $parse ) {
  
 //CORE
 // editors
-loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']); // inject an angularjs dependency as 4th parameter
+loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-codemirror/', ['ui.codemirror']);
 
 // widgets
 loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
 loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 
 // headers
-// nope..
+loadModule('header_title',	'header',	'./core/components/headers/devkit-example-header-title/');
 
 // themes
-loadModule('formide', 		'theme',	'./core/components/themes/formide/');
+loadModule('theme_dark',	'theme',	'./core/components/themes/theme_dark/');
+loadModule('theme_light',	'theme',	'./core/components/themes/theme_light/');
+
+loadModule('custom_icons',	'theme',	'./core/components/themes/custom_icons/');
+
 
 // APP
 // editors
-loadModule('manifest', 		'editor',	'./app_example/components/editors/devkit-homey-editor-manifest/');
 
 // headers
-loadModule('title', 		'header',	'./app_example/components/headers/devkit-homey-header-title/');
 
 // widgets
-// nope..
 
 // themes
-loadModule('custom_icons',	'theme',	'./app_example/components/themes/custom_icons/');
+
+
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools
@@ -33934,108 +33967,6 @@ app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file
 			config: {
 				widgets: [ 'markdown' ]
 			}
-		},
-		{
-			ext: ".json",
-			config: {
-				editor: "manifest"
-			}
 		}
 	]);
-}]);;
-var fs 		= require('fs-extra');
-var path 	= require('path');
-
-app.controller("manifestViewCtrl", function( $scope, $rootScope, $http, $q, $events ){
-	console.log('manifest path', $scope.file.path);
-	$scope.manifest = angular.fromJson( $scope.file.code );
-	//$rootScope.project.metadata = $scope.manifest;
-	$scope.file._changed = false;
-
-	var code;
-	//$scope.iconUrlTemplate = $rootScope.project.path + '/assets/icon.svg';
-
-	//$scope.languages = $rootScope.languages;
-	$scope.activeLanguage = 'en';
-
-	$scope.iconUrl = $scope.iconUrlTemplate + '?r=' + Math.random();
-
-	$scope.$watch('manifest', function(){
-		$scope.file._changed = true;
-	}, true);
-
-	// $events.beforeSave($scope.file.path, function() {
-	// 	// var manifest = angular.copy( $scope.manifest );
-
-	// 	// console.log('manifest data', $scope.manifest);
-
-	// 	return {
-	// 		code: angular.toJson( $scope.manifest, true )
-	// 	}
-	// });
-
-	$events.beforeSave($scope.file.path, function(cb) {
-		cb({
-			code: angular.toJson( $scope.manifest, true )
-		});
-	})
-
-  //   $rootScope.$on('editor.saveRequest.' + $scope.file.path, function(){
-
-  //   	console.log('save request');
-
-	 //    var manifest = angular.copy( $scope.manifest );
-
-		// manifest.permissions = manifest.permissions.filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
-
-		// manifest.interfaces.speech.triggers.forEach(function( trigger ){
-		// 	for( var synonym_lang in trigger.synonyms ) {
-		// 		var synonyms = trigger.synonyms[synonym_lang].filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
-		// 		if( synonyms.length > 0 ) {
-		// 			trigger.synonyms[synonym_lang] = synonyms;
-		// 		} else {
-		// 			delete trigger.synonyms[synonym_lang];
-		// 		}
-		// 	}
-		// });
-
-		// $scope.file.code = angular.toJson( manifest, true );
-		// $rootScope.$emit('editor.performSave');
-  //   });
-
-    $scope.received = function( event, file ) {
-
-	    if( file.type != 'image/svg+xml' ) {
-		    alert('Only svg files are allowed for your app icon');
-		    return;
-	    }
-
-	    var assets_path = path.join( $rootScope.project.path, 'assets' );
-	    var icon_path 	= path.join( assets_path, 'icon.svg' );
-
-		if( fs.existsSync( icon_path ) ) {
-			if( ! confirm("Overwrite existing icon?") ) {
-				return;
-			}
-		}
-
-		fs.ensureDirSync( assets_path );
-
-		fs.copy( file.path, icon_path, {}, function( err  ){
-			if (err) return console.error(err)
-
-			$scope.iconUrl = $scope.iconUrlTemplate + '?r=' + Math.random();
-		});
-
-    }
-
-});;
-var TitleController = function($scope, $auth)
-{
-	$scope.name = 'foo';
-	$scope.bar = 'nl.athom.hello';
-}
-
-TitleController.$inject = ['$scope'];
-
-app.controller("TitleController", TitleController);
+}]);

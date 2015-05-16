@@ -3,8 +3,6 @@ var fs		= require('fs');
 
 function injectDependency (filename, filetype)
 {
-
-	console.log('injectDependency');
     if (filetype == 'js')
     {
         var fileref = document.createElement('script');
@@ -38,8 +36,7 @@ function loadModule (module, type, dir, dependencies)
 	}
 
 	var self = this;
-    console.log('load');
-
+    
 	// load optional dependencies
 	var dependencies_path = path.join(dir, 'dependencies');
 	fs.exists(dependencies_path, function(exists) {

@@ -1,7 +1,9 @@
-var EditorController = function($rootScope, $scope, $file, windowEventsFactory, $rootScope)
+var EditorController = function($rootScope, $scope, $file, $rootScope)
 {
-	// add close command to queue (why?)
-    windowEventsFactory.addToQueue('close', function() {
+	var win = gui.Window.get();
+
+	win.on('close', function() {
+		this.hide(); // Pretend to be closed already
 		window.localStorage.files_open = '';
 
 		var files_open = [];
@@ -11,7 +13,21 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 		}
 
 		window.localStorage.files_open = files_open.join(',');
-    });
+
+		this.close(true);
+	});
+
+
+	$scope.init = function() {
+		if(window.localStorage.files_open) {
+			var files_open = window.localStorage.files_open.split(',');
+			for( var file_path in files_open) {
+				$file.open(files_open[file_path]);
+			}
+		}
+	}
+
+	$scope.init();
 
 	// open file
     $scope.open = function(file_path) {
@@ -45,6 +61,6 @@ var EditorController = function($rootScope, $scope, $file, windowEventsFactory, 
 	});
 }
 
-EditorController.$inject = ['$rootScope', '$scope', '$file', 'windowEventsFactory', '$rootScope'];
+EditorController.$inject = ['$rootScope', '$scope', '$file', '$rootScope'];
 
 app.controller("EditorController", EditorController);

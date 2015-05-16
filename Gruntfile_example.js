@@ -41,6 +41,8 @@ module.exports = function(grunt) {
 					 */
 					'./bower_components/angular-hotkeys/build/hotkeys.js',
 					'./bower_components/ng-tags-input/ng-tags-input.js',
+					'./bower_components/ngDialog/js/ngDialog.js',
+					'./bower_components/angular-local-storage/dist/angular-local-storage.js',
 
 					/*
 					 *	Load modules.
@@ -94,7 +96,7 @@ module.exports = function(grunt) {
 		 */
 		watch: {
 			javascripts: {
-				files: ['./public/tmp/**/*.js', './core/**/*.js', './app/**/*.js', './bower_components/**/*.js'],
+				files: ['./public/tmp/**/*.js', './core/**/*.js', './app_example/**/*.js', './bower_components/**/*.js'],
 				tasks: ['js:' + ((window.ENV.type == 'development') ? 'dev' : 'dist')]
 			}
 		},
@@ -129,7 +131,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-compass');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-bump');
 
