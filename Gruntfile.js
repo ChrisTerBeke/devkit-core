@@ -41,6 +41,8 @@ module.exports = function(grunt) {
 					 */
 					'./bower_components/angular-hotkeys/build/hotkeys.js',
 					'./bower_components/ng-tags-input/ng-tags-input.js',
+					'./bower_components/ngDialog/js/ngDialog.js',
+					'./bower_components/angular-local-storage/dist/angular-local-storage.js',
 					'./bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js',
 
 					/*

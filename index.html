@@ -44,7 +44,6 @@
 				<sidebar
 					ng-controller="SidebarController as sidebar"
 					ng-right-click="showCtxMenu(undefined, $event)"
-					file-drop="dropped( $event, file )"
 					ng-init="init()"
 				>
 				
@@ -64,26 +63,47 @@
 								<input type="submit" style="display: none;" />
 							</form>
 						</span>
-					    <ul ng-if="item.children" ng-show="isExpanded( item.path )" dnd-list dnd-drop="">
+					    <ul
+						    ng-if="item.children"
+							ng-show="isExpanded( item.path )"
+							dnd-list="item.children"
+							dnd-external-sources="true"
+							dnd-dragover="dragoverCallback(event, index, external, type)"
+							dnd-drop="dropCallback(event, index, item, external, type, 'fileType')"
+						>
 					        <li
 					        	ng-repeat="item in item.children"
 					        	ng-include="'filetreeTmpl'"
 					        	ng-class="{ 'expanded': isExpanded( item.path ) }"
 					        	ng-init="selected = false; item.expanded = false; root = false"
 					        	class="type-{{item.type}} ext-{{item.ext}}"
-					        	dnd-draggable="true"
-					        	dnd-selected=""
+					        	
+					        	dnd-draggable="item"
+								dnd-effect-allowed="move"
+								dnd-moved="sub-filetree.splice($index, 1)"
+								dnd-dragstart="logEvent('Started to drag a file', event)"
 					        ></li>
 					    </ul>
 					</script>
 
-					<ul id="filetree" dnd-list dnd-drop="">
+					<ul 
+						id="filetree" 
+						dnd-list="filetree"
+						dnd-external-sources="true"
+						dnd-dragover="dragoverCallback(event, index, external, type)"
+						dnd-drop="dropCallback(event, index, item, external, type, 'fileType')"
+					>
 						<li
 							ng-repeat="item in filetree"
 							ng-include="'filetreeTmpl'"
 							ng-class="{ 'expanded': isExpanded( item.path ) }"
 							ng-init="expand( item.path, true ); root = true"
 							class="type-{{item.type}}"
+							
+							dnd-draggable="item"
+							dnd-effect-allowed="move"
+							dnd-moved="filetree.splice($index, 1)"
+							dnd-dragstart="logEvent('Started to drag a file', event)"
 						></li>
 					</ul>
 					
