@@ -44,7 +44,6 @@
 				<sidebar
 					ng-controller="SidebarController as sidebar"
 					ng-right-click="showCtxMenu(undefined, $event)"
-					file-drop="dropped( $event, file )"
 					ng-init="init()"
 				>
 				
@@ -54,35 +53,53 @@
 							ng-dblclick="!root && !isRenaming(item.path) && open( item.path )"
 							ng-right-click="!root && showCtxMenu(item, $event)"
 							ng-class="{ 'selected': isSelected( item.path ) }"
-							file-drop="dropped( $event, file, item.path )"
 							class="label"
 						>
 							<span class="expand" ng-click="!isRenaming(item.path) && expand( item.path, !isExpanded(item.path) )" stop-event></span>
 							<span class="icon"></span>
 							<span class="name" ng-show="!isRenaming(item.path)">{{item.name}}</span>
-							<form ng-show="isRenaming(item.path)" ng-submit="rename( item )" style="display: inline-block;">
+							<form ng-show="isRenaming(item.path)" ng-itemmit="rename( item )" style="display: inline-block;">
 								<input class="name-renaming" ng-show="isRenaming(item.path)" show-focus="isRenaming(item.path)" type="text" ng-model="item.name" />
-								<input type="submit" style="display: none;" />
+								<input type="itemmit" style="display: none;" />
 							</form>
 						</span>
-					    <ul ng-if="item.children" ng-show="isExpanded( item.path )">
+					    <ul
+						    ng-if="item.children"
+							ng-show="isExpanded( item.path )"
+							dnd-list="item.children"
+							dnd-external-sources="true"
+							dnd-dragover="dragoverCallback(event, index, external)"
+							dnd-drop="dropCallback(event, parent, item, external)"
+						>
 					        <li
 					        	ng-repeat="item in item.children"
 					        	ng-include="'filetreeTmpl'"
 					        	ng-class="{ 'expanded': isExpanded( item.path ) }"
-					        	ng-init="selected = false; item.expanded = false; root = false"
+					        	ng-init="selected = false; item.expanded = false; root = false; parent = item;"
 					        	class="type-{{item.type}} ext-{{item.ext}}"
+					        	
+					        	dnd-draggable="item"
+								dnd-effect-allowed="move"
 					        ></li>
 					    </ul>
 					</script>
 
-					<ul id="filetree">
+					<ul 
+						id="filetree" 
+						dnd-list="filetree"
+						dnd-external-sources="true"
+						dnd-dragover="dragoverCallback(event, index, external)"
+						dnd-drop="dropCallback(event, filetree, item, external)"
+					>
 						<li
 							ng-repeat="item in filetree"
 							ng-include="'filetreeTmpl'"
 							ng-class="{ 'expanded': isExpanded( item.path ) }"
-							ng-init="expand( item.path, true ); root = true"
+							ng-init="expand( item.path, true ); root = true; parent = item;"
 							class="type-{{item.type}}"
+							
+							dnd-draggable="item"
+							dnd-effect-allowed="move"
 						></li>
 					</ul>
 					
