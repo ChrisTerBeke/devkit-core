@@ -2,7 +2,7 @@ var gui			= require('nw.gui');
 var path		= require('path'); // auch
 
 var open		= require("open");
-var fs_extra	= require('fs-extra')
+var fs_extra	= require('fs-extra');
 var trash		= require('trash');
 var watchTree 	= require("fs-watch-tree").watchTree;
 
@@ -207,29 +207,19 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	}
 	
 	
-	$scope.dragoverCallback = function(event, index, external, type) {
-        $scope.logListEvent('dragged over', event, index, external, type);
+	$scope.dragoverCallback = function(event, index, external) {
         return index > 0;
     };
     
-    $scope.dropCallback = function(event, index, item, external, type, allowedType) {
-        $scope.logListEvent('dropped at', event, index, external, type);
-        if (external) {
-            if (allowedType === 'itemType' && !item.label) return false;
-            if (allowedType === 'containerType' && !angular.isArray(item)) return false;
-        }
-        return item;
-    };
-    
-    $scope.logEvent = function(message, event) {
-        console.log(message, '(triggered by the following', event.type, 'event)');
-        console.log(event);
-    };
-
-    $scope.logListEvent = function(action, event, index, external, type) {
-        var message = external ? 'External ' : '';
-        message += type + ' element is ' + action + ' position ' + index;
-        $scope.logEvent(message, event);
+    $scope.dropCallback = function(event, parent, child, external) {
+		if(child.type === 'file') {
+			fs_extra.move(child.path, parent.path + '/' + child.name, function(err) {
+				if (err) return console.error(err)
+			});
+		}
+        
+        $scope.update();
+        return child;
     };
 	
 	
