@@ -56,7 +56,7 @@
 			<ul class="homeys">
 				<li ng-repeat="homey in user.homeys">
 					<label class="label" for="activeHomey-{{homey._id}}" title="ID: {{homey._id}} LAN IP: {{homey.ip_internal}}">
-						<input type="radio" id="activeHomey-{{homey._id}}" name="activeHomey" ng-model="sharedVars.activeHomey" value="{{homey._id}}" ng-change="change(homey._id)" />
+						<input type="radio" id="activeHomey-{{homey._id}}" name="activeHomey" ng-model="activeHomey" value="{{homey._id}}" ng-change="changeActiveHomey(homey._id)" />
 						<span class="title">{{homey.name}}</span>
 					</label>
 				</li>

@@ -2,9 +2,32 @@ var HeaderAuthController = function($scope, $rootScope, $http)
 {	
 	$scope.apiRoot = window.CONFIG.paths.apiRoot;
 	$scope.user = undefined;
+	$scope.activeHomey = $rootScope.activeHomey = undefined;
+	
+	$scope.$watch("user", function(){
+		$rootScope.user = $scope.user;
+	});
+	
+	$scope.$watch("activeHomey", function(){
+		$rootScope.activeHomey = $scope.activeHomey;
+	});
 	
 	if(window.localStorage.user) {
 		$scope.user = JSON.parse(window.localStorage.user);
+	}
+	
+	$scope.changeActiveHomey = function( homey_id ){
+		window.localStorage.activeHomey = homey_id;
+		$scope.activeHomey = window.localStorage.activeHomey;
+//		$rootScope.activeHomey = $scope.activeHomey;
+	}
+	
+	$rootScope.$on('header.auth.getActiveHomey', function(){
+		$scope.changeActiveHomey( $scope.activeHomey );
+	});
+	
+	if(window.localStorage.activeHomey) {
+		$scope.changeActiveHomey( window.localStorage.activeHomey );
 	}
 	
 	$scope.init = function() {
@@ -24,7 +47,9 @@ var HeaderAuthController = function($scope, $rootScope, $http)
 		delete window.localStorage.access_token;
 		delete window.localStorage.refresh_token;
 		delete window.localStorage.user;
+		delete window.localStorage.activeHomey;
 		$scope.user = undefined;
+		$scope.activeHomey = undefined;
 	};
 	
 	$scope.getUserInfo = function() {
@@ -39,9 +64,13 @@ var HeaderAuthController = function($scope, $rootScope, $http)
 	    .then(function(result) {		    
 			if(result.status == 200) {
 				$scope.user = result.data;
-
-				console.log('user', $scope.user);
 				window.localStorage.user = JSON.stringify(result.data);
+				
+				// set first Homey as active
+				if( result.data.homeys.length > 0 ) {
+					$scope.changeActiveHomey( result.data.homeys[0]._id );
+				}
+				
 			}
 			else {
 				$scope.refreshAccessToken();
