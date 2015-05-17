@@ -45,6 +45,7 @@
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5",
     "ng-tags-input": "2.3.0",
     "ngDialog": "~0.4.0",
-    "angular-local-storage": "~0.2.0"
+    "angular-local-storage": "~0.2.0",
+    "angular-drag-and-drop-lists": "~1.2.0"
   }
 }

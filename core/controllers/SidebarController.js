@@ -2,7 +2,7 @@ var gui			= require('nw.gui');
 var path		= require('path'); // auch
 
 var open		= require("open");
-var fs_extra	= require('fs-extra')
+var fs_extra	= require('fs-extra');
 var trash		= require('trash');
 var watchTree 	= require("fs-watch-tree").watchTree;
 
@@ -206,9 +206,29 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 		$scope.filetree = readdirSyncRecursive( $scope.$parent.path, true ); // $parent is ApplicationController
 	}
 	
+	
+	$scope.dragoverCallback = function(event, index, external) {
+        return index > 0;
+    };
+    
+    $scope.dropCallback = function(event, parent, child, external) {
+		if(child.type === 'file') {
+			fs_extra.move(child.path, parent.path + '/' + child.name, function(err) {
+				if (err) return console.error(err)
+			});
+		}
+        
+        $scope.update();
+        return child;
+    };
+	
+	
+	
+	
 	/*
 	 * On drop event
 	 */
+/*
 	$scope.dropped = function(event, file, dropped_path) {
 		dropped_path = dropped_path || $scope.$parent.path;  // $parent is ApplicationController
 	    
@@ -231,6 +251,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	        console.log(err); // an error occured when copying file, let us know in console
         });
 	};
+*/
 	
 	/*
 	 * Show a custom context menu for the sidebar (aka the right mouse button menu)
