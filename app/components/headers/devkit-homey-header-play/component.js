@@ -7,51 +7,63 @@ var archiver	= require('archiver');
 
 var HeaderPlayController = function($scope, $rootScope, $filter)
 {
+		
+	var logsEl = document.getElementById('logs');
 	
-	$scope.playing = false;
-	$scope.uploading = false;
-	$scope.status = '';
+	$scope.playing 		= false;
+	$scope.uploading 	= false;
+	$scope.stopping 	= false;
+	$scope.status 		= false;
 	
 	$rootScope.$watch("user", function(){
 		$scope.user = $rootScope.user;
 	});
 	
-	$rootScope.$watch("activeHomey", function(){
-		$scope.activeHomey = $rootScope.activeHomey;
+	$rootScope.$watch("activeHomey", function(){		
+		$scope.homey = $filter('filter')( $rootScope.user.homeys, { _id: $rootScope.activeHomey }, true )[0];
+		logsEl.src = 'http://' + $scope.homey.ip_internal + '/manager/devkit/#/?token=' + $scope.homey.token;
 	});
 	
 	$scope.playpause = function(){
+			
+		if( typeof $scope.homey == 'undefined' ) {
+			alert('Please select a Homey first');
+			return;
+		}
+		
+		if( $scope.stopping ) return;
+		//if( $scope.uploading ) return;
+			
 		if( $scope.playing ) {
-			$scope.stop();
+			$scope.stop( $scope.homey.ip_internal, 80, $scope.homey.token );
 		} else {
-			$scope.play();
+			$scope.play( $scope.homey.ip_internal, 80, $scope.homey.token, false );
 		}
 	}
 	
-	$scope.play = function( brk ) {
+	$scope.play = function( address, port, token, brk ) {
 		
-		$scope.playing = true;
-		
+		address = address || '127.0.0.1';
+		port = port || 80;
 		brk = brk || false;
-		
-		var homey = $filter('filter')( $rootScope.user.homeys, { _id: $rootScope.activeHomey }, true )[0];
-		$scope.homey_ip = homey.ip_internal;
-				
+						
 		// create zip
 		$scope.status = 'Creating archive...';
 		$scope.statusCode = 'zipping';
 		
-		console.log(window.localStorage.project_dir)
-		
 		$scope.pack( window.localStorage.project_dir, function( tmppath ){
-						
+									
 			// send to homey
-			$scope.status = 'Uploading to Homey...';
-			$scope.uploading = true;
+			$scope.$apply(function(){
+				$scope.status = 'Uploading to Homey...';
+				$scope.uploading = true;
+			});
 			
-			$scope.upload( tmppath, brk, function( err, response ){
-				$scope.uploading = false;
+			$scope.upload( tmppath, address, port, token, brk, function( err, response ){
+				
 				$scope.$apply(function(){
+					
+					$scope.uploading = false;
 								
 					if( err ) {
 						$scope.statusCode = 'error';
@@ -71,28 +83,40 @@ var HeaderPlayController = function($scope, $rootScope, $filter)
 						return;
 					}
 						
-					$scope.status = 'Running...';
-					$scope.statusCode = 'running';
-					$scope.running_app = response.result.id;
+					$scope.status = 'Running';
+					$scope.playing = true;
+					$scope.running_app = response.result.app_id;
 					
-					// show devtools	
-					var url = ( false ? 'https' : 'http' ) + 
-						'://' +	homey.ip_internal + ':' + response.result.webport + 
-						'/debug?port=' + response.result.appport
-					
-					var gui = require('nw.gui');	
-				    $scope.debugwindow = gui.Window.open( url, {
-					    toolbar: false,
-					    frame: true				    
-				    });
+					// show logs
+					logsEl.src = 'http://' + address + '/manager/devkit/#/?app=' + response.result.app_id;
+					logsEl.parentElement.classList.add('visible');
 			    });				
 			});
 		});
 	}
 	
-	$scope.stop = function(){
-		$scope.playing = false;	
-		$scope.status = '';
+	$scope.stop = function( address, port, token ){
+		
+		$scope.stopping = true;
+		$scope.playing = false;
+		$scope.status = 'Stopping ' + $scope.running_app + '...';
+		
+		// hide logs
+		logsEl.parentElement.classList.remove('visible');
+		
+		$scope.request = request.del({
+			url: 'http://' + address + ':' + port + '/api/manager/devkit/' + $scope.running_app,
+			headers: {
+	    		'Authorization': 'Bearer ' + token
+			}
+		}, function( err, data, response ){
+			if( err ) return callback(err);
+			
+			$scope.$apply(function(){
+				$scope.status = false;
+				$scope.stopping = false;
+			});
+		});
 	}
 	
 	// functions for packing & uploading
@@ -122,13 +146,13 @@ var HeaderPlayController = function($scope, $rootScope, $filter)
 		});
 	}
 	
-	$scope.upload = function( tmppath, brk, callback ) {
+	$scope.upload = function( tmppath, address, port, token, brk, callback ) {
 							
 		// POST the tmp file to Homey
 		$scope.request = request.post({
-			url: 'http://' + $scope.homey_ip + ':8000/api/manager/devkit/',
+			url: 'http://' + address + ':' + port + '/api/manager/devkit/',
 			headers: {
-	    		'Authorization': 'Bearer acediaacedia'// + window.localStorage.access_token
+	    		'Authorization': 'Bearer ' + token
 			}
 		}, function( err, data, response ){
 			if( err ) return callback(err);
@@ -146,3 +170,15 @@ var HeaderPlayController = function($scope, $rootScope, $filter)
 HeaderPlayController.$inject = ['$scope', '$rootScope', '$filter'];
 
 app.controller("HeaderPlayController", HeaderPlayController);
+
+// logs
+window.addEventListener('load', function(){
+	
+	var logsWrapEl = document.createElement("div");
+	logsWrapEl.id = 'logs-wrap';
+	document.body.appendChild(logsWrapEl);
+	
+	var logsEl = document.createElement("iframe");
+	logsEl.id = 'logs';
+	logsWrapEl.appendChild(logsEl);
+});

@@ -59,7 +59,7 @@
 	}
 	#header-auth .dropdown {
 		position: absolute;
-		z-index: 10;
+		z-index: 999999;
 		list-style: none;
 		right: -3px;
 		top: 38px;
@@ -116,9 +116,9 @@
 			}
 				#header-auth .dropdown li .label .icon-homey {
 					display: inline-block;
-					width: 16px;
-					height: 16px;
-					display: inline-block;
+					width: 13px;
+					height: 13px;
+					vertical-align: middle;
 					background: url(./img/homey.svg) no-repeat center center;
 					background-size: contain;
 				}

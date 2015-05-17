@@ -45,6 +45,10 @@ widgets {
 	background: rgba(0,0,0,.1);
 }
 
+header {
+	position: relative;
+}
+
 #header-stoplight {
 	padding-left: 9px;
 }
