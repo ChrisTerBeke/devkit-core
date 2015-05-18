@@ -38,7 +38,6 @@ body {
 	font-family: "Helvetica", sans-serif;
 	font-weight: 300;
 	background: transparent;
-	transition: all 0.3s;
 
 	-webkit-user-select: none;
 	cursor: default;
@@ -184,7 +183,6 @@ content {
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;
-					transition: all .2s ease-in-out;
 				}
 				#filetree li .label:hover {
 				}
@@ -210,7 +208,6 @@ content {
 						visibility: hidden;
 
 						transition: transform 0.25s;
-
 						opacity: 0.75;
 					}
 					#filetree li .label .expand:hover:before {
@@ -301,7 +298,6 @@ content {
 			display: block;
 			box-sizing: border-box;
 			overflow: hidden;
-			border-bottom: 1px solid #ccc;
 		}
 			tabs tab {
 				position: relative;
@@ -312,7 +308,6 @@ content {
 				line-height: 25px;
 				box-sizing: border-box;
 				font-size: 12px;
-				transition: all .2s ease-in-out;
 			}
 			tabs tab.active + tab {
 			}
@@ -331,7 +326,6 @@ content {
 					text-overflow: ellipsis;
 					max-width: 75%;
 					margin-left: 2em;
-					transition: all .2s ease-in-out;
 				}
 				tabs tab .close {
 					border-radius: 30px;
