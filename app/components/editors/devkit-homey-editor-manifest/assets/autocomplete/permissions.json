@@ -1,0 +1,20 @@
+[
+	"homey:manager:cron",
+	"homey:manager:devices",
+	"homey:manager:devkit",
+	"homey:manager:drivers",
+	"homey:manager:flow",
+	"homey:manager:geolocation",
+	"homey:manager:insights",
+	"homey:manager:ledring",
+	"homey:manager:media",
+	"homey:manager:presence",
+	"homey:manager:speech-input",
+	"homey:manager:speech-output",
+	"homey:manager:zones",
+	
+	"homey:device:lights",
+	"homey:device:climate",
+	"homey:device:security"
+	
+]

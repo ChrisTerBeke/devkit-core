@@ -58,19 +58,13 @@ header {
 	box-sizing: border-box;
 	border: 1px solid transparent;
 	border-right: none;
-	transition: border-color 0.1s;
+	transition: none;
 }
 #filetree li .label:hover {
 	background-color: rgba(255,255,255,0.05);
 }
 #filetree li .label.selected {
-	background: url(./img/body-bg.jpg) center center no-repeat fixed;
-	background-size: cover;
-	border-color: rgba(0,0,0,0.2);
-	border-radius: 3px 0 0 3px;
-	margin-right: -1px;
-	left: 0;
-	z-index: 999;
+	background-color: rgba(255,255,255,0.2);
 }
 
 #filetree li .label .name,
@@ -136,8 +130,8 @@ tabs tab .close:active {
 	background: #862a2a;
 	border-color: #862a2a;	
 }
-tabs tab.changed .close .changed {
-	background: white;	
+tabs tab.changed .close:before {
+	font-size: 12px;
 }
 
 #login {

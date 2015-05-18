@@ -35133,20 +35133,234 @@ app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file
 				widgets: [ 'svg' ]
 			}
 		},
+		/*
 		{
 			ext: ".md",
 			config: {
 				widgets: [ 'markdown' ]
 			}
 		},
+		*/
 		{
-			ext: ".json",
+			base: 'app.json',
+			dir: '/',
 			config: {
 				editor: "manifest"
 			}
 		}
 	]);
 }]);;
+var fs 		= require('fs');
+var fse		= require('fs-extra');
+var path 	= require('path');
+
+var semver	= require('semver');
+
+var EditorManifestController = function( $scope, $rootScope, $http, $q, $events )
+{
+	
+	$scope.manifest = angular.fromJson( $scope.file.code );
+		
+	$scope.file._changed = false;
+	
+	$scope.languages = [
+		{
+			code: 'en',
+			name: 'English'
+		},
+		{
+			code: 'nl',
+			name: 'Dutch'
+		},
+		{
+			code: 'de',
+			name: 'German'
+		},
+		{
+			code: 'fr',
+			name: 'French'
+		},
+		{
+			code: 'es',
+			name: 'Spanish'
+		}
+	];
+	$scope.activeLanguage = 'en';
+	
+	var hook = Hook('global');
+	
+	$scope.$watch('manifest', function(){
+		$scope.file._changed = true;
+		hook.call('onManifestChange', $scope.manifest);
+	}, true);
+
+	$events.beforeSave($scope.file.path, function(cb) {
+		var manifest = $scope.manifest;
+
+		if(semver.valid(manifest.version)) {
+		
+			// replace autocomplete entries
+			manifest.permissions = manifest.permissions.filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
+			
+			manifest.speech.forEach(function( trigger ){
+				for( var synonym_lang in trigger.synonyms ) {
+					var synonyms = trigger.synonyms[synonym_lang].filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
+					if( synonyms.length > 0 ) { 
+						trigger.synonyms[synonym_lang] = synonyms;
+					} else {
+						delete trigger.synonyms[synonym_lang];
+					}
+				}
+			});
+
+			// save the file
+			cb({
+				code: angular.toJson( manifest, true )
+			});
+			
+			hook.call('onManifestSave', manifest);
+		}
+		else {
+			//TODO: Add version number.
+			alert('Invalid Version Number');
+			// console.log('Invalid Version');
+		}
+	});
+    
+    // permissions
+	$scope.autocompletePermissionTags = function( query ){
+		return $http.get('./app/components/editors/devkit-homey-editor-manifest/assets/autocomplete/permissions.json');
+	}
+	
+	// mobile
+	$scope.autocompleteInterfacesMobileFiles = function( query, ext ) {
+		// get files
+		var cssdir = path.join( $rootScope.project.path, 'mobile', ext );
+		return fs.readdirSync( cssdir ).filter(function(file){
+			return path.extname( file ) == '.' + ext;
+		});
+	}
+    
+    // speech
+    /*
+    $scope.autocompleteSynonyms = function( query ) {
+	    return [];
+		return $q(function(resolve, reject) {
+			$http
+				.get('http://words.bighugelabs.com/api/2/ffa216479deb64dc5d75cba46f27b682/' + query + '/json')
+				.success(function( data ){					
+					resolve( data.noun.syn );					
+				})
+				.error(function(data){
+					reject();
+				});
+		});
+    }
+    */
+    
+    $scope.addSpeechTrigger = function(){
+	    $scope.manifest.speech.push({
+			id: '',
+			importance: 0.3,
+			synonyms: {
+				"en": []
+			}
+	    });
+    }
+    
+    $scope.removeSpeechTrigger = function( trigger ) {
+		var index = $scope.manifest.speech.indexOf(trigger);
+		$scope.manifest.speech.splice(index, 1);     
+    }
+    
+    // flow
+    $scope.addFlowTrigger = function(){
+	    if( typeof $scope.manifest.flow == 'undefined' ) $scope.manifest.flow = {};
+	    if( typeof $scope.manifest.flow.triggers == 'undefined' ) $scope.manifest.flow.triggers = [];
+	    $scope.manifest.flow.triggers.push({
+			method: '',
+			title: {
+				en: ''
+			}
+	    });
+    }
+    $scope.removeFlowTrigger = function( trigger ) {
+		var index = $scope.manifest.flow.triggers.indexOf(trigger);
+		$scope.manifest.flow.triggers.splice(index, 1);     
+    }
+    
+    $scope.addFlowArg = function( args ){
+	    args.push({
+		    name: '',
+		    type: 'text',
+		    placeholder: {}
+	    })
+    }
+    
+    $scope.removeFlowArg = function( args, arg ){
+		var index = args.indexOf(arg);
+		args.splice(index, 1);  
+    }
+    
+    // icon
+	var iconUrlTemplate = path.join( window.localStorage.project_dir, 'assets', 'icon.svg');
+	$scope.iconUrl = iconUrlTemplate + '?r=' + Math.random();
+	
+    $scope.received = function( event, file ) {
+	    
+	    if( file.type != 'image/svg+xml' ) {
+		    alert('Only svg files are allowed for your app icon');
+		    return;
+	    }
+	    
+	    var assets_path = path.join( window.localStorage.project_dir, 'assets' );
+	    var icon_path 	= path.join( assets_path, 'icon.svg' );
+	    
+		if( fs.existsSync( icon_path ) ) {
+			if( ! confirm("Overwrite existing icon?") ) {
+				return;
+			}
+		}
+
+		fse.ensureDir(assets_path, function (err) {				
+			fse.copy( file.path, icon_path, {}, function( err  ){
+				if (err) return console.error(err)
+				$scope.$apply(function(){
+					$scope.iconUrl = iconUrlTemplate + '?r=' + Math.random();
+				});
+			});		
+		});
+		
+    }
+	
+	/*
+    $rootScope.$on('editor.saveRequest.' + $scope.file.path, function(){
+	    
+	    var manifest = angular.copy( $scope.manifest );
+		
+		manifest.permissions = manifest.permissions.filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
+		
+		manifest.interfaces.speech.triggers.forEach(function( trigger ){
+			for( var synonym_lang in trigger.synonyms ) {
+				var synonyms = trigger.synonyms[synonym_lang].filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
+				if( synonyms.length > 0 ) { 
+					trigger.synonyms[synonym_lang] = synonyms;
+				} else {
+					delete trigger.synonyms[synonym_lang];
+				}
+			}
+		});
+	     	    
+		$scope.file.code = angular.toJson( manifest, true );
+		$rootScope.$emit('editor.performSave');
+    });
+    */
+    	
+}
+
+EditorManifestController.$inject = ['$scope', '$rootScope', '$http', '$q', '$events'];
+
+app.controller("EditorManifestController", EditorManifestController);;
 var HeaderAuthController = function($scope, $rootScope, $http)
 {	
 	$scope.apiRoot = window.CONFIG.paths.apiRoot;
@@ -35435,7 +35649,10 @@ var HeaderPlayController = function($scope, $rootScope, $filter)
 					
 					// show logs
 					logsEl.src = 'http://' + address + '/manager/devkit/#/?app=' + response.result.app_id;
-					logsEl.parentElement.classList.add('visible');
+					logsEl.parentElement.classList.add('visible-1');
+					setTimeout(function(){
+						logsEl.parentElement.classList.add('visible-2');
+					}, 1);
 			    });				
 			});
 		});
@@ -35448,7 +35665,11 @@ var HeaderPlayController = function($scope, $rootScope, $filter)
 		$scope.status = 'Stopping ' + $scope.running_app + '...';
 		
 		// hide logs
-		logsEl.parentElement.classList.remove('visible');
+		
+		logsEl.parentElement.classList.remove('visible-2');
+		setTimeout(function(){
+			logsEl.parentElement.classList.remove('visible-1');
+		}, 300);
 		
 		$scope.request = request.del({
 			url: 'http://' + address + ':' + port + '/api/manager/devkit/' + $scope.running_app,
@@ -35527,6 +35748,7 @@ window.addEventListener('load', function(){
 	var logsEl = document.createElement("iframe");
 	logsEl.id = 'logs';
 	logsWrapEl.appendChild(logsEl);
+	
 });;
 var fs		= require('fs');
 var path	= require('path');
@@ -35536,8 +35758,19 @@ var HeaderTitleController = function($scope, $rootScope)
 	
 	$scope.manifest = {};
 	
-    $scope.update = function(){
+    $scope.update = function(manifest){
 	    
+	    manifest = manifest || $scope.getManifest();
+	    	    
+	    if( manifest instanceof Error ) {
+			$scope.manifest.name = { en: 'Warning: invalid app.json!' };
+			$scope.manifest.id = manifest.toString();
+		} else {
+			$scope.manifest = angular.copy(manifest);			
+		}
+    }
+    
+    $scope.getManifest = function(){
 	    if( typeof window.localStorage.project_dir == 'undefined' ) return;
 	    
 	    var manifestPath = path.join(window.localStorage.project_dir, 'app.json');
@@ -35546,17 +35779,16 @@ var HeaderTitleController = function($scope, $rootScope)
 		    var manifestContents = fs.readFileSync( manifestPath ).toString();
 		    
 		    try {
-				$scope.manifest = JSON.parse(manifestContents);	    
+				return JSON.parse(manifestContents);	    
 			} catch(e){
-				$scope.manifest.name.en = 'Warning: invalid app.json!';
-				$scope.manifest.id = e.toString();
+				return e;
 			}		
 		}
     }
 
 	var hook = Hook('global');
-	hook.register('onManifestSave', function (e) {
-		$scope.update();
+	hook.register('onManifestSave', function (manifest) {
+		$scope.update(manifest);
 	});
 
 	$rootScope.$on('service.project.ready', function(){

@@ -1,0 +1,415 @@
+.editor-manifest {
+	padding: 10px;
+	background: white;
+}
+	.editor-manifest .languages {
+		position: absolute;
+		z-index: 10;
+		right: 40px;
+		top: 30px;
+		list-style: none;
+		background: white;
+		border: 1px solid #ccc;
+	}
+		.editor-manifest .languages li {
+			line-height: 20px;
+			font-size: 12px;
+			text-align: right;
+			display: inline-block;
+			margin: 3px;
+			position: relative;
+			opacity: 0.6;
+		}
+		.editor-manifest .languages li.active {
+			opacity: 1;
+		}
+			.editor-manifest .languages li img {
+				display: inline-block;
+				vertical-align: middle;
+			}
+			.editor-manifest .languages li .tooltip {
+				position: absolute;
+				right: 0;
+				white-space: nowrap;
+				background: #eee;
+				border: 1px solid #ddd;
+				border-radius: 2px;
+				font-size: 12px;
+				padding: 2px;
+				font-weight: normal;
+				
+				top: 20px;
+				opacity: 0;
+				visibility: hidden;
+				
+				transition: all 0.3s;
+			}
+			.editor-manifest .languages li:hover .tooltip {
+				visibility: visible;
+				opacity: 1;
+				top: 24px;
+			}
+			.editor-manifest .languages li .tooltip:before {
+				content: "";
+				display: block;
+				position: absolute;
+				z-index: 2;
+				right: 5px;
+				top: -5px;
+				border-bottom: 5px solid #eee;
+				border-left: 5px solid transparent;
+				border-right: 5px solid transparent;
+			}
+			.editor-manifest .languages li .tooltip:after {
+				content: "";
+				display: block;
+				position: absolute;
+				z-index: 1;
+				right: 4px;
+				top: -6px;
+				border-bottom: 6px solid #ddd;
+				border-left: 6px solid transparent;
+				border-right: 6px solid transparent;
+			}
+	.editor-manifest fieldset {
+		padding: 10px;
+		border: 1px solid rgba(0,0,0,0.1);
+		margin-bottom: 10px;
+	}
+		.editor-manifest fieldset legend {
+			font-size: 12px;
+			font-weight: 400;
+			padding: 0 4px;
+			color: #333;
+		}
+		.editor-manifest fieldset row {
+			display: block;
+			margin-bottom: 10px;
+		}
+		.editor-manifest fieldset row:after {
+			content: "";
+			clear: both;
+			visibility: hidden;
+			display: block;
+			font-size: 0;
+			content: " ";
+			clear: both;
+			height: 0;
+		}
+		.editor-manifest fieldset row:last-child {
+			margin-bottom: 0;
+		}
+		.editor-manifest fieldset label {
+			display: block;
+			font-size: 12px;
+			color: #333;
+			font-weight: 300;
+			line-height: 16px;
+		}
+		.editor-manifest fieldset row label {
+			float: left;
+			width: 200px;
+			text-align: right;
+			line-height: 24px;
+			margin-right: 10px;
+		}
+		.editor-manifest input,
+		.editor-manifest textarea,
+		.editor-manifest tags-input .tags {
+			background: transparent;
+			border: 1px solid rgba(0,0,0,0.05);
+			background: rgba(0,0,0,0.045);
+			padding: 4px;
+			font-family: inherit;
+			font-weight: 300;
+			font-size: 12px;
+			color: #333;
+			cursor: text;
+			border-radius: 0;
+			float: left;
+			width: 240px;
+		}
+		.editor-manifest input[type="range"] {
+			cursor: default;
+		}
+		.editor-manifest input:focus {
+			border-color: #a9c9ff;
+		}
+		
+		.editor-manifest ul {
+			list-style: none;
+		}
+		
+		ul.list {
+			
+		}
+			ul.list li {
+				position: relative;
+/*				box-shadow: 0 0 10px rgba(0,0,0,0.2);*/
+				background: rgba(0,0,0,0.05);
+				padding: 10px;
+				border: 1px solid rgba(0,0,0,0.1);
+				margin-bottom: 1em;
+			}
+			ul.list li .remove {
+				background: rgba(0,0,0,0.2);
+				box-shadow: inset 0 0 3px rgba(0,0,0,0.2);
+				width: 15px;
+				height: 15px;
+				border-radius: 7px;
+				position: absolute;
+				right: 7px;
+				top: 7px;
+				text-align: center;
+				line-height: 16px;
+				font-size: 7px;
+				color: white;
+				text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+			}
+			ul.list li .remove:hover {
+				background: #d90000;
+			}
+			ul.list li.add {
+				background: transparent;
+				padding: 0;
+				border: none;
+				margin-bottom: 0;
+				text-align: right;
+			}
+		
+.editor-manifest #manifest-icon {
+	width: 80px;
+	height: 80px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	background: url(./img/transparent.png) repeat;
+}
+.editor-manifest #manifest-icon.file-drop-over {
+	border-color: #333;
+}
+
+.editor-manifest p {
+	font-size: 13px;
+	padding-bottom: 1em;
+}
+.editor-manifest p em {
+	font-style: italic;
+	color: #666;
+}
+
+.editor-manifest .importance {
+	vertical-align: middle;
+	font-size: 12px;
+	color: #999;
+	margin-left: 7px;
+}
+
+tags-input {
+  display: block;
+  float: left;
+  width: 208px;
+}
+tags-input *, tags-input *:before, tags-input *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+tags-input .host {
+  position: relative;
+  height: 100%;
+}
+tags-input .host:active {
+  outline: none;
+}
+
+tags-input .tags {
+  overflow: hidden;
+  word-wrap: break-word;
+  cursor: text;
+  height: 100%;
+  padding: 0 1px !important;
+}
+tags-input .tags.focused {
+  outline: none;
+}
+tags-input .tags .tag-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+tags-input .tags .tag-item {
+  margin: 2px 1px;
+  padding: 0 5px;
+  display: inline-block;
+  float: left;
+  height: 22px;
+  line-height: 24px;
+  font-size: 12px;
+  border-radius: 3px;
+  background: #222;
+  color: white;
+}
+tags-input .tags .tag-item.selected {
+	
+}
+tags-input .tags .tag-item .remove-button {
+  margin: 0 2px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: white;
+  opacity: 0.5;
+}
+tags-input .tags .tag-item .remove-button:hover {
+	opacity: 1;
+}
+tags-input .tags .tag-item .remove-button:active {
+	opacity: 0.5;
+}
+tags-input .tags .input {
+  border: 0;
+  outline: none;
+  margin: 2px;
+  padding: 0;
+  padding-left: 5px;
+  float: left;
+  height: 22px;
+}
+tags-input .tags .input.invalid-tag {
+  color: red;
+}
+tags-input .tags .input::-ms-clear {
+  display: none;
+}
+tags-input.ng-invalid .tags {
+	
+}
+tags-input[disabled] .host:focus {
+  outline: none;
+}
+tags-input[disabled] .tags {
+  background-color: #eeeeee;
+  cursor: default;
+}
+tags-input[disabled] .tags .tag-item {
+  opacity: 0.65;
+}
+tags-input[disabled] .tags .tag-item .remove-button {
+  cursor: default;
+}
+tags-input[disabled] .tags .tag-item .remove-button:active {
+  color: #585858;
+}
+tags-input[disabled] .tags .input {
+  background-color: #eeeeee;
+  cursor: default;
+}
+
+tags-input .autocomplete {
+  margin-top: 5px;
+  position: absolute;
+  z-index: 999;
+  width: 100%;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+tags-input auto-complete .autocomplete {
+	top: 35px;
+}
+tags-input auto-complete.reversed .autocomplete {
+	top: auto;
+	bottom: 45px;
+}
+tags-input auto-complete .autocomplete:before {
+	content: "";
+	position: absolute;
+	z-index: 2;
+	left: 10px;
+	top: -10px;
+	border-bottom: 10px solid white;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+}
+tags-input auto-complete.reversed .autocomplete:before {
+	border-bottom: none;
+	border-top: 10px solid white;
+	top: auto;
+	bottom: -10px;
+}
+tags-input auto-complete .autocomplete:after {
+	content: "";
+	position: absolute;
+	z-index: 1;
+	left: 9px;
+	top: -11px;
+	border-bottom: 11px solid rgba(0,0,0,0.2);
+	border-left: 11px solid transparent;
+	border-right: 11px solid transparent;
+}
+tags-input auto-complete.reversed .autocomplete:after {
+	border-bottom: none;
+	border-top: 11px solid rgba(0,0,0,0.2);;
+	top: auto;
+	bottom: -11px;
+}
+
+tags-input .autocomplete .suggestion-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  max-height: 280px;
+  overflow-y: auto;
+  position: relative;
+}
+tags-input .autocomplete .suggestion-item {
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: black;
+  background-color: white;
+  font-size: 12px;
+}
+tags-input .autocomplete .suggestion-item.selected {
+  text-decoration: underline;
+}
+tags-input .autocomplete .suggestion-item.selected em {
+	text-decoration: underline;
+}
+tags-input .autocomplete .suggestion-item em {
+  color: black;
+  background-color: white;
+}
+
+
+
+
+.editor-manifest button,
+.editor-manifest .button {
+	padding: 0.5em 0.75em;
+	font-size: 12px;
+	font-family: inherit;
+	font-weight: inherit;
+	border: 1px solid #ccc;
+	background: #eee;
+	border-radius: 3px;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+.editor-manifest button:hover,
+.editor-manifest .button:hover {
+	background: #f3f3f3;
+}
+.editor-manifest button:active,
+.editor-manifest .button:active {
+	background: #eaeaea;
+}
+.editor-manifest button[disabled],
+.editor-manifest .button[disabled]
+.editor-manifest .button.disabled {
+	opacity: 0.5;
+	background: #eee;
+}

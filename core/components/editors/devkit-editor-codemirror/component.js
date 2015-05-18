@@ -36,23 +36,15 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$event
 	};
 
 	switch( file_ext ) {
+		case '.html':
+			$scope.codemirrorOpts.mode = 'htmlmixed';		
+			break;
 		case '.js':
 			$scope.codemirrorOpts.mode = 'javascript';
-			$scope.codemirrorOpts.lint = {
-				node: true, // TODO: browser for web files
-				curly: true,
-				undef: true,
-				predef: [ "Homey", "__" ]
-			};
-			$scope.codemirrorOpts.gutters = ["CodeMirror-lint-markers"];
 			break;
 		case '.css':
 			$scope.codemirrorOpts.mode = 'css';
 			$scope.codemirrorOpts.lint = true;
-			/*
-			$scope.codemirrorOpts.hint = true;
-			$scope.codemirrorOpts.autohint = true;
-			*/
 			$scope.codemirrorOpts.gutters = ["CodeMirror-lint-markers"];
 			break;
 		case '.md':
@@ -61,6 +53,12 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$event
 		case '.svg':
 			$scope.codemirrorOpts.mode = 'application/xml';
 			break;
+		default:
+			// default to extension mode
+			var defaultmode = file_ext.substring(1);
+			if( typeof CodeMirror.modes[ defaultmode ] != 'undefined' ) {
+				$scope.codemirrorOpts.mode = defaultmode;
+			}
 
 	}
 

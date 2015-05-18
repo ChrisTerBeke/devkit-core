@@ -89,7 +89,10 @@ var HeaderPlayController = function($scope, $rootScope, $filter)
 					
 					// show logs
 					logsEl.src = 'http://' + address + '/manager/devkit/#/?app=' + response.result.app_id;
-					logsEl.parentElement.classList.add('visible');
+					logsEl.parentElement.classList.add('visible-1');
+					setTimeout(function(){
+						logsEl.parentElement.classList.add('visible-2');
+					}, 1);
 			    });				
 			});
 		});
@@ -102,7 +105,11 @@ var HeaderPlayController = function($scope, $rootScope, $filter)
 		$scope.status = 'Stopping ' + $scope.running_app + '...';
 		
 		// hide logs
-		logsEl.parentElement.classList.remove('visible');
+		
+		logsEl.parentElement.classList.remove('visible-2');
+		setTimeout(function(){
+			logsEl.parentElement.classList.remove('visible-1');
+		}, 300);
 		
 		$scope.request = request.del({
 			url: 'http://' + address + ':' + port + '/api/manager/devkit/' + $scope.running_app,
@@ -181,4 +188,5 @@ window.addEventListener('load', function(){
 	var logsEl = document.createElement("iframe");
 	logsEl.id = 'logs';
 	logsWrapEl.appendChild(logsEl);
+	
 });

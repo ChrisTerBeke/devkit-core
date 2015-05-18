@@ -43,14 +43,17 @@ app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file
 				widgets: [ 'svg' ]
 			}
 		},
+		/*
 		{
 			ext: ".md",
 			config: {
 				widgets: [ 'markdown' ]
 			}
 		},
+		*/
 		{
-			ext: ".json",
+			base: 'app.json',
+			dir: '/',
 			config: {
 				editor: "manifest"
 			}

@@ -1,35 +1,3 @@
-<!--
-	
-	<div
-	ng-controller="HeaderAuthController"
-	ng-init="init()"
-	class="devkit-printr-header-auth"
->
-
-	<div ng-switch="user || '_undefined_'" >      
-	      <span ng-switch-when="_undefined_">
-			<a class="btn" ng-click="login()" title="Login">
-				<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/login.svg)"></span>
-			</a>
-	      </span>     
-
-	      <span ng-switch-default>
-	      	<span class="account">
-				<div class="name">
-					<span>{{ firstname }}</span>
-				</div>
-				<img ng-src="{{avatar || 'app/assets/images/avatar-fallback.jpg'}}?size=30" />
-			</span>
-
-	      	<a class="btn" ng-click="logout()" title="Logout">
-				<span class="icon" style="-webkit-mask-image: url(app/assets/images/icon/logout.svg)"></span>
-			</a>
-	      </span>
-	</div>
-</div>
-
--->
-
 <div
 	ng-controller="HeaderAuthController"
 	ng-init="init()"

@@ -53,9 +53,11 @@
 	}
 	#header-play .wrap .button:hover {
 		transform: scale(1.2);
+		opacity: 1;
 	}
 	#header-play .wrap .button:active {
 		transform: scale(0.9);
+		opacity: 0.85;
 	}
 	#header-play .wrap.playing .button {
 		border-top-width: 0;
@@ -98,14 +100,19 @@
 	right: 10px;
 	bottom: 10px;
 	box-shadow: 0 0 5px rgba(0,0,0,0.2);
-	
+
+	display: none;
+		
 	visibility: hidden;
 	opacity: 0;
 	transform: scale(0.9);
 	transform-origin: 215px top;
-	transition: all 0.5s;
+	transition: all 0.3s;
 }
-#logs-wrap.visible {
+#logs-wrap.visible-1 {
+	display: block;
+}
+#logs-wrap.visible-2 {
 	opacity: 1;
 	visibility: visible;
 	transform: scale(1.0);
