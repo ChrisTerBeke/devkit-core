@@ -7,7 +7,7 @@
         <!-- Include Resources -->
         <link rel="stylesheet" href="./core/app.css" id="stylesheets" />
 		<!--         <link rel="stylesheet" href="./bower_components/css-base/dist/compiled_formide.css" id="stylesheets" /> --><!-- Gives some styling issues -->
-        <script src="public/assets/javascripts/application.js" id="javascripts"></script>
+        <script src="./public/assets/javascripts/application.js" id="javascripts"></script>
         
     </head>
     <body
@@ -107,11 +107,11 @@
 					<div id="sidebar-helper">
 
 						<div class="btn btn-add" ng-click="newFile()">
-							<span class="icon" style="-webkit-mask-image: url(public/assets/images/icon/newfile.svg)"></span>
+							<span class="icon" style="-webkit-mask-image: url(./core/assets/images/icon/newfile.svg)"></span>
 						</div>
 
 						<div class="btn btn-add" ng-click="newFolder()">
-							<span class="icon" style="-webkit-mask-image: url(public/assets/images/icon/newfolder.svg)"></span>
+							<span class="icon" style="-webkit-mask-image: url(./core/assets/images/icon/newfolder.svg)"></span>
 						</div>
 					</div>
 
@@ -148,7 +148,7 @@
 										<br/><br/><br/><br/>
 								
 										<p>
-											<img src="public/assets/images/icon/tools.svg" width="30%" style="opacity: 0.1;" />
+											<img src="./core/assets/images/icon/tools.svg" width="30%" style="opacity: 0.1;" />
 										</p>
 								
 										<h1>Welcome, Developer!</h1>
@@ -185,38 +185,11 @@
 		<util>
 			<input id="directorychooser" type="file" webkitdirectory />
 		</util>
-
-		<script type="text/ng-template" id="SDKSettings">
-			<div class="settings">
-				<section>
-					<hgroup>
-						<h1>{{settings.package.name}}</h1>
-						<h4>{{settings.package.description}}</h4>
-					</hgroup>
-				</section>
-
-				<hr class="rule"/>
-
-				<section>
-					<h4>Author: {{settings.package.author}}</h4>
-
-					<div ng-repeat="contributer in settings.package.contributors">
-						<small>{{contributer.name}} (<a href="mailto:{{contributer.email}}">{{contributer.email}}</a>)</small>
-					</div>
-				</section>
-
-				<hr class="rule"/>
-
-				<section>
-					<h2>Settings</h2>
-
-					<label for="theme">SDK Theme </label>
-					<select name="theme" ng-model="settings.theme" ng-options="theme.id as theme.name for theme in themes">
-			    	</select>
-				</section>
-				
-				
-			</div>
-		</script>
+		
+		<div
+			ng-include="'./app/settings.html'"
+			id="settings"
+		></div>
+		
 	</body>
 </html>
