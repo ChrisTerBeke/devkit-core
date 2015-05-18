@@ -64,7 +64,7 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 	    
 	    // check for unsaved changes
 	    var should_delete = false;
-	    if( factory.files[ file_path ]._changed )
+	    if( typeof factory.files[ file_path ] != 'undefined' && factory.files[ file_path ]._changed )
 	    {
 			if( confirm("There are unsaved changes, close " + factory.files[ file_path ].name + " anyway?" ) ) {
 				should_delete = true;
