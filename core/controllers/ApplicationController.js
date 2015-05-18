@@ -14,14 +14,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	$scope.loaded = false;
 	$scope.platform = os.platform();
 
-	if(window.localStorage.sdk_settings) {
-		$scope.settings = JSON.parse(window.localStorage.sdk_settings);
-	}
-	else {
-		$scope.settings = {};
-		$scope.settings.theme = 'dark';
-	}
-
 	$scope.focus = true;
 	$scope.blurred = false;
 
@@ -33,29 +25,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	$scope.fileHistory = [];
 	$scope.path = false; // current project path
 
-	$scope.themes = [
-		{ name: "Dark Theme", id: "dark" }, 
-		{ name: "Light Theme", id: "light" }
-	];
-
 	var obj = {content:null};
-
-    $http.get('./package.json').success(function(data) {
-        $scope.settings.package = data;
-    });  
-
-	$scope.$watch('settings', function(newVal, oldVal){
-	    window.localStorage.sdk_settings = JSON.stringify($scope.settings);
-
-	    // hook.call('onSettingsChange', $scope.settings);
-	}, true);
-
-	$scope.toggleSettings = function() {
-		ngDialog.open({ 
-			template: 'SDKSettings',
-			scope: $scope
-		});
-	};
 
 	$scope.setBlur = function(blur)
 	{
