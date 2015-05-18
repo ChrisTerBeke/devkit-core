@@ -1,49 +1,34 @@
 {
   "name": "devkit",
   "version": "0.0.1",
-  "description": "Athom BV and PRINTR Development Kit",
+  "description": "Athom Development Kit",
   "main": "index.html",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PRINTR3D/devkit.git"
+    "url": "https://github.com/athombv/devkit.git"
   },
   "keywords": [
-    "Printr",
-    "Formide",
-    "FormideOS",
     "Athom",
     "Homey",
     "NodeJS",
     "AngularJS",
     "JS",
-    "SASS",
     "CSS",
     "Bower",
     "Grunt"
   ],
-  "author": "AthomBV/PRINTR",
+  "author": "Athom BV",
   "contributors": [
     {
       "name": "Emile Nijssen",
       "email": "emile@athom.nl"
-    },
-    {
-      "name": "Chris ter Beke",
-      "email": "chris@printr.nl"
-    },
-    {
-      "name": "Bouke Regnerus",
-      "email": "bouke@printr.nl"
     }
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/PRINTR3D/devkit/issues"
+    "url": "https://github.com/athombv/devkit/issues"
   },
-  "homepage": "https://github.com/PRINTR3D/devkit",
+  "homepage": "https://github.com/athombv/devkit",
   "private": false,
   "dependencies": {
     "archiver": "^0.14.3",

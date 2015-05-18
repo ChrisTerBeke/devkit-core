@@ -92,45 +92,18 @@ window.CONFIG = {};
 // paths
 window.CONFIG.paths = {
 	root:		window.location.protocol + '//' + window.location.hostname + ':' + window.location.port,
-	login:		'',
-	user:		'',
-	appManager:	'',
-	apiRoot:	''
+	login:		'https://devkit.athom.nl/auth',
+	apiRoot:	'https://api.athom.nl'
 };
 
 // url whitelist
 window.CONFIG.whitelist = [
 	'self',
 	'file://',
-	'http://localhost:8080/**'
+	'http://localhost:8080/**',
+	'http://*.athom.nl/**',
+	'https://*.athom.nl/**'
 ];;
-if(window.ENV.type == 'development' || window.ENV.type == 'testing')
-{
-  console.groupCollapsed("Development- or Testing Mode");
-   	if(window.DEBUG)
-   	{
-   		console.log("Debugging Mode: On");
-   	}
-   	else
-   	{
-   		console.log("Debugging Mode: Off", "color: red;");
-   	}
-
-    console.group("App", window.ENV.name);
-       	console.log("Environment", window.ENV);
-    	console.log("Paths", window.CONFIG.paths);
-    console.groupEnd();
-
-  console.groupEnd();
-}
-else if(window.DEBUG)
-{
-	console.log("Debugging Mode: On", "color: blue;");
-}
-
-if (window.DEBUG) {
-	console.time("Angular loaded");
-};
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -35127,26 +35100,22 @@ loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-cod
 loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
 loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 
-// headers
-loadModule('header_title',	'header',	'./core/components/headers/devkit-example-header-title/');
-
-// themes
-loadModule('theme_dark',	'theme',	'./core/components/themes/theme_dark/');
-loadModule('theme_light',	'theme',	'./core/components/themes/theme_light/');
-
-loadModule('custom_icons',	'theme',	'./core/components/themes/custom_icons/');
-
-
 // APP
 // editors
+loadModule('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
 
 // headers
+loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-title/');
+loadModule('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
+loadModule('play', 			'header',	'./app/components/headers/devkit-homey-header-play/');
 
 // widgets
+// nope..
 
 // themes
-
-
+loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+loadModule('athom',			'theme',	'./app/components/themes/athom/');
+loadModule('font-awesome',	'theme',	'./app/components/themes/font-awesome/');
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools
@@ -35164,11 +35133,672 @@ app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file
 				widgets: [ 'svg' ]
 			}
 		},
+		/*
 		{
 			ext: ".md",
 			config: {
 				widgets: [ 'markdown' ]
 			}
+		},
+		*/
+		{
+			base: 'app.json',
+			dir: '/',
+			config: {
+				editor: "manifest"
+			}
 		}
 	]);
-}]);
+}]);;
+var fs 		= require('fs');
+var fse		= require('fs-extra');
+var path 	= require('path');
+
+var semver	= require('semver');
+
+var EditorManifestController = function( $scope, $rootScope, $http, $q, $events )
+{
+	
+	$scope.manifest = angular.fromJson( $scope.file.code );
+		
+	$scope.file._changed = false;
+	
+	$scope.languages = [
+		{
+			code: 'en',
+			name: 'English'
+		},
+		{
+			code: 'nl',
+			name: 'Dutch'
+		},
+		{
+			code: 'de',
+			name: 'German'
+		},
+		{
+			code: 'fr',
+			name: 'French'
+		},
+		{
+			code: 'es',
+			name: 'Spanish'
+		}
+	];
+	$scope.activeLanguage = 'en';
+	
+	var hook = Hook('global');
+	
+	$scope.$watch('manifest', function(){
+		$scope.file._changed = true;
+		hook.call('onManifestChange', $scope.manifest);
+	}, true);
+
+	$events.beforeSave($scope.file.path, function(cb) {
+		var manifest = $scope.manifest;
+
+		if(semver.valid(manifest.version)) {
+		
+			// replace autocomplete entries
+			manifest.permissions = manifest.permissions.filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
+			
+			manifest.speech.forEach(function( trigger ){
+				for( var synonym_lang in trigger.synonyms ) {
+					var synonyms = trigger.synonyms[synonym_lang].filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
+					if( synonyms.length > 0 ) { 
+						trigger.synonyms[synonym_lang] = synonyms;
+					} else {
+						delete trigger.synonyms[synonym_lang];
+					}
+				}
+			});
+
+			// save the file
+			cb({
+				code: angular.toJson( manifest, true )
+			});
+			
+			hook.call('onManifestSave', manifest);
+		}
+		else {
+			//TODO: Add version number.
+			alert('Invalid Version Number');
+			// console.log('Invalid Version');
+		}
+	});
+    
+    // permissions
+	$scope.autocompletePermissionTags = function( query ){
+		return $http.get('./app/components/editors/devkit-homey-editor-manifest/assets/autocomplete/permissions.json');
+	}
+	
+	// mobile
+	$scope.autocompleteInterfacesMobileFiles = function( query, ext ) {
+		// get files
+		var cssdir = path.join( $rootScope.project.path, 'mobile', ext );
+		return fs.readdirSync( cssdir ).filter(function(file){
+			return path.extname( file ) == '.' + ext;
+		});
+	}
+    
+    // speech
+    /*
+    $scope.autocompleteSynonyms = function( query ) {
+	    return [];
+		return $q(function(resolve, reject) {
+			$http
+				.get('http://words.bighugelabs.com/api/2/ffa216479deb64dc5d75cba46f27b682/' + query + '/json')
+				.success(function( data ){					
+					resolve( data.noun.syn );					
+				})
+				.error(function(data){
+					reject();
+				});
+		});
+    }
+    */
+    
+    $scope.addSpeechTrigger = function(){
+	    $scope.manifest.speech.push({
+			id: '',
+			importance: 0.3,
+			synonyms: {
+				"en": []
+			}
+	    });
+    }
+    
+    $scope.removeSpeechTrigger = function( trigger ) {
+		var index = $scope.manifest.speech.indexOf(trigger);
+		$scope.manifest.speech.splice(index, 1);     
+    }
+    
+    // flow
+    $scope.addFlowTrigger = function(){
+	    if( typeof $scope.manifest.flow == 'undefined' ) $scope.manifest.flow = {};
+	    if( typeof $scope.manifest.flow.triggers == 'undefined' ) $scope.manifest.flow.triggers = [];
+	    $scope.manifest.flow.triggers.push({
+			method: '',
+			title: {
+				en: ''
+			}
+	    });
+    }
+    $scope.removeFlowTrigger = function( trigger ) {
+		var index = $scope.manifest.flow.triggers.indexOf(trigger);
+		$scope.manifest.flow.triggers.splice(index, 1);     
+    }
+    
+    $scope.addFlowArg = function( args ){
+	    args.push({
+		    name: '',
+		    type: 'text',
+		    placeholder: {}
+	    })
+    }
+    
+    $scope.removeFlowArg = function( args, arg ){
+		var index = args.indexOf(arg);
+		args.splice(index, 1);  
+    }
+    
+    // icon
+	var iconUrlTemplate = path.join( window.localStorage.project_dir, 'assets', 'icon.svg');
+	$scope.iconUrl = iconUrlTemplate + '?r=' + Math.random();
+	
+    $scope.received = function( event, file ) {
+	    
+	    if( file.type != 'image/svg+xml' ) {
+		    alert('Only svg files are allowed for your app icon');
+		    return;
+	    }
+	    
+	    var assets_path = path.join( window.localStorage.project_dir, 'assets' );
+	    var icon_path 	= path.join( assets_path, 'icon.svg' );
+	    
+		if( fs.existsSync( icon_path ) ) {
+			if( ! confirm("Overwrite existing icon?") ) {
+				return;
+			}
+		}
+
+		fse.ensureDir(assets_path, function (err) {				
+			fse.copy( file.path, icon_path, {}, function( err  ){
+				if (err) return console.error(err)
+				$scope.$apply(function(){
+					$scope.iconUrl = iconUrlTemplate + '?r=' + Math.random();
+				});
+			});		
+		});
+		
+    }
+	
+	/*
+    $rootScope.$on('editor.saveRequest.' + $scope.file.path, function(){
+	    
+	    var manifest = angular.copy( $scope.manifest );
+		
+		manifest.permissions = manifest.permissions.filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
+		
+		manifest.interfaces.speech.triggers.forEach(function( trigger ){
+			for( var synonym_lang in trigger.synonyms ) {
+				var synonyms = trigger.synonyms[synonym_lang].filter(function(tag){ return tag; }).map(function(tag) { return tag.text; });
+				if( synonyms.length > 0 ) { 
+					trigger.synonyms[synonym_lang] = synonyms;
+				} else {
+					delete trigger.synonyms[synonym_lang];
+				}
+			}
+		});
+	     	    
+		$scope.file.code = angular.toJson( manifest, true );
+		$rootScope.$emit('editor.performSave');
+    });
+    */
+    	
+}
+
+EditorManifestController.$inject = ['$scope', '$rootScope', '$http', '$q', '$events'];
+
+app.controller("EditorManifestController", EditorManifestController);;
+var HeaderAuthController = function($scope, $rootScope, $http)
+{	
+	$scope.apiRoot = window.CONFIG.paths.apiRoot;
+	$scope.user = undefined;
+	$scope.activeHomey = $rootScope.activeHomey = undefined;
+	
+	$scope.$watch("user", function(){
+		$rootScope.user = $scope.user;
+	});
+	
+	$scope.$watch("activeHomey", function(){
+		$rootScope.activeHomey = $scope.activeHomey;
+	});
+	
+	if(window.localStorage.user) {
+		$scope.user = JSON.parse(window.localStorage.user);
+	}
+	
+	$scope.changeActiveHomey = function( homey_id ){
+		window.localStorage.activeHomey = homey_id;
+		$scope.activeHomey = window.localStorage.activeHomey;
+//		$rootScope.activeHomey = $scope.activeHomey;
+	}
+	
+	$rootScope.$on('header.auth.getActiveHomey', function(){
+		$scope.changeActiveHomey( $scope.activeHomey );
+	});
+	
+	if(window.localStorage.activeHomey) {
+		$scope.changeActiveHomey( window.localStorage.activeHomey );
+	}
+	
+	$scope.init = function() {
+		if($scope.user == undefined) {
+			if(window.localStorage.access_token && window.localStorage.refresh_token) {
+				$scope.getUserInfo();
+			}
+		}
+	};
+	
+	$scope.login = function() {
+		$scope.$parent.setPopup(window.CONFIG.paths.login, true);
+		$rootScope.$emit('devkit.blur', true);
+	};
+
+	$scope.logout = function() {
+		delete window.localStorage.access_token;
+		delete window.localStorage.refresh_token;
+		delete window.localStorage.user;
+		delete window.localStorage.activeHomey;
+		$scope.user = undefined;
+		$scope.activeHomey = undefined;
+	};
+	
+	$scope.getUserInfo = function() {
+		$http({
+			method: 'GET',
+	        url: window.CONFIG.paths.apiRoot + '/user/me',
+	        headers: {
+	          'Authorization': 'Bearer ' + window.localStorage.access_token
+	        },
+	        withCredentials: true
+	    })
+	    .then(function(result) {		    
+			if(result.status == 200) {
+				$scope.user = result.data;
+				window.localStorage.user = JSON.stringify(result.data);
+				
+				// set first Homey as active
+				if( result.data.homeys.length > 0 ) {
+					$scope.changeActiveHomey( result.data.homeys[0]._id );
+				}
+				
+			}
+			else {
+				$scope.refreshAccessToken();
+			}
+		});
+	};
+	
+	$scope.refreshAccessToken = function() {
+		$http({
+			method: 'POST',
+			url: window.PATH.auth.loginUrl + '/refresh',
+			data: {
+				refresh_token: window.localStorage.refresh_token
+			}
+		})
+		.then(function(result) {
+			if(result.status == 200) {
+				if(result.data.code != 200) {
+					console.log(result);
+				}
+				else {
+					// save tokens to localStorage
+					window.localStorage.access_token = result.data.accessToken;
+					window.localStorage.refresh_token = result.data.refreshToken;
+					$scope.getUserInfo();
+				}
+			}
+			else {
+				console.log(result);
+			}
+		});
+	};
+
+	$scope.goToAppManager = function() {
+		var projectDir = window.localStorage.project_dir;
+		var manifest = fs.readFileSync(projectDir + '/app.json', 'utf8');
+		manifest = JSON.parse(manifest);
+		gui.Shell.openExternal(window.CONFIG.paths.appManager + "/apps?app_id=" + manifest.id);
+	};
+	
+	// listen for a message from the iframe
+	window.addEventListener('message', function(e) {
+		$scope.$apply(function() {
+
+			// save tokens to localStorage
+			window.localStorage.access_token = e.data.accessToken;
+			window.localStorage.refresh_token = e.data.refreshToken;
+
+			// hide popup
+			$scope.$parent.setBlur(false);
+			$scope.$parent.setPopup('', false);
+
+			// set userinfo
+			$scope.getUserInfo();
+		});
+	});
+}
+
+HeaderAuthController.$inject = ['$scope', '$rootScope', '$http'];
+
+app.controller("HeaderAuthController", HeaderAuthController);
+
+
+/*
+	
+var AuthController = function($scope, $auth)
+{
+	
+	$scope.user = {};
+
+	// listen for a message from the iframe
+	window.addEventListener('message', function(e)
+	{
+		$scope.$apply(function(){
+
+			// save tokens to localStorage
+			window.localStorage.access_token = e.data.accessToken;
+			window.localStorage.refresh_token = e.data.refreshToken;
+
+			$scope.setBlur(false);
+			$scope.setPopup('', false);
+
+			$auth.getUserInfo().then(function(result) 
+			{
+				$scope.user = result.data;
+			});
+		});
+	});
+
+	if(	typeof $scope.user == 'undefined' ) {
+		$scope.user = {};
+
+		if( typeof window.localStorage.access_token == 'undefined' || typeof window.localStorage.refresh_token == 'undefined' )
+		{
+			$scope.user.status = 'logged-out';
+			$scope.user.statusMessage = 'Log in';
+		}
+		else
+		{
+			$auth.getUserInfo().then(function(result) 
+			{
+				$scope.user = result.data;
+			});	
+		}
+	}
+
+	$scope.login = function()
+	{
+		$scope.setPopup(window.PATH.auth.loginUrl, true);
+
+		$scope.user = $auth.login();
+	}
+
+	$scope.logout  = function()
+	{
+		$scope.user = $auth.logout();
+	}
+}
+
+AuthController.$inject = ['$scope', '$auth'];
+
+app.controller("AuthController", AuthController);
+
+*/;
+var fs		= require('fs');
+var path	= require('path');
+
+var tmp 		= require('tmp');
+var request		= require('request');
+var archiver	= require('archiver');
+
+var HeaderPlayController = function($scope, $rootScope, $filter)
+{
+		
+	var logsEl = document.getElementById('logs');
+	
+	$scope.playing 		= false;
+	$scope.uploading 	= false;
+	$scope.stopping 	= false;
+	$scope.status 		= false;
+	
+	$rootScope.$watch("user", function(){
+		$scope.user = $rootScope.user;
+	});
+	
+	$rootScope.$watch("activeHomey", function(){		
+		$scope.homey = $filter('filter')( $rootScope.user.homeys, { _id: $rootScope.activeHomey }, true )[0];
+		logsEl.src = 'http://' + $scope.homey.ip_internal + '/manager/devkit/#/?token=' + $scope.homey.token;
+	});
+	
+	$scope.playpause = function(){
+			
+		if( typeof $scope.homey == 'undefined' ) {
+			alert('Please select a Homey first');
+			return;
+		}
+		
+		if( $scope.stopping ) return;
+		//if( $scope.uploading ) return;
+			
+		if( $scope.playing ) {
+			$scope.stop( $scope.homey.ip_internal, 80, $scope.homey.token );
+		} else {
+			$scope.play( $scope.homey.ip_internal, 80, $scope.homey.token, false );
+		}
+	}
+	
+	$scope.play = function( address, port, token, brk ) {
+		
+		address = address || '127.0.0.1';
+		port = port || 80;
+		brk = brk || false;
+						
+		// create zip
+		$scope.status = 'Creating archive...';
+		$scope.statusCode = 'zipping';
+		
+		$scope.pack( window.localStorage.project_dir, function( tmppath ){
+									
+			// send to homey
+			$scope.$apply(function(){
+				$scope.status = 'Uploading to Homey...';
+				$scope.uploading = true;
+			});
+			
+			$scope.upload( tmppath, address, port, token, brk, function( err, response ){
+				
+				$scope.$apply(function(){
+					
+					$scope.uploading = false;
+								
+					if( err ) {
+						$scope.statusCode = 'error';
+						$scope.status = err.toString();
+						return;
+					}
+					
+					if( response.status != 200 ) {
+						$scope.statusCode = 'error';
+						$scope.status = response.result.toString();
+						return;					
+					}
+									
+					if( response instanceof Error ) {
+						$scope.statusCode = 'error';
+						$scope.status = response.message;
+						return;
+					}
+						
+					$scope.status = 'Running';
+					$scope.playing = true;
+					$scope.running_app = response.result.app_id;
+					
+					// show logs
+					logsEl.src = 'http://' + address + '/manager/devkit/#/?app=' + response.result.app_id;
+					logsEl.parentElement.classList.add('visible-1');
+					setTimeout(function(){
+						logsEl.parentElement.classList.add('visible-2');
+					}, 1);
+			    });				
+			});
+		});
+	}
+	
+	$scope.stop = function( address, port, token ){
+		
+		$scope.stopping = true;
+		$scope.playing = false;
+		$scope.status = 'Stopping ' + $scope.running_app + '...';
+		
+		// hide logs
+		
+		logsEl.parentElement.classList.remove('visible-2');
+		setTimeout(function(){
+			logsEl.parentElement.classList.remove('visible-1');
+		}, 300);
+		
+		$scope.request = request.del({
+			url: 'http://' + address + ':' + port + '/api/manager/devkit/' + $scope.running_app,
+			headers: {
+	    		'Authorization': 'Bearer ' + token
+			}
+		}, function( err, data, response ){
+			if( err ) return callback(err);
+			
+			$scope.$apply(function(){
+				$scope.status = false;
+				$scope.stopping = false;
+			});
+		});
+	}
+	
+	// functions for packing & uploading
+	$scope.pack = function( app_path, callback ){
+	
+		// create a temporary file
+		tmp.file(function(err, tmppath, fd, cleanupCallback) {
+						
+			var output = fs.createWriteStream(tmppath);
+			
+			output.on('close', function() {
+	    		callback( tmppath );
+			});
+			
+			var archive = archiver('zip');
+			
+			archive.on('error', function(err) {
+				throw err;
+			});
+			
+			archive.pipe(output);
+			
+			archive
+				.directory( app_path, '' )
+				.finalize();
+				
+		});
+	}
+	
+	$scope.upload = function( tmppath, address, port, token, brk, callback ) {
+							
+		// POST the tmp file to Homey
+		$scope.request = request.post({
+			url: 'http://' + address + ':' + port + '/api/manager/devkit/',
+			headers: {
+	    		'Authorization': 'Bearer ' + token
+			}
+		}, function( err, data, response ){
+			if( err ) return callback(err);
+			callback( null, JSON.parse(response) );
+		});
+		
+		var form = $scope.request.form();
+		form.append('app', fs.createReadStream(tmppath));
+		form.append('brk', brk.toString());
+		
+	}
+    
+}
+
+HeaderPlayController.$inject = ['$scope', '$rootScope', '$filter'];
+
+app.controller("HeaderPlayController", HeaderPlayController);
+
+// logs
+window.addEventListener('load', function(){
+	
+	var logsWrapEl = document.createElement("div");
+	logsWrapEl.id = 'logs-wrap';
+	document.body.appendChild(logsWrapEl);
+	
+	var logsEl = document.createElement("iframe");
+	logsEl.id = 'logs';
+	logsWrapEl.appendChild(logsEl);
+	
+});;
+var fs		= require('fs');
+var path	= require('path');
+
+var HeaderTitleController = function($scope, $rootScope)
+{
+	
+	$scope.manifest = {};
+	
+    $scope.update = function(manifest){
+	    
+	    manifest = manifest || $scope.getManifest();
+	    	    
+	    if( manifest instanceof Error ) {
+			$scope.manifest.name = { en: 'Warning: invalid app.json!' };
+			$scope.manifest.id = manifest.toString();
+		} else {
+			$scope.manifest = angular.copy(manifest);			
+		}
+    }
+    
+    $scope.getManifest = function(){
+	    if( typeof window.localStorage.project_dir == 'undefined' ) return;
+	    
+	    var manifestPath = path.join(window.localStorage.project_dir, 'app.json');
+	    
+	    if( fs.existsSync(manifestPath) ) {	    
+		    var manifestContents = fs.readFileSync( manifestPath ).toString();
+		    
+		    try {
+				return JSON.parse(manifestContents);	    
+			} catch(e){
+				return e;
+			}		
+		}
+    }
+
+	var hook = Hook('global');
+	hook.register('onManifestSave', function (manifest) {
+		$scope.update(manifest);
+	});
+
+	$rootScope.$on('service.project.ready', function(){
+		$scope.update();		
+	});
+
+	$scope.update();
+    
+}
+
+HeaderTitleController.$inject = ['$scope', '$rootScope'];
+
+app.controller("HeaderTitleController", HeaderTitleController);

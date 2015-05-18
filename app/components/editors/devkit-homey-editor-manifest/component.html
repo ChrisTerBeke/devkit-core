@@ -1,0 +1,223 @@
+<form
+	ng-controller="EditorManifestController"
+	class="editor-manifest"
+>
+
+	<ul class="languages">
+		<li
+			ng-repeat="language in languages"
+			ng-class="{ 'active': $parent.activeLanguage == language.code }"
+			ng-click=" $parent.activeLanguage = language.code"
+		>
+			<img ng-src="./app/components/editors/devkit-homey-editor-manifest/img/flag/{{language.code}}.png" alt="{{language.code}}" />
+			<span class="tooltip">{{language.name}} translation</span>
+		</li>
+	</ul>
+
+	<fieldset>
+		<legend>General</legend>
+		
+		<row>
+			<label>Icon</label>
+			<img id="manifest-icon" ng-src="{{iconUrl}}" file-drop="received($event, file)" title="assets/icon.svg" />
+		<row>
+			<label>Name</label>
+			<input type="text" ng-model="manifest.name[activeLanguage]" placeholder="{{ activeLanguage == 'en' ? '' : 'English: ' + manifest.name.en }}" />
+		</row>
+		
+		<row>
+			<label>Description</label>
+			<textarea ng-model="manifest.description[activeLanguage]" placeholder="{{ activeLanguage == 'en' ? '' : 'English: ' + manifest.description.en }}" ></textarea>
+		</row>
+		
+		<row>
+			<label>Version</label>
+			<input ng-model="manifest.version" placeholder="1.0.0" />
+		</row>
+		
+	</fieldset>
+	
+	<fieldset>
+		<legend>Author</legend>
+		
+		<row>
+			<label>Name</label>
+			<input type="text" ng-model="manifest.author.name" placeholder="John Doe" />
+		</row>
+		
+		<row>
+			<label>Author's e-mail</label>
+			<input type="text" ng-model="manifest.author.email" placeholder="a.uthor@gmail.com" />
+		</row>
+		
+	</fieldset>
+	
+	<fieldset>
+		<legend>Permissions</legend>
+		
+		<row>
+			<label>Permissions</label>
+			<tags-input ng-model="manifest.permissions" placeholder="Add a permission">
+				<auto-complete
+					source="autocompletePermissionTags($query)"
+					min-length="1"
+					load-on-down-arrow="true"
+				></auto-complete>
+			</tags-input>
+		</row>
+		
+	</fieldset>
+	
+	<fieldset>
+		<legend>Flow</legend>
+		
+		<p><strong>Triggers</strong>		
+		<row>
+			<ul class="list">
+				<li ng-repeat="trigger in manifest.flow.triggers">
+					
+					<div class="remove" ng-click="removeFlowTrigger(trigger)">✕</div>
+					
+					<row>
+						<label>Method ID</label>
+						<input type="text" ng-model="trigger.method" />
+					</row>
+					
+					<row>
+						<label>Title</label>
+						<input type="text" ng-model="trigger.title[ activeLanguage ]" placeholder="{{ activeLanguage == 'en' ? '' : 'English: ' + trigger.title.en }}" />
+					</row>
+					
+					<p><strong>Input fields</strong> <em>(optional)</em></p>
+					<ul class="list">
+						<li ng-repeat="arg in trigger.args">
+					
+							<div class="remove" ng-click="removeFlowArg(trigger, arg)">✕</div>
+							
+							<row>
+								<label>ID</label>
+								<input type="text" ng-model="arg.name" />
+							</row>
+							<row>
+								<label>Type</label>
+								<select ng-model="arg.type" >
+									<option value="autocomplete">AutoComplete</option>
+									<option value="color">Color</option>
+									<option value="date">Date</option>
+									<option value="device">Device</option>
+									<option value="droptoken">Drop-token</option>
+									<option value="text">Text</option>
+									<option value="time">Time</option>
+								</select>
+							</row>
+							<row>
+								<label>Placeholder</label>
+								<input type="text" ng-model="arg.placeholder[ activeLanguage ]" placeholder="{{ activeLanguage == 'en' ? '' : 'English: ' + arg.placeholder.en }}" />
+							</row>
+							
+						</li>
+						<li class="add">
+							<button ng-click="addFlowArg( trigger )">
+								<span class="icon icon-add"></span>
+								<span class="label"><i class="fa fa-plus-circle"></i> &nbsp;Add input field</span>
+							</button>					
+						</li>
+					</ul>
+					
+				</li>
+				<li class="add">
+					<button ng-click="addFlowTrigger()">
+						<span class="icon icon-add"></span>
+						<span class="label"><i class="fa fa-plus-circle"></i> &nbsp;Add flow trigger</span>
+					</button>
+				</li>
+			</ul>
+		</row>
+		
+	</fieldset>
+	
+	<!--
+	<fieldset>
+		<legend>Mobile</legend>
+		
+		<p>
+			<em>Select which files to load for the mobile interface. Files are loaded in sequential order.</em>
+		</p>
+		
+		<row>
+			<label>CSS</label>
+			<tags-input ng-model="manifest.interfaces.mobile.css" placeholder="Add a CSS file">
+				<auto-complete
+					source="autocompleteInterfacesMobileFiles($query, 'css')"
+					min-length="0"
+					load-on-down-arrow="true"
+					load-on-empty="true"
+					load-on-focus="true"
+				></auto-complete>
+			</tags-input>
+		</row>
+		
+		<row>
+			<label>JavaScript</label>
+			<tags-input ng-model="manifest.interfaces.mobile.js" placeholder="Add a JavaScript file">
+				<auto-complete
+					source="autocompleteInterfacesMobileFiles($query, 'js')"
+					min-length="0"
+					load-on-down-arrow="true"
+					load-on-empty="true"
+					load-on-focus="true"
+				></auto-complete>
+			</tags-input>
+		</row>
+		
+	</fieldset>
+	-->
+	
+	<fieldset>
+		<legend>Speech Triggers</legend>
+		
+		<div class="row">
+			
+			<ul class="list">
+				<li ng-repeat="trigger in manifest.speech">
+				
+					<div class="remove" ng-click="removeSpeechTrigger(trigger)">✕</div>
+				
+					<row>
+						<label>Trigger ID</label>
+						<input type="text" ng-model="trigger.id" />
+					</row>
+					<row>
+						<label>Importance</label>
+						<input type="range" min="0" max="1" step="0.01" ng-model="trigger.importance" />
+						<span class="importance">{{trigger.importance}}</span>
+					</row>
+					<row>
+						<label>Synonyms</label>
+						<tags-input ng-model="trigger.synonyms[activeLanguage]" placeholder="Add a synonym">
+							<!--
+							<auto-complete
+								class="reversed"
+								source="autocompleteSynonyms(trigger.id)"
+								min-length="0"
+								load-on-down-arrow="true"
+								load-on-empty="true"
+								load-on-focus="true"
+							></auto-complete>
+							-->
+						</tags-input>
+					</row>
+				</li>
+				<li class="add">
+					<button ng-click="addSpeechTrigger()">
+						<span class="icon icon-add"></span>
+						<span class="label"><i class="fa fa-plus-circle"></i> &nbsp;Add speech trigger</span>
+					</button>
+				</li>
+			</ul>
+			
+		</div>
+		
+	</fieldset>
+
+</form>

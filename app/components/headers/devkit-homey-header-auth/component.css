@@ -1,0 +1,137 @@
+#header-auth {
+	position: absolute;
+	z-index: 3;
+	right: 10px;
+	top: 7px;
+	bottom: 10px;
+	cursor: default;
+	-webkit-app-region: no-drag;
+}
+	#header-auth .name {
+		vertical-align: middle;
+		display: inline-block;
+		font-size: 14px;
+		color: rgba(255,255,255,1);
+		text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+		margin: 0 6px;
+		color: rgba(255,255,255,0.75);
+	}
+	#header-auth .avatar {
+		vertical-align: middle;
+		display: inline-block;
+		width: 24px;
+		height: 24px;
+		border-radius: 24px;		
+	}
+	#header-auth .avatar-default {
+		background: url(./img/avatar-fallback.jpg) no-repeat center center;
+		background-size: contain;
+		opacity: 0.85;
+	}
+	#header-auth .avatar-default:hover {
+		opacity: 1;
+	}
+	#header-auth .avatar-default:active {
+		opacity: 0.85;
+	}
+	#header-auth:before {
+		content: "";
+		display: block;
+		position: absolute;
+		z-index: 9999;
+		right: 0px;
+		top: 0px;
+		width: 24px;
+		height: 24px;
+		border-radius: 24px;
+		background: #DEDEDE url(./img/autocomplete-throbber.gif) no-repeat center center;
+		
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.5s;
+	}
+	#header-auth.logging-in:before {
+		opacity: 1;
+		visibility: visible;
+	}
+	#header-auth > div:hover img{
+		border-color: white;
+	}
+	#header-auth .dropdown {
+		position: absolute;
+		z-index: 999999;
+		list-style: none;
+		right: -3px;
+		top: 38px;
+		background: white;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		white-space: nowrap;
+		box-shadow: 0 0 10px rgba(0,0,0,0.4);
+		min-width: 150px;
+		-webkit-transform: scale(0.9);
+		-webkit-transform-origin: right top;
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.3s;
+		-webkit-transition-delay: 0.25s;
+	}
+	#header-auth:hover .dropdown {
+		-webkit-transform: scale(1);
+		opacity: 1;
+		visibility: visible;
+		-webkit-transition-delay: 0s;
+	}
+	#header-auth .dropdown:before {
+		content: "";
+		display: block;
+		position: absolute;
+		top: -10px;
+		right: 5px;
+		border-bottom: 10px solid white;
+		border-left: 10px solid transparent;
+		border-right: 10px solid transparent;
+	}
+		#header-auth .dropdown li {
+			line-height: 28px;
+		}
+		#header-auth .dropdown > li:not(:last-child) {
+			border-bottom: 1px solid rgba(0,0,0,0.05);
+		}
+			#header-auth .dropdown .label {
+				display: block;
+				height: 100%;
+				padding: 2px 10px;
+				font-size: 13px;
+				font-weight: 400;
+				color: #666;
+			}
+			#header-auth .dropdown li .label:hover {
+				background: #eee;
+				cursor: default;
+				color: #000;
+			}
+			#header-auth .dropdown li .label:active {
+				box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+			}
+				#header-auth .dropdown li .label .icon-homey {
+					display: inline-block;
+					width: 13px;
+					height: 13px;
+					vertical-align: middle;
+					background: url(./img/homey.svg) no-repeat center center;
+					background-size: contain;
+				}
+			#header-auth .dropdown ul {
+				list-style: none;
+			}
+				#header-auth .dropdown ul li {
+				}
+					#header-auth .dropdown ul li .label {
+						padding-left: 20px;
+						font-size: 12px;
+						font-weight: 300;
+					}
+					#header-auth .dropdown input {
+						margin-right: 4px;
+					}

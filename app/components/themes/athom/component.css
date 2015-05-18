@@ -1,0 +1,193 @@
+@import url("font.roboto.css");
+
+html {
+	background: transparent;
+	border-radius: 5px;
+	border: 1px solid rgba(0,0,0,0.25);
+}
+
+body {
+	background: url(./img/body-bg.jpg) center center no-repeat fixed;
+	background-size: cover;
+	
+	font-family: "Roboto";
+	font-weight: 300;
+}
+
+body.maximized wrap {
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	box-shadow: none;
+	border-radius: 0;
+	border-width: 0;
+}
+
+wrap.blurred {
+	-webkit-filter: blur(2px) grayscale(30%)
+}
+wrap.blurred:after {
+	content: "";
+	display: block;
+	position: absolute;
+	z-index: 100;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+}
+
+header,
+sidebar,
+widgets {
+	box-sizing: border-box;
+	background: rgba(0,0,0,.1);
+}
+
+header {
+	position: relative;
+}
+
+#header-stoplight {
+	padding-left: 9px;
+}
+
+#filetree li .label {
+	position: relative;
+	box-sizing: border-box;
+	border: 1px solid transparent;
+	border-right: none;
+	transition: none;
+}
+#filetree li .label:hover {
+	background-color: rgba(255,255,255,0.05);
+}
+#filetree li .label.selected {
+	background-color: rgba(255,255,255,0.2);
+}
+
+#filetree li .label .name,
+#filetree li .label .name-renaming {
+	color: white;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+#filetree li .label .icon {
+	background: white;	
+}
+
+#filetree li .label .expand:before {
+	border-left-color: white;
+}
+
+tabs {
+	left: 1px;
+	top: 1px;
+	right: 1px;
+}
+
+tabs tab {
+	color: #666;
+	background: white;
+	height: 25px;
+	border-bottom: 1px solid #ddd !important;
+	transition: none;
+	border-right: 1px solid #ddd;
+}
+tabs tab:hover {
+	background: #f6f6f6;	
+}
+tabs tab:last-child {
+	border-right: none;
+}
+tabs tab:active {
+	background: #f0f0f0;	
+}
+tabs tab.active {
+	color: #333;
+	background: white;
+	border-bottom: none !important;
+}
+tabs tab .close {
+	border: 1px solid #ccc;
+	width: 13px;
+	height: 13px;
+	margin: 6px;
+}
+tabs tab .close:before {
+	color: #ccc;
+}
+tabs tab .close:hover {
+	background: #a33;
+	border-color: #a33;
+}
+tabs tab .close:hover:before,
+tabs tab .close:active:before {
+	color: white;
+}
+tabs tab .close:active {
+	background: #862a2a;
+	border-color: #862a2a;	
+}
+tabs tab.changed .close:before {
+	font-size: 12px;
+}
+
+#login {
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+noeditorview {
+	color: white;
+}
+	noeditorview h1,
+	noeditorview p {
+		font-weight: 300;		
+	}
+	
+editormain {
+	border: 1px solid rgba(0,0,0,0.2);
+	border-right: none;
+	border-bottom: none;
+}
+
+tabs {
+	top: 10px;
+	left: 10px;
+	right: 10px;
+}
+
+editorviews {
+	left: 10px;
+	top: 10px;
+	bottom: 10px;
+	right: 10px;
+}
+
+
+/* codemirror */
+.cm-keyword {color: #708;}
+.cm-atom {color: #219;}
+.cm-number {color: #164;}
+.cm-def {color: #00f;}
+.cm-variable,
+.cm-punctuation,
+.cm-property,
+.cm-operator {}
+.cm-variable-2 {color: #05a;}
+.cm-variable-3 {color: #085;}
+.cm-comment {color: #a50;}
+.cm-string {color: #a11;}
+.cm-string-2 {color: #f50;}
+.cm-meta {color: #555;}
+.cm-qualifier {color: #555;}
+.cm-builtin {color: #30a;}
+.cm-bracket {color: #997;}
+.cm-tag {color: #170;}
+.cm-attribute {color: #00c;}
+.cm-header {color: blue;}
+.cm-quote {color: #090;}
+.cm-hr {color: #999;}
+.cm-link {color: #00c;}

@@ -1,0 +1,50 @@
+<div
+	ng-controller="HeaderAuthController"
+	ng-init="init()"
+	class="header-auth"
+	ng-class="{ 'logging-in': status == 'logging-in' }"
+>
+	
+	<div ng-click="!user && login()">
+		<div class="name">
+			<span ng-show="user">{{user.firstname}} {{user.lastname}}</span>
+			<span ng-show="!user">Login</span>
+		</div>
+		<img ng-show="user" class="avatar" ng-src="{{apiRoot}}/user/{{user._id}}/avatar" />
+		<div ng-show="!user" class="avatar avatar-default"></div>
+		<div ng-show="false" class="avatar-loading"></div>
+	</div>
+	
+	<ul class="dropdown" ng-show="user">
+		<li>
+			<span class="label">
+				<span class="icon-homey"></span>
+				<span class="title">Homey</span>
+			</span>
+			<ul class="homeys">
+				<li ng-repeat="homey in user.homeys">
+					<label class="label" for="activeHomey-{{homey._id}}" title="ID: {{homey._id}} LAN IP: {{homey.ip_internal}}">
+						<input type="radio" id="activeHomey-{{homey._id}}" name="activeHomey" ng-model="activeHomey" value="{{homey._id}}" ng-change="changeActiveHomey(homey._id)" />
+						<span class="title">{{homey.name}}</span>
+					</label>
+				</li>
+			</ul>
+		</li>
+		<li>
+			<span class="label">
+				<i class="fa fa-user"></i>&nbsp; Account
+			</span>
+		</li>
+		<li>
+			<span class="label">
+				<i class="fa fa-wrench"></i>&nbsp; Settings
+			</span>
+		</li>
+		<li>
+			<span class="label" ng-click="logout()">
+				<i class="fa fa-sign-out"></i>&nbsp; Logout
+			</span>
+		</li>
+	</ul>
+	
+</div>

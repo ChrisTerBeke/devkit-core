@@ -1,0 +1,10 @@
+<div
+	ng-controller="HeaderPlayController"
+	ng-class="{ 'active': status, 'playing': playing, 'enabled': activeHomey }"
+	class="wrap"
+>
+	<div class="button" ng-click="playpause()"></div>
+	
+	<div class="status" title="{{status}}" ng-bind="status ? status : ''"></div>
+	
+</div>

@@ -10,26 +10,22 @@ loadModule('codemirror', 	'editor',	'./core/components/editors/devkit-editor-cod
 loadModule('svg', 			'widget',	'./core/components/widgets/devkit-widget-svg/');
 loadModule('markdown', 		'widget',	'./core/components/widgets/devkit-widget-markdown/');
 
-// headers
-loadModule('header_title',	'header',	'./core/components/headers/devkit-example-header-title/');
-
-// themes
-loadModule('theme_dark',	'theme',	'./core/components/themes/theme_dark/');
-loadModule('theme_light',	'theme',	'./core/components/themes/theme_light/');
-
-loadModule('custom_icons',	'theme',	'./core/components/themes/custom_icons/');
-
-
 // APP
 // editors
+loadModule('manifest', 		'editor',	'./app/components/editors/devkit-homey-editor-manifest/');
 
 // headers
+loadModule('title', 		'header',	'./app/components/headers/devkit-homey-header-title/');
+loadModule('auth', 			'header',	'./app/components/headers/devkit-homey-header-auth/');
+loadModule('play', 			'header',	'./app/components/headers/devkit-homey-header-play/');
 
 // widgets
+// nope..
 
 // themes
-
-
+loadModule('custom_icons',	'theme',	'./app/components/themes/custom_icons/');
+loadModule('athom',			'theme',	'./app/components/themes/athom/');
+loadModule('font-awesome',	'theme',	'./app/components/themes/font-awesome/');
 
 /*
  * Use this area to define global settings for your app like the file editor config and devtools
@@ -47,10 +43,19 @@ app.run(['$rootScope', '$timeout', '$file', function($rootScope, $timeout, $file
 				widgets: [ 'svg' ]
 			}
 		},
+		/*
 		{
 			ext: ".md",
 			config: {
 				widgets: [ 'markdown' ]
+			}
+		},
+		*/
+		{
+			base: 'app.json',
+			dir: '/',
+			config: {
+				editor: "manifest"
 			}
 		}
 	]);

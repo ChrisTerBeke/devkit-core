@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
 	window = {};
 
-	require("./app_example/environment.js");
+	require("./app/environment.js");
 
 	var json = {
 		/*
@@ -24,9 +24,9 @@ module.exports = function(grunt) {
 					/*
 					 *	Include configs
 					 */
-					'./app_example/environment.js',
-					'./app_example/config.js',
-					'./app_example/debug.js',
+					'./app/environment.js',
+					'./app/config.js',
+					'./app/debug.js',
 
 					/*
 					 *	Angular and its main dependencies.
@@ -72,7 +72,7 @@ module.exports = function(grunt) {
 					/*
 					 *	Include app specific files
 					 */
-					'./app_example/**/*.js'
+					'./app/**/*.js'
 				],
 				dest: './public/assets/javascripts/application.js'
 			}
@@ -132,7 +132,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-compass');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-bump');
 
