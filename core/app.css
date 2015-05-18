@@ -1,4 +1,5 @@
 @import url('../bower_components/ngDialog/css/ngDialog.css');
+@import url('../bower_components/ngDialog/css/ngDialog-theme-plain.css');
 
 /* reset */
 * {
