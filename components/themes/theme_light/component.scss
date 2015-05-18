@@ -1,0 +1,293 @@
+/*Dark Theme*/
+
+$primary-color: blue;
+
+$primary-text-color: black;
+$secondary-text-color: darkgray;
+$active-text-color: darkgray;
+
+$button-color: whitesmoke;
+$button-text-color: $primary-text-color;
+$icon-color: $primary-text-color;
+
+$background-color: white;
+
+$header-color: white;
+
+$sidebar-color: white;
+$sidebar-text-color: $secondary-text-color;
+$sidebar-active-text-color: $active-text-color;
+$active-sidebar-color: white;
+
+$input-background: $sidebar-color;
+$input-border: lighten($secondary-text-color, 25%);
+$input-text: $primary-text-color;
+
+$tab-color: $sidebar-color;
+$tab-text-color: $sidebar-text-color;
+$tab-active-text-color: $sidebar-active-text-color;
+$active-tab-color: $background-color;
+
+$widget-color: $sidebar-color;
+$widget-header-color: $header-color;
+
+$codemirror-yellow: desaturate(#E6CB46, 15%);
+$codemirror-orange: desaturate(#E67B46, 15%);
+$codemirror-purple: desaturate(#7B46E6, 15%);
+$codemirror-pink: desaturate(#CB46E6, 15%);
+$codemirror-green: desaturate(#61E646, 15%);
+
+.light-theme {
+	.btn,
+	%btn {
+	    font-size: 14px;
+	    color: $button-text-color;
+	    background-color: $button-color;
+	    padding: 2px 10px;
+	    letter-spacing: 0.02em;
+	    transition: opacity 0.2s ease-out;
+	    border-radius: 3px;
+	    display: inline-block;
+
+	    &:hover,
+	    &:focus {
+	        opacity: .6;
+	        color: inherit;
+	    }
+
+	    &,
+	    &:hover,
+	    &:active,
+	    &:focus {
+	        outline: 0;      
+	    }
+
+	    &:disabled {
+	        opacity: .2;
+	        cursor: not-allowed;
+	    }
+
+	    .label {
+			display: inline-block;
+			vertical-align: middle;
+			font-size: 14px;
+			color: inherit;
+		}
+
+		.icon {
+			display: inline-block;
+			vertical-align: middle;
+			width: 20px;
+			height: 20px;
+			-webkit-mask-repeat: no-repeat;
+			-webkit-mask-position: center center;
+			-webkit-mask-size: contain;
+			background: $icon-color;
+			margin-right: 3px;
+		}
+	}
+
+	input,
+	textarea,
+	tags-input .tags {
+		border: 1px solid $input-border;
+		background: $input-background;
+		border-radius: 3px;
+		padding: 4px;
+		font-size: 12px;
+		color: $input-text;
+	}
+
+	fieldset {
+		border: none;
+		border-bottom: 1px solid $input-border;
+		margin-bottom: 2rem;
+	}
+
+	body {
+		background: $background-color;
+		color: $primary-text-color;
+	}
+
+	header {
+		background: $header-color;
+	}
+
+	#header-stoplight {
+		padding: 0 12px;
+	}
+
+	sidebar {
+		background: $sidebar-color;
+	}
+
+	#filetree li .label .name,
+	#filetree li .label .name-renaming {
+		color: $sidebar-text-color;
+	}
+
+	#filetree li .label:hover,
+	#filetree li .label.selected,
+	#filetree li .label.file-drop-over {
+		.name,
+		.name-renaming {
+			color: $sidebar-active-text-color;
+		}
+		background: $active-sidebar-color;
+	}
+
+	#filetree li .label:hover {
+		background: rgba($active-sidebar-color, .5);
+	}
+
+	#filetree li .label .icon {
+		background: $sidebar-text-color;	
+	}
+
+	#filetree li .label .expand:before {
+		border-left-color: $sidebar-text-color;
+	}
+
+	tabs {
+		background: $tab-color;
+		border: none;
+
+		tab {
+			color: $tab-text-color;
+			background: $tab-color;
+			border: none;
+
+			&:hover,
+			&.active {
+				color: $tab-active-text-color;
+				background: $active-tab-color;	
+			}
+
+			.close {
+				color: $secondary-text-color;
+				border: 1px solid $secondary-text-color;
+				background: $tab-color;
+
+				&:before {
+					color: $secondary-text-color;
+					top: -1px;
+				}
+			}
+
+			&.changed .close {
+				// background: #268BD2;
+				border: 1px solid $primary-color;	
+
+				&:before {
+					color: $primary-color;
+				}
+			}
+		}
+	}
+
+	widgets {
+		padding-left: 8px;
+		padding-right: 8px;
+		background: $widget-color;
+		widgetwrap {
+			margin-bottom: 8px;
+			title {
+				padding: 4px 16px;
+				font-size: 12px;
+				color: $primary-text-color;
+				background: $widget-header-color;	
+			}
+
+			widget {
+				background: white;
+				padding: 8px;
+			
+			}
+		}	
+	}
+
+	#sidebar-helper {
+		background: $header-color;
+	}
+
+	.btn-add {
+		margin: 3px 4px;
+	}
+
+	/* e.g. var, function */
+	.cm-keyword    { color: $primary-text-color; }
+
+	/* e.g. #id */
+	.cm-atom       { color: $primary-text-color; }
+
+	/* e.g. 20 */
+	.cm-number     { color: $codemirror-orange; }
+
+	/* e.g. px, em */
+	.cm-unit       { color: $codemirror-orange; }
+
+	/* e.g. @include, [this] */
+	.cm-def        { color: $codemirror-purple; }
+
+	/* e.g. $, i */ 
+	.cm-variable   { color: $primary-text-color;}
+
+	/* e.g. for key in [this], Markdown li */ 
+	.cm-variable-2 { color: $codemirror-purple; }
+
+	/* e.g. getElementbyId, CSS properties */ 
+	.cm-property   { color: $codemirror-pink; }
+
+	/* e.g. CoffeeScript ->, CSS colons */ 
+	.cm-operator   { color: $secondary-text-color; }
+
+	/* e.g. // comments */ 
+	.cm-comment    { color: $secondary-text-color; }
+
+	/* e.g. "string" */ 
+	.cm-string     { color: $codemirror-green; }
+
+	/* e.g. some CSS values */ 
+	.cm-string-2   { color: $primary-text-color; }
+
+	/* e.g. @font-face */ 
+	.cm-meta       { color: $codemirror-pink; }
+
+	/*  */ 
+	.cm-header     { color: $codemirror-orange; }
+
+	/* e.g. HTML elements */ 
+	.cm-tag        { color: $codemirror-yellow; }
+
+	/* e.g. class="" id="" */ 
+	.cm-attribute  { color: $codemirror-yellow; }
+
+	// /* not sure if used */ 
+	// .cm-strong     { color: $codemirror-yellow; }
+
+	// /* not sure if used */ 
+	// .cm-em         { color: $codemirror-yellow; }
+
+	/* e.g. .box */ 
+	.cm-qualifier  { color: $primary-text-color; }
+
+	// /* not sure if used */ 
+	// .cm-builtin    { color: $codemirror-yellow; }
+
+	.CodeMirror-linenumber {
+		color: $secondary-text-color;
+	}
+	.CodeMirror-gutters {
+		border-right: 1px solid $background-color !important;
+		background: $background-color !important;
+	}
+
+	.CodeMirror {
+	  background: $background-color !important;
+	  color: $secondary-text-color !important;
+	  font-size: 12px !important;
+	  line-height: 1.5 !important;
+	}
+}
+
+
