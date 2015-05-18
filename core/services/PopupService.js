@@ -9,7 +9,7 @@ angular.module('sdk.popup', []).factory('$popup', ['$rootScope', 'ngDialog', fun
 		var dir = '';
 		for (var i=0; i<angularModules.length; i++) {
 
-			if (angularModules[i].module == name){
+			if (angularModules[i].module == name && angularModules[i].type == 'popup'){
 				var dir = angularModules[i].dir;
 			} 
 		}
