@@ -59,6 +59,7 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$event
 			if( typeof CodeMirror.modes[ defaultmode ] != 'undefined' ) {
 				$scope.codemirrorOpts.mode = defaultmode;
 			}
+			break;
 
 	}
 

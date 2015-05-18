@@ -208,7 +208,6 @@ content {
 						visibility: hidden;
 
 						transition: transform 0.25s;
-
 						opacity: 0.75;
 					}
 					#filetree li .label .expand:hover:before {
