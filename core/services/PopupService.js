@@ -18,6 +18,7 @@ angular.module('sdk.popup', []).factory('$popup', ['$rootScope', 'ngDialog', fun
 
 		ngDialog.open({ 
 			template: html_path,
+			className: 'popup-' + name,
 			scope: scope
 		});
 	}

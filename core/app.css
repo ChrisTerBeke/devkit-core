@@ -1,5 +1,4 @@
 @import url('../bower_components/ngDialog/css/ngDialog.css');
-@import url('../bower_components/ngDialog/css/ngDialog-theme-plain.css');
 
 /* reset */
 * {
@@ -541,4 +540,36 @@ row input,
 row textarea {
 	float: left;
 	width: 200px;
+}
+
+.ngdialog {
+  padding-top: 4rem;
+}
+
+.ngdialog .ngdialog-content {
+  position: relative;
+  width: 450px;
+  margin: 0 auto;
+}
+
+.ngdialog .ngdialog-close {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.ngdialog .ngdialog-close:before {
+  background: transparent;
+  color: #bbb;
+  content: "\00D7";
+  font-size: 26px;
+  font-weight: 400;
+  height: 30px;
+  line-height: 26px;
+  position: absolute;
+  right: 3px;
+  text-align: center;
+  top: 3px;
+  width: 30px;
 }
