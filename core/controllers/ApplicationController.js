@@ -17,10 +17,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	$scope.focus = true;
 	$scope.blurred = false;
 
-	$scope.popup = {};
-	$scope.popup.url = '';
-	$scope.popup.visible = false;
-
 	$scope.files = {}; // files open
 	$scope.fileHistory = [];
 	$scope.path = false; // current project path
@@ -35,19 +31,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	$scope.setFocus = function(focus)
 	{
 		$scope.focus = focus;
-	}
-
-	$scope.setPopup = function(url, visible)
-	{
-		$scope.popup.url = url;
-		$scope.popup.visible = visible;
-	}
-
-	$scope.closePopup = function()
-	{
-		$scope.setBlur(false);
-		$scope.setPopup('', false);
-		$scope.user.status = 'logged-out';
 	}
 
 	$scope.newFile = function() {
