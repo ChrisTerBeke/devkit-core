@@ -1,4 +1,4 @@
-angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
+angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeout', '$q', '$project', function ($rootScope, $http, $timeout, $q, $project) {
 	    
 	var factory = {};
 	
@@ -12,6 +12,7 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
     factory.open = function( file_path )
     {
+    	var file_path = file_path || factory.active;
 
 	    // only load the file when it's not already open
 	    if( !factory.isOpen( file_path ) ) {
@@ -60,8 +61,9 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
     // close an item
     factory.close = function( file_path )
-    {
-	    
+    {  
+	    var file_path = file_path || factory.active;
+
 	    // check for unsaved changes
 	    var should_delete = false;
 	    if( typeof factory.files[ file_path ] != 'undefined' && factory.files[ file_path ]._changed )
@@ -122,13 +124,13 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     	{
     		saveFile( file_path )
     	}
+
+    	$rootScope.$emit('service.file.save', file_path);
     }
 
     // get info (which views & widgets)
     factory.getInfo = function( file_path )
     {
-	    file_path = file_path.replace(window.localStorage.project_dir, '');
-
 	    // determine the view.
 	    var file = path.parse( file_path );
 
@@ -136,53 +138,26 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 	    var editor = 'codemirror';
 	    var widgets = [];
 
-		for(var i in $rootScope.editorConfig) {
-			var configItem = $rootScope.editorConfig[i];
-			var extMatch = false;
-			var dirMatch = false;
-			var baseMatch = false;
+	    for (var i in $rootScope.editorConfig) {
+	    	var item = $rootScope.editorConfig[i];
 
-			if(configItem.ext) {
-				if(file.ext === configItem.ext) {
-					extMatch = true;
-				}
-			}
-			else {
-				extMatch = true;
-			}
+	    	console.log('file', file, item);
 
-			if(configItem.dir) {
-				if(file.dir === configItem.dir) {
-					dirMatch = true;
-				}
-			}
-			else {
-				dirMatch = true;
-			}
+	    	if(file.ext === item.ext || file.dir === item.dir || file.base === item.base) {
+	    		widgets = item.config.widgets || widgets;
+	    		editor = item.config.editor || editor;
 
-			if(configItem.base) {
-				if(file.base === configItem.base) {
-					baseMatch = true;
-				}
-			}
-			else {
-				baseMatch = true;
-			}
+	    		break;
+	    	}
+	    }
 
-			if(extMatch && dirMatch && baseMatch) {
-				return {
-				    editor: configItem.config.editor || editor,
-				    widgets: configItem.config.widgets || widgets,
-				    ext: file.ext,
-				}
-			}
-		}
-
-		return {
+	    var config = {
 		    editor: editor,
 		    widgets: widgets,
 		    ext: file.ext,
 		}
+
+		return config;
     }
 
     factory.setConfig = function(config) {
@@ -207,4 +182,5 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 		$rootScope.$emit('editor.saved');
 		$rootScope.$emit('editor.saved.' + activeFile.path);
     }
+    
 }]);

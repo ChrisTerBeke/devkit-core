@@ -107,16 +107,36 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 
 	// menu
 
-	var osxMenuBar = new gui.Menu({
+	var menuBar = new gui.Menu({
 		type: "menubar"
 	});
-	osxMenuBar.createMacBuiltin("Devkit", {
-		hideWindow: true
-	});
+	
+	if( process.platform == 'darwin' ) {	
+		menuBar.createMacBuiltin("Devkit", {
+			hideWindow: true
+		});
+	} else {
+		var menuItem = new gui.MenuItem({ label: 'File' });
+		
+		var submenu = new gui.Menu();
+			submenu.append(new gui.MenuItem({ label: 'Item 1' }));
+			submenu.append(new gui.MenuItem({ label: 'Item 2' }));
+			submenu.append(new gui.MenuItem({ label: 'Item 3' }));
+			
+		menuItem.submenu = submenu;
+		menuBar.append(menuItem);
+		
+		menuBar.append(new gui.MenuItem({ label: 'Edit' }));
+		menuBar.append(new gui.MenuItem({ label: 'View' }));
+		
+		console.log(menuBar.items)
+	}
 
-	osxMenuBar.items[0].submenu.insert( new gui.MenuItem({ type: 'separator' }), 2 );
+	win.menu = menuBar;
 
-	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
+	menuBar.items[0].submenu.insert( new gui.MenuItem({ type: 'separator' }), 2 );
+
+	menuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Preferences...',
 		click: function() {
 			$scope.$apply(function() {
@@ -127,10 +147,8 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 		modifiers: 'cmd'
 	}), 3);
 
-	win.menu = osxMenuBar;
-
 	// app menu
-	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
+	menuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Check for updates...',
 		click: function() {
 			alert('this feature will come soon...');
@@ -195,7 +213,9 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Close tab',
 		click: function() {
-			$rootScope.$emit('service.file.close');
+			$scope.$apply(function() {
+				$file.close();
+			});
 		},
 		key: 'w',
 		modifiers: 'cmd'
@@ -208,8 +228,9 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save',
 		click: function() {
-    		$file.save();
-    		$rootScope.$emit('service.file.save');
+			$scope.$apply(function() {
+				$file.save();
+			});
 		},
 		key: 's',
 		modifiers: 'cmd'

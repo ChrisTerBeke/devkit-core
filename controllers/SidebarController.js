@@ -6,17 +6,18 @@ var fs_extra	= require('fs-extra');
 var trash		= require('trash');
 var watchTree 	= require("fs-watch-tree").watchTree;
 
-var SidebarController = function($scope, $rootScope, $file, $timeout) {
+var SidebarController = function($scope, $rootScope, $file, $timeout, $project) {
 	
 	$scope.selected = [];
 	$scope.renaming = false;
 	$scope.expanded = [];
 	$scope.filetree = {};
+	$scope.selectedIndex = 0;
 	
 	$scope.init = function() {
 		// load previous project, if available
-		if(typeof window.localStorage.project_dir == 'string') {
-			$scope.loadProject(window.localStorage.project_dir);
+		if(typeof $project.getPath() == 'string') {
+			$scope.loadProject($project.getPath());
 		}
 	}
 	
@@ -48,7 +49,8 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	 * load a project
 	 */
 	$scope.loadProject = function(rootPath) {
-		window.localStorage.project_dir = rootPath;
+		$project.setPath(rootPath);
+		
         $scope.$parent.path = rootPath;
         
         // filetree
@@ -69,7 +71,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	/*
 	 * select filepath
 	 */
-	$scope.select = function(filePath, event) {
+	$scope.select = function(filePath, index, event) {
 		
 		// multiple selection
         if( event.metaKey || event.ctrlKey ) {
@@ -85,6 +87,10 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
         else {
             $scope.selected = [filePath];
         }
+
+        $scope.selectedIndex = index;
+
+        console.log(index, $scope.filetree[0].children[index]);
 	}
 
 	/*
@@ -273,9 +279,9 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 			}
 			
 			ctxmenu.append(new gui.MenuItem({ label: 'Open', click: function(){
-				$scope.selected.forEach(function( item_path ){
-					$file.open( item_path );					
-				});				
+				$scope.$apply(function() {
+					$file.open(item.path );	
+				});						
 			}}));
 			
 			ctxmenu.append(new gui.MenuItem({ label: 'Open With Default Editor', click: function(){
@@ -394,7 +400,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	});
 }
 
-SidebarController.$inject = ['$scope', '$rootScope', '$file', '$timeout'];
+SidebarController.$inject = ['$scope', '$rootScope', '$file', '$timeout', '$project'];
 
 app.controller("SidebarController", SidebarController);
 

@@ -33,7 +33,7 @@ function loadModule (module, type, dir, dependencies)
 		{
 			modules.push(dependency);
 		});
-	}
+    }
 
 	var self = this;
     
