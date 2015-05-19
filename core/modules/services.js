@@ -5,5 +5,6 @@ module.services = angular.module('module.services', [
 	'sdk.file',
 	'sdk.stoplight',
 	'sdk.moduleload',
-	'sdk.popup'
+	'sdk.popup',
+	'sdk.project'
 ]);

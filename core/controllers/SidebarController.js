@@ -6,7 +6,7 @@ var fs_extra	= require('fs-extra');
 var trash		= require('trash');
 var watchTree 	= require("fs-watch-tree").watchTree;
 
-var SidebarController = function($scope, $rootScope, $file, $timeout) {
+var SidebarController = function($scope, $rootScope, $file, $timeout, $project) {
 	
 	$scope.selected = [];
 	$scope.renaming = false;
@@ -15,8 +15,8 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	
 	$scope.init = function() {
 		// load previous project, if available
-		if(typeof window.localStorage.project_dir == 'string') {
-			$scope.loadProject(window.localStorage.project_dir);
+		if(typeof $project.getPath() == 'string') {
+			$scope.loadProject($project.getPath());
 		}
 	}
 	
@@ -48,7 +48,8 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	 * load a project
 	 */
 	$scope.loadProject = function(rootPath) {
-		window.localStorage.project_dir = rootPath;
+		$project.setPath(rootPath);
+		
         $scope.$parent.path = rootPath;
         
         // filetree
@@ -394,7 +395,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout) {
 	});
 }
 
-SidebarController.$inject = ['$scope', '$rootScope', '$file', '$timeout'];
+SidebarController.$inject = ['$scope', '$rootScope', '$file', '$timeout', '$project'];
 
 app.controller("SidebarController", SidebarController);
 

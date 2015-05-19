@@ -1,4 +1,4 @@
-angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeout', '$q', function ($rootScope, $http, $timeout, $q) {
+angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeout', '$q', '$project', function ($rootScope, $http, $timeout, $q, $project) {
 	    
 	var factory = {};
 	
@@ -127,7 +127,9 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     // get info (which views & widgets)
     factory.getInfo = function( file_path )
     {
-	    file_path = file_path.replace(window.localStorage.project_dir, '');
+	    file_path = $project.getPath();
+
+
 
 	    // determine the view.
 	    var file = path.parse( file_path );
