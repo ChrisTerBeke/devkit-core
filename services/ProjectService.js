@@ -2,7 +2,13 @@ angular.module('sdk.project', []).factory('$project', ['$rootScope', function ($
 	var factory = {};
 
 	factory.getPath = function() {
-		return window.localStorage.project_dir;
+		if(window.localStorage.project_dir) {
+			return window.localStorage.project_dir;
+		}
+		else {
+			return '';
+		}
+		
 	}
 
 	factory.setPath = function(path) {
@@ -12,7 +18,12 @@ angular.module('sdk.project', []).factory('$project', ['$rootScope', function ($
 	}
 
 	factory.getOpenFiles = function() {
-		return window.localStorage.files_open.split(',');
+		if(window.localStorage.files_open) {
+			return window.localStorage.files_open.split(',');
+		}
+		else {
+			return [''];
+		}
 	}
 
 	factory.setOpenFiles = function(files) {

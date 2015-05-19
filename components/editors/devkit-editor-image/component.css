@@ -1,0 +1,17 @@
+.image-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: block;
+}
+
+.image-file {
+	width: auto;
+	max-height: 80%;
+	margin: 10% auto;
+	vertical-align: middle;
+	display: block;
+	box-shadow: 0 5px 30px rgba(0,0,0,.75);
+}
