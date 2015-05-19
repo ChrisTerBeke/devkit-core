@@ -1,4 +1,4 @@
-var EditorController = function($rootScope, $scope, $file, $rootScope)
+var EditorController = function($rootScope, $scope, $file, $rootScope, $timeout)
 {
 	var win = gui.Window.get();
 
@@ -17,7 +17,6 @@ var EditorController = function($rootScope, $scope, $file, $rootScope)
 		this.close(true);
 	});
 
-
 	$scope.init = function() {
 		if(window.localStorage.files_open) {
 			var files_open = window.localStorage.files_open.split(',');
@@ -27,7 +26,10 @@ var EditorController = function($rootScope, $scope, $file, $rootScope)
 		}
 	}
 
-	$scope.init();
+	$timeout(function() {
+		$scope.init();
+	});
+	
 
 	// open file
     $scope.open = function(file_path) {
@@ -65,6 +67,6 @@ var EditorController = function($rootScope, $scope, $file, $rootScope)
 	});
 }
 
-EditorController.$inject = ['$rootScope', '$scope', '$file', '$rootScope'];
+EditorController.$inject = ['$rootScope', '$scope', '$file', '$rootScope', '$timeout'];
 
 app.controller("EditorController", EditorController);
