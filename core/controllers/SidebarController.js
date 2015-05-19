@@ -12,6 +12,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	$scope.renaming = false;
 	$scope.expanded = [];
 	$scope.filetree = {};
+	$scope.selectedIndex = 0;
 	
 	$scope.init = function() {
 		// load previous project, if available
@@ -70,7 +71,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	/*
 	 * select filepath
 	 */
-	$scope.select = function(filePath, event) {
+	$scope.select = function(filePath, index, event) {
 		
 		// multiple selection
         if( event.metaKey || event.ctrlKey ) {
@@ -86,6 +87,10 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
         else {
             $scope.selected = [filePath];
         }
+
+        $scope.selectedIndex = index;
+
+        console.log(index, $scope.filetree[0].children[index]);
 	}
 
 	/*

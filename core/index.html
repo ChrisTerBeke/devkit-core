@@ -50,7 +50,7 @@
 				
 					<script type="text/ng-template" id="filetreeTmpl">
 						<span
-							ng-click="!isRenaming(item.path) && select( item.path, $event )"
+							ng-click="!isRenaming(item.path) && select( item.path, $index, $event )"
 							ng-dblclick="!root && !isRenaming(item.path) && open( item.path )"
 							ng-right-click="!root && showCtxMenu(item, $event)"
 							ng-class="{ 'selected': isSelected( item.path ) }"
@@ -59,9 +59,9 @@
 							<span class="expand" ng-click="!isRenaming(item.path) && expand( item.path, !isExpanded(item.path) )" stop-event></span>
 							<span class="icon"></span>
 							<span class="name" ng-show="!isRenaming(item.path)">{{item.name}}</span>
-							<form ng-show="isRenaming(item.path)" ng-itemmit="rename( item )" style="display: inline-block;">
+							<form ng-show="isRenaming(item.path)" ng-submit="rename( item )" style="display: inline-block;">
 								<input class="name-renaming" ng-show="isRenaming(item.path)" show-focus="isRenaming(item.path)" type="text" ng-model="item.name" />
-								<input type="itemmit" style="display: none;" />
+								<input type="submit" style="display: none;" />
 							</form>
 						</span>
 					    <ul
