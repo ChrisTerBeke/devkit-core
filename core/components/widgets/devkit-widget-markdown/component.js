@@ -1,16 +1,10 @@
-app.controller("markdownWidgetCtrl", function( $scope, $rootScope, $timeout ){
+app.controller("markdownWidgetCtrl", function( $scope, $rootScope, $sce ){
 
-	$timeout(function(){
-		$scope.update();
-	}, 100);
-
-	$rootScope.$on('editor.change.' + $scope.file_path, function(){
-		$timeout(function(){
-			$scope.update();
-		}, 100)
+	$scope.html = '';
+	
+	$scope.$watch('file.code', function(code){
+		
+		$scope.html = $sce.trustAsHtml( markdown.toHTML( code ) );
+		
 	});
-
-	$scope.update = function(){
-		$scope.code = $scope.$parent.files[ $scope.$parent.active ].code;
-	}
 });
