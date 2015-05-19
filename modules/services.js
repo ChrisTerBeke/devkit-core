@@ -5,6 +5,5 @@ module.services = angular.module('module.services', [
 	'sdk.file',
 	'sdk.stoplight',
 	'sdk.moduleload',
-	'sdk.popup',
-	'sdk.menu'
+	'sdk.popup'
 ]);

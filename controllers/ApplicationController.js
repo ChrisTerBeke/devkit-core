@@ -107,36 +107,16 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 
 	// menu
 
-	var menuBar = new gui.Menu({
+	var osxMenuBar = new gui.Menu({
 		type: "menubar"
 	});
-	
-	if( process.platform == 'darwin' ) {	
-		menuBar.createMacBuiltin("Devkit", {
-			hideWindow: true
-		});
-	} else {
-		var menuItem = new gui.MenuItem({ label: 'File' });
-		
-		var submenu = new gui.Menu();
-			submenu.append(new gui.MenuItem({ label: 'Item 1' }));
-			submenu.append(new gui.MenuItem({ label: 'Item 2' }));
-			submenu.append(new gui.MenuItem({ label: 'Item 3' }));
-			
-		menuItem.submenu = submenu;
-		menuBar.append(menuItem);
-		
-		menuBar.append(new gui.MenuItem({ label: 'Edit' }));
-		menuBar.append(new gui.MenuItem({ label: 'View' }));
-		
-		console.log(menuBar.items)
-	}
+	osxMenuBar.createMacBuiltin("Devkit", {
+		hideWindow: true
+	});
 
-	win.menu = menuBar;
+	osxMenuBar.items[0].submenu.insert( new gui.MenuItem({ type: 'separator' }), 2 );
 
-	menuBar.items[0].submenu.insert( new gui.MenuItem({ type: 'separator' }), 2 );
-
-	menuBar.items[0].submenu.insert(new gui.MenuItem({
+	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Preferences...',
 		click: function() {
 			$scope.$apply(function() {
@@ -147,8 +127,10 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 		modifiers: 'cmd'
 	}), 3);
 
+	win.menu = osxMenuBar;
+
 	// app menu
-	menuBar.items[0].submenu.insert(new gui.MenuItem({
+	osxMenuBar.items[0].submenu.insert(new gui.MenuItem({
 		label: 'Check for updates...',
 		click: function() {
 			alert('this feature will come soon...');

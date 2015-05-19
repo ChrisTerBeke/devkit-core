@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html ng-controller="ApplicationController">
+    <head>
+	    <base href="./../" />
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+        <!-- Include Resources -->
+        <link rel="stylesheet" href="./core/app.css" id="stylesheets" />
+		<!--         <link rel="stylesheet" href="./bower_components/css-base/dist/compiled_formide.css" id="stylesheets" /> --><!-- Gives some styling issues -->
+        <script src="./public/assets/javascripts/application.js" id="javascripts"></script>
+        
+    </head>
+    <body
+		class="os-{{platform}}"
+		ng-class="{ 'maximized': maximized, 'loaded': loaded, 'focus': focus }"
+	>
+		<wrap
+			ng-class="{ 'blurred': blurred }"
+			ng-click="blurred && closePopup()"
+		>
+
+			<header style="-webkit-app-region: drag">
+				<div id="header-stoplight">
+					<div class="table">
+						<div class="tablecell">
+							<div id="header-stoplight-close" class="header-stoplight-button" ng-click="stoplight.close()"></div>
+							<div id="header-stoplight-minimize" class="header-stoplight-button" ng-click="stoplight.minimize()"></div>
+							<div id="header-stoplight-zoom" class="header-stoplight-button" ng-click="stoplight.zoom()"></div>
+						</div>
+					</div>
+				</div>
+				
+				<div id="header-components">
+					<section
+						ng-repeat=" ( header, path ) in $root.modules['header']"
+						ng-include="path"
+						ng-attr-id="header-{{header}}"
+					></section>					
+				</div>
+
+			</header>
+
+			<content>
+
+				<sidebar
+					ng-controller="SidebarController as sidebar"
+					ng-right-click="showCtxMenu(undefined, $event)"
+					ng-init="init()"
+				>
+				
+					<script type="text/ng-template" id="filetreeTmpl">
+						<span
+							ng-click="!isRenaming(item.path) && select( item.path, $event )"
+							ng-dblclick="!root && !isRenaming(item.path) && open( item.path )"
+							ng-right-click="!root && showCtxMenu(item, $event)"
+							ng-class="{ 'selected': isSelected( item.path ) }"
+							class="label"
+						>
+							<span class="expand" ng-click="!isRenaming(item.path) && expand( item.path, !isExpanded(item.path) )" stop-event></span>
+							<span class="icon"></span>
+							<span class="name" ng-show="!isRenaming(item.path)">{{item.name}}</span>
+							<form ng-show="isRenaming(item.path)" ng-itemmit="rename( item )" style="display: inline-block;">
+								<input class="name-renaming" ng-show="isRenaming(item.path)" show-focus="isRenaming(item.path)" type="text" ng-model="item.name" />
+								<input type="itemmit" style="display: none;" />
+							</form>
+						</span>
+					    <ul
+						    ng-if="item.children"
+							ng-show="isExpanded( item.path )"
+							dnd-list="item.children"
+							dnd-external-sources="true"
+							dnd-dragover="dragoverCallback(event, index, external)"
+							dnd-drop="dropCallback(event, parent, item, external)"
+						>
+					        <li
+					        	ng-repeat="item in item.children"
+					        	ng-include="'filetreeTmpl'"
+					        	ng-class="{ 'expanded': isExpanded( item.path ) }"
+					        	ng-init="selected = false; item.expanded = false; root = false; parent = item;"
+					        	class="type-{{item.type}} ext-{{item.ext}}"
+					        	
+					        	dnd-draggable="item"
+								dnd-effect-allowed="move"
+					        ></li>
+					    </ul>
+					</script>
+
+					<ul 
+						id="filetree" 
+						dnd-list="filetree"
+						dnd-external-sources="true"
+						dnd-dragover="dragoverCallback(event, index, external)"
+						dnd-drop="dropCallback(event, filetree, item, external)"
+					>
+						<li
+							ng-repeat="item in filetree"
+							ng-include="'filetreeTmpl'"
+							ng-class="{ 'expanded': isExpanded( item.path ) }"
+							ng-init="expand( item.path, true ); root = true; parent = item;"
+							class="type-{{item.type}}"
+							
+							dnd-draggable="item"
+							dnd-effect-allowed="move"
+						></li>
+					</ul>
+					
+					<div id="sidebar-helper">
+
+						<div class="btn btn-add" ng-click="newFile()">
+							<span class="icon" style="-webkit-mask-image: url(./core/assets/images/icon/newfile.svg)"></span>
+						</div>
+
+						<div class="btn btn-add" ng-click="newFolder()">
+							<span class="icon" style="-webkit-mask-image: url(./core/assets/images/icon/newfolder.svg)"></span>
+						</div>
+					</div>
+
+				</sidebar>
+
+				<editor ng-controller="EditorController as editor"  ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }">
+
+					<editormain>
+						<tabs>
+							<tab
+								ng-repeat="file in files"
+								ng-click="open(file.path)"
+								ng-class="{ 'active': active == file.path, 'changed': isChanged(file.path) }"
+							>
+								<span class="close" ng-click="close(file.path)"></span>
+								<span class="icon">{{file.icon}}</span>
+								<span class="name">{{file.name}}</span>
+							</tab>
+						</tabs>
+
+						<editorviews>
+							<editorview
+								class="{{file._view}}"
+								ng-repeat="file in files"
+								ng-show="active == file.path",
+								ng-include="getEditorPath(file._view)"
+							>
+							</editorview>
+
+							<noeditorview ng-show="!active" ng-include="'./app/splash.html'"></noeditorview>
+						</editorviews>
+						
+						<widgets ng-repeat="file in files" ng-show="$parent.active == file.path && file._widgets.length > 0">
+							<widgetwrap
+								ng-repeat="widget in file._widgets"
+								ng-init="file_path = file.path; "
+								ng-controller="WidgetController"
+								ng-class="{ 'collapsed': collapsed }"
+							>
+								<span class="title" ng-click="collapsed = !collapsed">
+									<span class="name">{{widget}}</span>
+								</span>
+								<widget class="{{widget}}" ng-include="getWidgetPath(widget)"></widget>
+							</widgetwrap>
+						</widgets>
+					</editormain>
+				</editor>
+
+			</content>
+
+		</wrap>
+
+		<!-- hidden things -->
+		<util>
+			<input id="directorychooser" type="file" webkitdirectory />
+		</util>
+		
+	</body>
+</html>

@@ -1,0 +1,575 @@
+@import url('../bower_components/ngDialog/css/ngDialog.css');
+
+/* reset */
+* {
+	margin: 0;
+	padding: 0;
+	border: none;
+	outline: none;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+
+/* general components */
+.table {
+	display: table;
+	width: 100%;
+	height: 100%;
+}
+.tablecell {
+	display: table-cell;
+	width: 100%;
+	vertical-align: middle;
+}
+
+/* editor */
+html {
+	height: 100%;
+	
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+body {
+	height: 100%;
+	-webkit-user-select: none;
+
+	font-family: "Helvetica", sans-serif;
+	font-weight: 300;
+	background: transparent;
+
+	-webkit-user-select: none;
+	cursor: default;
+
+	-webkit-perspective: 1500px;
+
+	display: flex;
+  	flex-direction: column;
+}
+
+h1,
+h2,
+h3 {
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+h4,
+h5,
+h6 {
+	font-weight: 400;
+	letter-spacing: -0.01em;
+}
+
+.rule {
+	margin-bottom: 1rem;
+}
+
+header {
+/*	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;*/
+	height: 40px;
+	
+	display: flex;
+    align-content: stretch;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+	header:before {
+		content: "";
+		position: absolute;
+		z-index: 1;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		-webkit-app-region: drag;
+		
+		display: none;
+		/* TODO */
+	}
+
+	#header-stoplight {
+	    order: 3;
+    	flex: 0 1 auto;
+	    align-self: auto;
+	    height: 100%;
+	    padding: 0 4px;
+	}
+	body.os-darwin #header-stoplight {
+		order: 1;
+	}
+		#header-stoplight .header-stoplight-button {
+			float: right;
+			width: 12px;
+			height: 12px;
+			background-size: cover;
+			margin: 0 4px;
+		}
+		body.os-darwin #header-stoplight .header-stoplight-button {
+			float: left;
+		}
+		#header-stoplight-close {
+			background-image: url(./assets/images/chrome-stoplight-close.png);
+		}
+		#header-stoplight .tablecell:hover #header-stoplight-close {
+			background-image: url(./assets/images/chrome-stoplight-close-hover.png);
+		}
+		#header-stoplight-minimize {
+			background-image: url(./assets/images/chrome-stoplight-minimize.png);
+		}
+		#header-stoplight .tablecell:hover #header-stoplight-minimize {
+			background-image: url(./assets/images/chrome-stoplight-minimize-hover.png);
+		}
+		#header-stoplight-zoom {
+			background-image: url(./assets/images/chrome-stoplight-zoom.png);
+		}
+		#header-stoplight .tablecell:hover #header-stoplight-zoom {
+			background-image: url(./assets/images/chrome-stoplight-zoom-hover.png);
+		}
+	#header-components {
+	    order: 2;
+    	flex: 1 1 auto;
+	    align-self: auto;
+	    height: 100%;
+	    position: absolute;
+		left: 220px;
+		right: 0;
+	}	
+
+wrap {
+	position: relative;
+	display: flex; 
+ 	flex-direction: column; 
+ 	height: 100%;
+}	
+
+content {
+	flex-grow: 1;
+	display: block;
+	position: relative;
+}
+
+	sidebar,
+	widgets {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 220px;
+		display: inline-block;
+		vertical-align: top;
+	}
+	sidebar {
+	}
+		#filetree {
+			list-style: none;
+			padding-left: 7px;
+		}
+		#filetree ul {
+			padding-left: 15px;
+		}
+			#filetree li {
+				line-height: 24px;
+			}
+				#filetree li .label {
+					display: block;
+					position: relative;
+					font-size: 0;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+				#filetree li .label:hover {
+				}
+				#filetree li .label.selected,
+				#filetree li .label.file-drop-over {
+				}
+					#filetree li .label .expand {
+						width: 20px;
+						height: 20px;
+						display: inline-block;
+						vertical-align: middle;
+					}
+					#filetree li .label .expand:before {
+						content: "";
+						display: block;
+						position: absolute;
+						left: 7px;
+						top: 8px;
+						border-left: 6px solid #333;
+						border-top: 4px solid transparent;
+						border-bottom: 4px solid transparent;
+
+						visibility: hidden;
+
+						transition: transform 0.25s;
+						opacity: 0.75;
+					}
+					#filetree li .label .expand:hover:before {
+						opacity: 1;
+					}
+					#filetree li.expanded > .label .expand:before {
+						transform: rotate(90deg);
+					}
+					#filetree li.type-folder > .label .expand:before {
+						visibility: visible;
+					}
+					#filetree li .label .name,
+					#filetree li .label .name-renaming {
+						color: black;
+						font-weight: 300;
+						font-size: 12px;
+						display: inline-block;
+						vertical-align: middle;
+						transition: all .2s ease-in-out;
+					}
+					#filetree li .label .name-renaming {
+						font-family: inherit;
+						padding: 2px 4px;
+						margin: -4px;
+						position: relative;
+					}
+					#filetree li .label .icon {
+						-webkit-mask-position: center center;
+						-webkit-mask-repeat: no-repeat;
+						-webkit-mask-size: contain;
+						width: 12px;
+						height: 12px;
+						display: inline-block;
+						vertical-align: middle;
+						margin-right: 6px;
+					}
+					#filetree li.type-folder .label .icon {
+						-webkit-mask-image: url(./assets/images/ext/folder.svg);
+					}
+					#filetree li.type-file .label .icon {
+						-webkit-mask-image: url(./assets/images/ext/file.svg);
+					}
+				#filetree li ul {
+					list-style: none;
+				}
+					#filetree li ul li .label {
+
+					}
+		#sidebar-helper {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			left: 0;
+			height: 30px;
+		}
+			#sidebar-helper .button {
+				float: left;
+				margin: 2px;
+				width: 26px;
+				height: 26px;
+				text-align: center;
+				line-height: 26px;
+				color: black;
+				font-size: 14px;
+				box-sizing: border-box;
+			}
+			#sidebar-helper .button:hover {
+			}
+			#sidebar-helper .button:active {
+			}
+			
+	editor {
+		position: absolute;
+		top: 0;
+		left: 220px;
+		right: 0;
+		bottom: 0;
+		display: inline-block;
+		vertical-align: top;
+	}
+
+		tabs {
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			height: 25px;
+			display: block;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+			tabs tab {
+				position: relative;
+				z-index: 1;
+				float: left;
+				width: 120px;
+				height: 25px;
+				line-height: 25px;
+				box-sizing: border-box;
+				font-size: 12px;
+			}
+			tabs tab.active + tab {
+			}
+			tabs tab:hover {
+			}
+			tabs tab.active {
+				color: black;
+			}
+				tabs tab * {
+					display: inline-block;
+					vertical-align: middle;
+					cursor: default;
+				}
+				tabs tab .name {
+					overflow: hidden;
+					text-overflow: ellipsis;
+					max-width: 75%;
+					margin-left: 2em;
+				}
+				tabs tab .close {
+					border-radius: 30px;
+					position: absolute;
+					left: 0;
+					top: 0;
+					width: 11px;
+					height: 11px;
+					margin: 7px;
+					text-align: center;
+					line-height: 11px;
+					font-size: 6px;
+					cursor: default;
+				}
+				tabs tab .close:hover {
+				}
+				tabs tab .close:active {
+				}
+					tabs tab .close:before {
+						content: "\2715"; /* cross */
+						position: absolute;
+						display: block;
+						left: 0;
+						top: 0;
+						right: 0;
+						bottom: 0;
+						text-align: center;
+						font-size: 7px;
+						line-height: 13px;
+						color: white;
+					}
+					tabs tab.changed .close:before {
+						content: "\2022"; /* bullet */
+					}
+		editormain {
+/*			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;*/
+			height: 100%;
+			display: block;
+			border-bottom-width: 0;
+			border-right-width: 0;
+		}
+		editorviews {
+			display: block;
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			margin-top: 25px;
+			overflow: hidden;
+		}
+		editor.widgets editorviews {
+			right: 300px;
+			border-right-width: 1px;
+		}
+		noeditorview,
+		editorview {
+			display: block;
+/*			position: absolute;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;*/
+			height: 100%;
+			overflow: auto;
+		}
+		editorview .viewWrap {
+			width: 100%;
+			height: 100%;
+		}
+		editor.widgets editorview {
+			right: 230px;
+		}
+
+		noeditorview {
+			top: 10px;
+			padding: 20px;
+			text-align: center;
+		}
+			noeditorview h1 {
+				font-weight: 200;
+				text-align: center;
+				margin-bottom: 0.5em;
+			}
+			noeditorview p {
+				font-size: 18px;
+				font-weight: 300;
+				margin-bottom: 1em;
+			}
+			noeditorview p:last-child {
+				margin-bottom: 0;
+			}
+				noeditorview p a {
+					text-decoration: none;
+				}
+				noeditorview p a:hover {
+					text-decoration: underline;
+				}
+
+		widgets {
+			position: absolute;
+			display: block;
+			position: absolute;
+			left: auto;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			margin-top: 25px;
+			width: 300px;
+		}
+			widgets widgetwrap {
+				position: relative;
+				display: block;
+				overflow: hidden;
+			}
+				widgets widgetwrap .title {
+					display: block;
+					padding: 4px 16px;
+					font-size: 12px;
+				}
+				widgets widgetwrap widget {
+					display: block;
+					padding: 8px;
+				}
+util {
+	display: none;
+}
+
+auth {
+	display: block;
+	position: absolute;
+	z-index: 1000;
+	top: 5vmin;
+	bottom: 5vmin;
+
+	width: 400px;
+	left: 50%;
+	margin-left: -200px;
+
+	background: black;
+	box-shadow: 0 0 20px rgba(0,0,0,0.5);
+
+	visibility: hidden;
+	opacity: 0;
+	transform: scale(0.95) rotateX(-10deg);
+	transition: all 0.4s;
+}
+auth.visible {
+	visibility: visible;
+	opacity: 1;
+	transform: scale(1) rotateX(0deg);
+}
+	auth iframe {
+		width: 100%;
+		height: 100%;
+	}
+
+fieldset {
+	padding: 10px;
+	margin-bottom: 10px;
+}
+fieldset legend {
+	font-size: 12px;
+	font-weight: 400;
+	padding: 0 4px;
+}
+fieldset row {
+	display: block;
+	margin-bottom: 10px;
+}
+fieldset row:after {
+	content: "";
+	clear: both;
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+fieldset row:last-child {
+	margin-bottom: 0;
+}
+fieldset label {
+	display: block;
+	font-size: 12px;
+	font-weight: 300;
+	line-height: 16px;
+}
+fieldset row label {
+	float: left;
+	width: 200px;
+	text-align: right;
+	line-height: 24px;
+	margin-right: 10px;
+}
+input,
+textarea,
+tags-input .tags {
+	background: transparent;
+	border-radius: 2px;
+	padding: 4px;
+	font-family: inherit;
+	font-weight: 300;
+	font-size: 12px;
+	cursor: text;
+}
+row input,
+row textarea {
+	float: left;
+	width: 200px;
+}
+
+.ngdialog {
+  padding-top: 4rem;
+}
+
+.ngdialog .ngdialog-content {
+  position: relative;
+  width: 450px;
+  margin: 0 auto;
+}
+
+.ngdialog .ngdialog-close {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.ngdialog .ngdialog-close:before {
+  background: transparent;
+  color: #bbb;
+  content: "\00D7";
+  font-size: 26px;
+  font-weight: 400;
+  height: 30px;
+  line-height: 26px;
+  position: absolute;
+  right: 3px;
+  text-align: center;
+  top: 3px;
+  width: 30px;
+}

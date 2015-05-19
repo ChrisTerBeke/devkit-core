@@ -207,5 +207,4 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 		$rootScope.$emit('editor.saved');
 		$rootScope.$emit('editor.saved.' + activeFile.path);
     }
-    
 }]);
