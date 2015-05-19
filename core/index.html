@@ -161,8 +161,15 @@
 						</editorviews>
 						
 						<widgets ng-repeat="file in files" ng-show="$parent.active == file.path && file._widgets.length > 0">
-							<widgetwrap ng-repeat="widget in file._widgets" ng-init="file_path = file.path" ng-controller="WidgetController">
-								<title>{{widget}}</title>
+							<widgetwrap
+								ng-repeat="widget in file._widgets"
+								ng-init="file_path = file.path; "
+								ng-controller="WidgetController"
+								ng-class="{ 'collapsed': collapsed }"
+							>
+								<span class="title" ng-click="collapsed = !collapsed">
+									<span class="name">{{widget}}</span>
+								</span>
 								<widget class="{{widget}}" ng-include="getWidgetPath(widget)"></widget>
 							</widgetwrap>
 						</widgets>
