@@ -12,6 +12,7 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
     factory.open = function( file_path )
     {
+    	var file_path = file_path || factory.active;
 
 	    // only load the file when it's not already open
 	    if( !factory.isOpen( file_path ) ) {
@@ -60,8 +61,9 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
     // close an item
     factory.close = function( file_path )
-    {
-	    
+    {  
+	    var file_path = file_path || factory.active;
+
 	    // check for unsaved changes
 	    var should_delete = false;
 	    if( typeof factory.files[ file_path ] != 'undefined' && factory.files[ file_path ]._changed )
@@ -122,6 +124,8 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     	{
     		saveFile( file_path )
     	}
+
+    	$rootScope.$emit('service.file.save', file_path);
     }
 
     // get info (which views & widgets)

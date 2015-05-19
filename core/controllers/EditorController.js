@@ -59,6 +59,10 @@ var EditorController = function($rootScope, $scope, $file, $rootScope)
 	$rootScope.$on('service.file.close', function(){
 		$scope.update();
 	});
+
+	$rootScope.$on('service.file.save', function(){
+		$scope.update();
+	});
 }
 
 EditorController.$inject = ['$rootScope', '$scope', '$file', '$rootScope'];

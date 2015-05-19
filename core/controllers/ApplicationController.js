@@ -213,7 +213,9 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Close tab',
 		click: function() {
-			$rootScope.$emit('service.file.close');
+			$scope.$apply(function() {
+				$file.close();
+			});
 		},
 		key: 'w',
 		modifiers: 'cmd'
@@ -226,8 +228,9 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	file.insert(new gui.MenuItem({
 		label: 'Save',
 		click: function() {
-    		$file.save();
-    		$rootScope.$emit('service.file.save');
+			$scope.$apply(function() {
+				$file.save();
+			});
 		},
 		key: 's',
 		modifiers: 'cmd'
