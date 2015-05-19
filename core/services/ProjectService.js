@@ -11,5 +11,16 @@ angular.module('sdk.project', []).factory('$project', ['$rootScope', function ($
 		return true;
 	}
 
+	factory.getOpenFiles = function() {
+		return window.localStorage.files_open.split(',');
+	}
+
+	factory.setOpenFiles = function(files) {
+		window.localStorage.files_open = files.join(',');
+
+		return true;
+	}
+
+
     return factory;
 }]);
