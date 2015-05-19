@@ -141,23 +141,7 @@
 							>
 							</editorview>
 
-							<noeditorview ng-show="!active">
-								<div class="table">
-									<div class="tablecell">
-								
-										<br/><br/><br/><br/>
-								
-										<p>
-											<img src="./core/assets/images/icon/tools.svg" width="30%" style="opacity: 0.1;" />
-										</p>
-								
-										<h1>Welcome, Developer!</h1>
-								
-										<p>Let's get started. <a href="#">Build your first App &raquo;</a></p>
-								
-									</div>
-								</div>
-							</noeditorview>
+							<noeditorview ng-show="!active" ng-include="'./app/splash.html'"></noeditorview>
 						</editorviews>
 						
 						<widgets ng-repeat="file in files" ng-show="$parent.active == file.path && file._widgets.length > 0">
