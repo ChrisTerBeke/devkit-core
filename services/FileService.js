@@ -175,12 +175,14 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 
 	    var activeFile = factory.files[ file_path ];
 
-	    fs.writeFileSync( file_path, activeFile.code );
+	    fs.writeFile( file_path, activeFile.code, function(err) {
+	    	console.log(err);
 
-		activeFile._changed = false;
+	    	activeFile._changed = false;
 
-		$rootScope.$emit('editor.saved');
-		$rootScope.$emit('editor.saved.' + activeFile.path);
+			$rootScope.$emit('editor.saved');
+			$rootScope.$emit('editor.saved.' + activeFile.path);
+	    });
     }
     
 }]);

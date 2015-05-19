@@ -102,7 +102,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	});
 
 
-
 	/* TODO: Make a service of this, that generates a menubar based on a JSON input. */
 
 	// menu
