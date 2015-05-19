@@ -279,9 +279,9 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 			}
 			
 			ctxmenu.append(new gui.MenuItem({ label: 'Open', click: function(){
-				$scope.selected.forEach(function( item_path ){
-					$file.open( item_path );					
-				});				
+				$scope.$apply(function() {
+					$file.open(item.path );	
+				});						
 			}}));
 			
 			ctxmenu.append(new gui.MenuItem({ label: 'Open With Default Editor', click: function(){
