@@ -117,7 +117,7 @@
 
 				</sidebar>
 
-				<editor ng-controller="EditorController as editor">
+				<editor ng-controller="EditorController as editor"  ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }">
 
 					<editormain>
 						<tabs>
@@ -132,7 +132,7 @@
 							</tab>
 						</tabs>
 
-						<editorviews ng-class="{ 'widgets': files[ active ]._widgets.length > 0 }">
+						<editorviews>
 							<editorview
 								class="{{file._view}}"
 								ng-repeat="file in files"
