@@ -2,9 +2,9 @@ angular.module('sdk.menu', []).factory('$menu', ['$rootScope', function ($rootSc
 	
 	var factory = {};
 	
-	factory.setConfig = function( args ){
-		
-	}
+    factory.setConfig = function(config) {
+	  	$rootScope.menuConfig = config;
+    };
 	
 	return factory;
 	

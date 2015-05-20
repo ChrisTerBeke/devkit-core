@@ -17,6 +17,17 @@
 			ng-class="{ 'blurred': blurred }"
 			ng-click="blurred && closePopup()"
 		>
+		
+			<menu
+				ng-controller="MenuController as menu"
+				ng-show="menu.inlineMenu"
+			>
+				<ul>
+					<li>
+						
+					</li>
+				</ul>
+			</menu>
 
 			<header style="-webkit-app-region: drag">
 				<div id="header-stoplight">
