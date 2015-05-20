@@ -70,13 +70,16 @@ header {
 	top: 0;
 	left: 0;
 	right: 0;*/
-	height: 40px;
+	height: 65px;
 	
 	display: flex;
     align-content: stretch;
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: flex-start;
+}
+body.os-darwin header {
+	height: 40px;
 }
 	header:before {
 		content: "";
@@ -86,21 +89,99 @@ header {
 		right: 0;
 		top: 0;
 		bottom: 0;
-		-webkit-app-region: drag;
-		
-		display: none;
-		/* TODO */
 	}
+	
+	#header-menu {
+		position: absolute;
+		z-index: 2;
+		left: 0;
+		top: 0;
+		display: block;
+		z-index: 1000;
+		height: 25px;
+		padding: 2px;
+		box-sizing: border-box;
+	}
+	body.os-darwin #header-menu {
+		display: none;
+	}
+		#header-menu ul {
+			list-style: none;
+		}
+			#header-menu > ul > li {
+				float: left;
+			}
+			#header-menu li {
+				position: relative;
+				display: block;
+				white-space: nowrap;
+				line-height: 25px;
+			}
+			#header-menu li.seperator {
+				height: 1px;
+				background: #ccc;
+			}
+				#header-menu ul li ul {
+					position: absolute;
+					top: 25px;
+					left: 0;		
+					display: none;
+					min-width: 140px;
+				}
+				#header-menu ul li.visibleSubmenu > div > ul {
+					display: block;
+				}
+					#header-menu ul li ul li {
+						
+					}
+						#header-menu ul li ul li .separator {
+							display: block;
+							height: 1px;
+							background: white;
+						}
+						#header-menu ul li ul li .label-wrap {
+							display: flex;
+						}
+							#header-menu ul li ul li .label-wrap .label {
+								order: 0;
+								flex: 1 1 auto;
+							}
+							#header-menu ul li ul li .label-wrap .hotkey {
+								margin-left: 30px;
+								order: 1;
+								flex: 0 1 auto;
+								text-align: right;
+							}
+							#header-menu ul li ul li .label-wrap .arrow {
+								order: 1;
+								flex: 0 1 auto;
+								margin: 7.5px 0 7.5px 10px;
+								border-left: 5px solid #333;
+								border-top: 5px solid transparent;
+								border-bottom: 5px solid transparent;
+							}
+							
+						#header-menu ul li ul li .hotkey {
+							opacity: 0.5;
+						}
+						#header-menu ul li ul li ul {
+							top: 0;
+							left: 100%;
+						}
+						#header-menu ul li ul li:hover > div > ul {
+							display: block;
+						}
 
 	#header-stoplight {
-	    order: 3;
-    	flex: 0 1 auto;
-	    align-self: auto;
-	    height: 100%;
-	    padding: 0 4px;
+		position: absolute;
+		z-index: 2;
+		right: 0;
+		top: 0;
 	}
 	body.os-darwin #header-stoplight {
-		order: 1;
+		left: 11px;
+		right: auto;
+		top: 14px;
 	}
 		#header-stoplight .header-stoplight-button {
 			float: right;
@@ -131,14 +212,16 @@ header {
 			background-image: url(./assets/images/chrome-stoplight-zoom-hover.png);
 		}
 	#header-components {
-	    order: 2;
-    	flex: 1 1 auto;
-	    align-self: auto;
-	    height: 100%;
-	    position: absolute;
+		position: absolute;
+		z-index: 2;
 		left: 220px;
 		right: 0;
-	}	
+		top: 25px;
+	    height: 40px;
+	}
+	body.os-darwin #header-components {
+		top: 0;
+	}
 
 wrap {
 	position: relative;

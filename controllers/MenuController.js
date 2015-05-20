@@ -1,16 +1,66 @@
 var gui = require('nw.gui');	
 	
-var MenuController = function($rootScope, $scope)
+var MenuController = function($rootScope, $scope, $timeout)
 {
 		
 	$scope.menu 		= $rootScope.menuConfig;
 	$scope.os 			= process.platform;
 	$scope.inlineMenu 	= false; // draw the menu in the html
+	$scope.visibleMenu	= false;
 	
 	if( $scope.os == 'darwin' ) {
 		buildMenuDarwin( $scope.menu );
+		$scope.inlineMenu = true;
 	} else {
 		$scope.inlineMenu = true;
+	}
+	
+	$scope.click = function( item, root ) {
+		
+		if( root ) {
+			if( $scope.visibleMenu == item.id ) {
+				$scope.visibleMenu = false;
+			} else {
+				$scope.visibleMenu = item.id;
+			}
+			return;
+		}
+		
+		$rootScope.$emit('menu.' + item.id);
+		$timeout(function(){
+			$scope.visibleMenu = false;
+		}, 100);
+	}
+	
+	$scope.mouseover = function( item, root ) {
+		if( root ) {
+			if( $scope.visibleMenu !== false ) {
+				$scope.visibleMenu = item.id;
+			}
+		}
+	}
+	
+	$scope.formatHotkey = function( item ) {
+		
+		if( !item.hotkey ) return '';
+		
+		var hotkey = parseHotkey( item.hotkey );
+		
+		var modifiers = hotkey.modifiers.split('-');
+			modifiers = modifiers.map(function(modifier){
+				return ucfirst(modifier);
+			})
+		return modifiers.join('+') + '+' + ucfirst(hotkey.key);
+	}
+	
+	function ucfirst( text ) {
+		
+		if( text.length == 1 ) {
+			return text.toUpperCase();
+		} else {
+			return text.charAt(0).toUpperCase() + text.substring(1);
+		}
+		
 	}
 
 	function buildMenuDarwin( menu ) {
@@ -51,7 +101,9 @@ var MenuController = function($rootScope, $scope)
 			var menu = new gui.Menu({
 				type: 'menubar'
 			});
-			menu.createMacBuiltin("Devkit");
+			menu.createMacBuiltin("Devkit", {
+				edit: false
+			});
 		} else {
 			var menu = new gui.Menu();
 		}
@@ -60,7 +112,7 @@ var MenuController = function($rootScope, $scope)
 		if( root ) i = 1;
 		items.forEach(function(item){
 					
-			if( item.type == 'seperator' ) {
+			if( item.type == 'separator' ) {
 				 var item_ = new gui.MenuItem({ type: 'separator' });
 			} else {
 				
@@ -118,6 +170,6 @@ var MenuController = function($rootScope, $scope)
 	
 }
 
-MenuController.$inject = ['$rootScope', '$scope'];
+MenuController.$inject = ['$rootScope', '$scope', '$timeout'];
 
 app.controller("MenuController", MenuController);
