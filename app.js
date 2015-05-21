@@ -6,7 +6,6 @@ var modules = ['ng'];
 var angularModules = [];
 
 angular.element(document).ready(function() {
-    require('nw.gui').Window.get().showDevTools();
     setTimeout(function()
     { 
         modules.push('app');
