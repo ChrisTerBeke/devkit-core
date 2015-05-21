@@ -28,6 +28,12 @@ html {
 	
 	border-radius: 3px;
 	overflow: hidden;
+	
+	visibility: hidden;
+}
+
+html.loaded {
+	visibility: visible;
 }
 
 body {
@@ -43,6 +49,13 @@ body {
 
 	display: flex;
   	flex-direction: column;
+}
+
+body {
+	display: none;
+}
+html.loaded body {
+	display: flex;
 }
 
 h1,
@@ -201,23 +214,14 @@ body.os-darwin header {
 			border: 1px solid rgba(0,0,0,0.2);
 			border-top: none;
 		}
-		body:not(.os-darwin) #header-stoplight #header-stoplight:hover #header-stoplight-close {
-
-		}
 		body:not(.os-darwin) #header-stoplight #header-stoplight-minimize {
 			width: 30px;
 			background-image: url(./assets/images/header-stoplight-minimize.svg);
-		}
-		body:not(.os-darwin) #header-stoplight #header-stoplight:hover #header-stoplight-minimize {
-			background-color: white;
 		}
 		body:not(.os-darwin) #header-stoplight #header-stoplight-zoom {
 			width: 30px;
 			background-image: url(./assets/images/header-stoplight-zoom.svg);
 			background-size: 18px 18px;
-		}
-		body:not(.os-darwin) #header-stoplight #header-stoplight:hover #header-stoplight-zoom {
-
 		}
 		
 		/* darwin */
@@ -235,6 +239,7 @@ body.os-darwin header {
 		}
 		body.os-darwin #header-stoplight-zoom {
 			background-image: url(./assets/images/header-stoplight-darwin-zoom.png);
+			float: right !important;
 		}
 		body.os-darwin #header-stoplight:hover #header-stoplight-zoom {
 			background-image: url(./assets/images/header-stoplight-darwin-zoom-hover.png);
@@ -289,7 +294,6 @@ content {
 			}
 				#filetree li .label {
 					display: block;
-					position: relative;
 					font-size: 0;
 					white-space: nowrap;
 					overflow: hidden;
@@ -300,36 +304,37 @@ content {
 				#filetree li .label.selected,
 				#filetree li .label.file-drop-over {
 				}
-					#filetree li .label .expand {
-						width: 20px;
-						height: 20px;
+					#filetree li .label .expand-wrap {
+						width: 18px;
+						height: 24px;
 						display: inline-block;
 						vertical-align: middle;
-					}
-					#filetree li .label .expand:before {
-						content: "";
-						display: block;
-						position: absolute;
-						left: 7px;
-						top: 8px;
-						border-left: 6px solid #333;
-						border-top: 4px solid transparent;
-						border-bottom: 4px solid transparent;
-
-						visibility: hidden;
-
+	
 						transition: transform 0.25s;
 						opacity: 0.75;
 					}
-					#filetree li .label .expand:hover:before {
-						opacity: 1;
-					}
-					#filetree li.expanded > .label .expand:before {
+					#filetree li.expanded > .label .expand-wrap {
 						transform: rotate(90deg);
 					}
-					#filetree li.type-folder > .label .expand:before {
-						visibility: visible;
-					}
+						#filetree li .label .expand {
+							width: 0;
+							height: 0;
+							
+							margin-left: 7px;
+							margin-top: 3px;
+							
+							border-left: 6px solid #333;
+							border-top: 4px solid transparent;
+							border-bottom: 4px solid transparent;
+	
+							visibility: hidden;
+						}
+						#filetree li .label .expand-wrap:hover .expand {
+							opacity: 1;
+						}
+						#filetree li.type-folder > .label .expand {
+							visibility: visible;
+						}
 					#filetree li .label .name,
 					#filetree li .label .name-renaming {
 						color: black;

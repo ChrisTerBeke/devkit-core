@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html ng-controller="ApplicationController">
+<html
+	ng-controller="ApplicationController"
+	ng-class="{ 'maximized': maximized, 'loaded': loaded, 'focus': focus }"
+>
     <head>
 	    <base href="./../" />
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
@@ -94,7 +97,13 @@
 							ng-class="{ 'selected': isSelected( item.path ) }"
 							class="label"
 						>
-							<span class="expand" ng-click="!isRenaming(item.path) && expand( item.path, !isExpanded(item.path) )" stop-event></span>
+							<span
+								class="expand-wrap"
+								ng-click="!isRenaming(item.path) && expand( item.path, !isExpanded(item.path) )"
+								stop-event
+							>
+								<span class="expand"></span>
+							</span>
 							<span class="icon"></span>
 							<span class="name" ng-show="!isRenaming(item.path)">{{item.name}}</span>
 							<form

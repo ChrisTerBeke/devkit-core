@@ -11,7 +11,11 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 
 	var hook = Hook('global');
 
-	$scope.loaded = false;
+	// TODO: dynamically
+	$timeout(function(){
+		$scope.loaded = true;
+	}, 700);
+	
 	$scope.platform = os.platform();
 
 	$scope.focus = true;
@@ -56,11 +60,16 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
     	$file.close( file_path );
     }
 
-	// safe file
+	// save file
 	$scope.file.save = function()
 	{
     	$file.save();
     }
+    
+    // save file through menu
+    $rootScope.$on('menu.save', function(){
+	   $scope.file.save(); 
+    });
 
 	// get file info
 	$scope.file.getInfo = function(file_path)
@@ -73,11 +82,6 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	{
     	$file.icon(file_path);
     }
-    
-	window.addEventListener('load', function()
-	{
-		$scope.loaded = true;
-	});
 
     /* TODO: Merge this somehow, make it more elegeant*/
 
@@ -99,14 +103,7 @@ var ApplicationController = function($scope, $rootScope, $timeout, $stoplight, $
 	window.addEventListener('focus', function() 
 	{
 		$scope.setFocus(true);
-	});
-
-
-	/* TODO: Make a service of this, that generates a menubar based on a JSON input. */
-
-	// menu
-
-	
+	});	
 
 }
 
