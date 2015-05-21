@@ -8,6 +8,12 @@ var MenuController = function($rootScope, $scope, $timeout)
 	$scope.inlineMenu 	= false; // draw the menu in the html
 	$scope.visibleMenu	= false;
 	
+	$scope.close = function(){
+		$scope.$apply(function(){
+			$scope.visibleMenu = false;
+		})
+	}
+	
 	$scope.click = function( item, root ) {
 		
 		if( root ) {
@@ -105,40 +111,11 @@ var MenuController = function($rootScope, $scope, $timeout)
 				shift	: hotkey.indexOf('shift') > -1
 			});
 			
-			/*
-			var shortcut = new gui.Shortcut({
-				key: hotkey,
-				active: function(){
-					if( !winFocus ) return;
-					console.log('clicked' + this.key)
-				}
-			});
-			gui.App.registerGlobalHotKey(shortcut);
-			console.log(hotkey);
-			*/
-			
 		});
-		
-		/*
-		var option = {
-		  key : "Ctrl+Alt+A",
-		  active : function(e) {
-		    console.log(winFocus, this.key); 
-		  },
-		  failed : function(msg) {
-		    // :(, fail to register the |key| or couldn't parse the |key|.
-		    console.log(msg);
-		  }
-		};
-
-		// Create a shortcut with |option|.
-		
-		// Register global desktop shortcut, which can work without focus.
-		gui.App.registerGlobalHotKey(shortcut);
-		*/
 		
 	}
 	
+	// return a string with the first letter as uppercase
 	function ucfirst( text ) {
 		
 		if( text.length == 1 ) {

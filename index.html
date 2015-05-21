@@ -55,10 +55,12 @@
 
 			<header style="-webkit-app-region: drag">
 				
-				<div id="header-menu"
+				<div
+					id="header-menu"
 					ng-controller="MenuController"
 					ng-include="'menuTmpl'"
 					ng-init="root = true"
+					click-outside="close()"
 				></div>
 
 				<div id="header-stoplight">

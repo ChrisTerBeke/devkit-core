@@ -41,8 +41,6 @@ body {
 	-webkit-user-select: none;
 	cursor: default;
 
-	-webkit-perspective: 1500px;
-
 	display: flex;
   	flex-direction: column;
 }
@@ -66,10 +64,6 @@ h6 {
 }
 
 header {
-/*	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;*/
 	height: 65px;
 	
 	display: flex;
@@ -77,27 +71,17 @@ header {
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: flex-start;
+    -webkit-app-region: no-drag;
 }
 body.os-darwin header {
 	height: 40px;
 }
-	header:before {
-		content: "";
-		position: absolute;
-		z-index: 1;
-		left: 0;
-		right: 0;
-		top: 0;
-		bottom: 0;
-	}
-	
 	#header-menu {
 		position: absolute;
-		z-index: 2;
+		z-index: 9999;
 		left: 0;
 		top: 0;
 		display: block;
-		z-index: 1000;
 		height: 25px;
 		padding: 2px;
 		box-sizing: border-box;
@@ -117,6 +101,7 @@ body.os-darwin header {
 				display: block;
 				white-space: nowrap;
 				line-height: 25px;
+				-webkit-app-region: no-drag;
 			}
 			#header-menu li.seperator {
 				height: 1px;
@@ -262,6 +247,7 @@ body.os-darwin header {
 		right: 0;
 		top: 25px;
 	    height: 40px;
+		-webkit-app-region: no-drag;
 	}
 	body.os-darwin #header-components {
 		top: 0;
