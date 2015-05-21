@@ -55,6 +55,10 @@ var EditorController = function($rootScope, $scope, $file, $project, $rootScope,
 		$scope.active = $file.active;
 	}
 	
+	$rootScope.$on('menu.file-close', function(){
+		$scope.close();
+	});
+	
 	$rootScope.$on('service.file.open', function(){
 		$scope.update();
 	});

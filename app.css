@@ -247,7 +247,6 @@ body.os-darwin header {
 		right: 0;
 		top: 25px;
 	    height: 40px;
-		-webkit-app-region: no-drag;
 	}
 	body.os-darwin #header-components {
 		top: 0;
@@ -466,7 +465,7 @@ content {
 						bottom: 0;
 						text-align: center;
 						font-size: 7px;
-						line-height: 13px;
+						line-height: 12px;
 						color: white;
 					}
 					tabs tab.changed .close:before {

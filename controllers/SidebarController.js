@@ -201,7 +201,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	 */
 	$scope.open = function(filePath) {
 		if(fs_extra.lstatSync(filePath).isDirectory()) {
-            $scope.expanded.push(path);
+            $scope.expand(filePath, !$scope.isExpanded(filePath));
         }
         else {
             $file.open(filePath);

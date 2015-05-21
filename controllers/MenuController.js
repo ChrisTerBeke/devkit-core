@@ -25,7 +25,8 @@ var MenuController = function($rootScope, $scope, $timeout)
 			return;
 		}
 		
-		$rootScope.$emit('menu.' + item.id);
+		emit(item.id, false);
+		
 		$timeout(function(){
 			$scope.visibleMenu = false;
 		}, 100);
@@ -72,7 +73,7 @@ var MenuController = function($rootScope, $scope, $timeout)
 			if( hotkey.shift && !e.shiftKey ) return;
 			if( hotkey.key != key ) return;
 			
-			$rootScope.$emit('menu.' + hotkey.id);			
+			emit(hotkey.id);			
 			
 		});
 				
@@ -85,6 +86,21 @@ var MenuController = function($rootScope, $scope, $timeout)
 		$scope.inlineMenu = true;
 		
 		registerHotkeys( $scope.menu );
+	}
+	
+	// emit a menu event
+	function emit( event, apply ) {
+		
+		if( typeof apply == 'undefined' ) apply = true;
+			
+		if( apply ) {			
+			$scope.$apply(function(){
+				$rootScope.$emit('menu.' + event);
+			});
+		} else {
+			$rootScope.$emit('menu.' + event);
+		}
+		
 	}
 	
 	// register hotkeys
@@ -137,7 +153,7 @@ var MenuController = function($rootScope, $scope, $timeout)
 			label: 'Check for updates...',
 			click: function() {
 				alert('this feature will come soon...');
-				$rootScope.$emit('menu.updates');
+				emit('updates');
 			}
 		}), 1);
 		menu_darwin.items[0].submenu.insert(new gui.MenuItem({
@@ -146,7 +162,7 @@ var MenuController = function($rootScope, $scope, $timeout)
 		menu_darwin.items[0].submenu.insert(new gui.MenuItem({
 			label: 'Preferences...',
 			click: function() {
-				$rootScope.$emit('menu.preferences');
+				emit('preferences');
 			},
 			key: ',',
 			modifiers: 'cmd'
@@ -164,9 +180,7 @@ var MenuController = function($rootScope, $scope, $timeout)
 			var menu = new gui.Menu({
 				type: 'menubar'
 			});
-			menu.createMacBuiltin("Devkit", {
-				edit: false
-			});
+			menu.createMacBuiltin("Devkit");
 		} else {
 			var menu = new gui.Menu();
 		}
@@ -174,16 +188,24 @@ var MenuController = function($rootScope, $scope, $timeout)
 		var i = 0;
 		if( root ) i = 1;
 		items.forEach(function(item){
-					
+			
+			var position = i;
+			
 			if( item.type == 'separator' ) {
 				 var item_ = new gui.MenuItem({ type: 'separator' });
 			} else {
+				
+				// skip edit on OSX
+				if( root && item.id == 'edit' ) {
+					i++;
+					return;
+				};
 				
 				// prepare the item
 				var item_options = {
 					label: item.label,
 					click: function(){
-						$rootScope.$emit('menu.' + item.id);
+						emit(item.id);
 					}
 				}
 				
@@ -201,7 +223,7 @@ var MenuController = function($rootScope, $scope, $timeout)
 				item_.submenu = drawMenuDarwin( item.submenu );
 			}
 			
-			menu.insert( item_, i );
+			menu.insert( item_, position );
 			i++;
 			
 		});
