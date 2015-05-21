@@ -141,8 +141,6 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 	    for (var i in $rootScope.editorConfig) {
 	    	var item = $rootScope.editorConfig[i];
 
-	    	console.log('file', file, item);
-
 	    	if(file.ext === item.ext || file.dir === item.dir || file.base === item.base) {
 	    		widgets = item.config.widgets || widgets;
 	    		editor = item.config.editor || editor;
