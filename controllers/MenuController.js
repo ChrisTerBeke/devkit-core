@@ -8,13 +8,6 @@ var MenuController = function($rootScope, $scope, $timeout)
 	$scope.inlineMenu 	= false; // draw the menu in the html
 	$scope.visibleMenu	= false;
 	
-	if( $scope.os == 'darwin' ) {
-		buildMenuDarwin( $scope.menu );
-		$scope.inlineMenu = true;
-	} else {
-		$scope.inlineMenu = true;
-	}
-	
 	$scope.click = function( item, root ) {
 		
 		if( root ) {
@@ -51,6 +44,99 @@ var MenuController = function($rootScope, $scope, $timeout)
 				return ucfirst(modifier);
 			})
 		return modifiers.join('+') + '+' + ucfirst(hotkey.key);
+	}
+		
+	// listen to the window's focus
+	var win			= gui.Window.get();
+	var winFocus	= false;
+	var hotkeys		= [];	
+	
+    win.on('blur', function() { winFocus = false; });
+    win.on('focus', function() { winFocus = true; });
+    
+	window.addEventListener('keyup', function(e){
+			
+		var key = String.fromCharCode(e.keyCode);
+			key = key.toLowerCase();
+		
+		hotkeys.forEach(function(hotkey){
+			
+			if( hotkey.alt && !e.altKey ) return;
+			if( hotkey.ctrl && !e.ctrlKey ) return;
+			if( hotkey.shift && !e.shiftKey ) return;
+			if( hotkey.key != key ) return;
+			
+			$rootScope.$emit('menu.' + hotkey.id);			
+			
+		});
+				
+	});
+	
+	if( $scope.os == 'darwin' ) {
+		buildMenuDarwin( $scope.menu );
+		$scope.inlineMenu = true;
+	} else {
+		$scope.inlineMenu = true;
+		
+		registerHotkeys( $scope.menu );
+	}
+	
+	// register hotkeys
+	function registerHotkeys( menu ) {
+				
+		menu.forEach(function(item){
+			
+			if( item.submenu ) registerHotkeys( item.submenu );
+			
+			if( !item.hotkey ) return;
+			
+			var hotkey = item.hotkey;
+				hotkey = hotkey.replace('meta', 'ctrl');
+			
+			var key = item.hotkey.split('+');
+				key = key[ key.length-1 ];
+				key = key.toLowerCase();
+			
+			hotkeys.push({
+				id		: item.id,
+				key		: key,
+				ctrl	: hotkey.indexOf('ctrl') > -1,
+				alt		: hotkey.indexOf('alt') > -1,
+				shift	: hotkey.indexOf('shift') > -1
+			});
+			
+			/*
+			var shortcut = new gui.Shortcut({
+				key: hotkey,
+				active: function(){
+					if( !winFocus ) return;
+					console.log('clicked' + this.key)
+				}
+			});
+			gui.App.registerGlobalHotKey(shortcut);
+			console.log(hotkey);
+			*/
+			
+		});
+		
+		/*
+		var option = {
+		  key : "Ctrl+Alt+A",
+		  active : function(e) {
+		    console.log(winFocus, this.key); 
+		  },
+		  failed : function(msg) {
+		    // :(, fail to register the |key| or couldn't parse the |key|.
+		    console.log(msg);
+		  }
+		};
+
+		// Create a shortcut with |option|.
+		
+		// Register global desktop shortcut, which can work without focus.
+		gui.App.registerGlobalHotKey(shortcut);
+		*/
+		
 	}
 	
 	function ucfirst( text ) {
@@ -159,7 +245,7 @@ var MenuController = function($rootScope, $scope, $timeout)
 		var modifiers = hotkey;
 			modifiers = modifiers.join('-');
 			if( $scope.os == 'darwin' ) modifiers = modifiers.replace('meta', 'cmd');
-			if( $scope.os == 'darwin' ) modifiers = modifiers.replace('meta', 'ctrl');
+			if( $scope.os != 'darwin' ) modifiers = modifiers.replace('meta', 'ctrl');
 		
 		return {
 			key			: key,

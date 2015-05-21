@@ -1,3 +1,9 @@
+@font-face {
+    font-family: Menlo;
+    src: url(./font/menlo-regular.ttf);
+    font-weight: normal;
+}
+
 editorview.codemirror .CodeMirror {
 	font-size: 11px;
 	line-height: 13px;

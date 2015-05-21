@@ -101,6 +101,7 @@ body.os-darwin header {
 		height: 25px;
 		padding: 2px;
 		box-sizing: border-box;
+		-webkit-app-region: no-drag;
 	}
 	body.os-darwin #header-menu {
 		display: none;
@@ -175,7 +176,7 @@ body.os-darwin header {
 	#header-stoplight {
 		position: absolute;
 		z-index: 2;
-		right: 0;
+		right: 4px;
 		top: 0;
 	}
 	body.os-darwin #header-stoplight {
@@ -185,32 +186,75 @@ body.os-darwin header {
 	}
 		#header-stoplight .header-stoplight-button {
 			float: right;
+			width: 47px;
+			height: 19px;
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-size: 15px 15px;
+			border-radius: 0 0 2px 2px;
+			-webkit-app-region: no-drag;
+		}
+		#header-stoplight .header-stoplight-button,
+		#header-stoplight .header-stoplight-button:active {
+			opacity: 0.8;
+		}
+		#header-stoplight .header-stoplight-button:hover {
+			opacity: 1;
+		}
+		body.os-darwin #header-stoplight .header-stoplight-button {
+			float: left;
 			width: 12px;
 			height: 12px;
 			background-size: cover;
 			margin: 0 4px;
 		}
-		body.os-darwin #header-stoplight .header-stoplight-button {
-			float: left;
+		
+		/* normal */
+		body:not(.os-darwin) #header-stoplight #header-stoplight-close {
+			background-image: url(./assets/images/header-stoplight-close.svg);
+			background-color: #C74F50;
+			border: 1px solid rgba(0,0,0,0.2);
+			border-top: none;
 		}
-		#header-stoplight-close {
-			background-image: url(./assets/images/chrome-stoplight-close.png);
+		body:not(.os-darwin) #header-stoplight #header-stoplight:hover #header-stoplight-close {
+
 		}
-		#header-stoplight .tablecell:hover #header-stoplight-close {
-			background-image: url(./assets/images/chrome-stoplight-close-hover.png);
+		body:not(.os-darwin) #header-stoplight #header-stoplight-minimize {
+			width: 30px;
+			background-image: url(./assets/images/header-stoplight-minimize.svg);
 		}
-		#header-stoplight-minimize {
-			background-image: url(./assets/images/chrome-stoplight-minimize.png);
+		body:not(.os-darwin) #header-stoplight #header-stoplight:hover #header-stoplight-minimize {
+			background-color: white;
 		}
-		#header-stoplight .tablecell:hover #header-stoplight-minimize {
-			background-image: url(./assets/images/chrome-stoplight-minimize-hover.png);
+		body:not(.os-darwin) #header-stoplight #header-stoplight-zoom {
+			width: 30px;
+			background-image: url(./assets/images/header-stoplight-zoom.svg);
+			background-size: 18px 18px;
 		}
-		#header-stoplight-zoom {
-			background-image: url(./assets/images/chrome-stoplight-zoom.png);
+		body:not(.os-darwin) #header-stoplight #header-stoplight:hover #header-stoplight-zoom {
+
 		}
-		#header-stoplight .tablecell:hover #header-stoplight-zoom {
-			background-image: url(./assets/images/chrome-stoplight-zoom-hover.png);
+		
+		/* darwin */
+		body.os-darwin #header-stoplight-close {
+			background-image: url(./assets/images/header-stoplight-darwin-close.png);
 		}
+		body.os-darwin #header-stoplight:hover #header-stoplight-close {
+			background-image: url(./assets/images/header-stoplight-darwin-close-hover.png);
+		}
+		body.os-darwin #header-stoplight-minimize {
+			background-image: url(./assets/images/header-stoplight-darwin-minimize.png);
+		}
+		body.os-darwin #header-stoplight:hover #header-stoplight-minimize {
+			background-image: url(./assets/images/header-stoplight-darwin-minimize-hover.png);
+		}
+		body.os-darwin #header-stoplight-zoom {
+			background-image: url(./assets/images/header-stoplight-darwin-zoom.png);
+		}
+		body.os-darwin #header-stoplight:hover #header-stoplight-zoom {
+			background-image: url(./assets/images/header-stoplight-darwin-zoom-hover.png);
+		}
+		
 	#header-components {
 		position: absolute;
 		z-index: 2;
