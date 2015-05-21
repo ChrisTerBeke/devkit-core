@@ -15,6 +15,7 @@ app.directive('ngRightClick', function($parse) {
         element.bind('contextmenu', function(event) {
             scope.$apply(function() {
                 event.preventDefault();
+                event.stopPropagation();
                 fn(scope, {$event:event});
             });
         });

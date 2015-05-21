@@ -92,8 +92,6 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
         }
 
         $scope.selectedIndex = index;
-
-        console.log(index, $scope.filetree[0].children[index]);
 	}
 
 	/*
@@ -215,7 +213,6 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 		$scope.filetree = readdirSyncRecursive( $scope.$parent.path, true ); // $parent is ApplicationController
 	}
 	
-	
 	$scope.dragoverCallback = function(event, index, external) {
         return index > 0;
     };
@@ -272,13 +269,12 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 		
 		// Add some items
 		if( item ) {
+			
 			// multiple selection
-			if( $scope.isSelected(item.path) ) {
-				if( event.metaKey || event.ctrlKey ) {
-					$scope.selected.push( item.path );
-				} else {
-					$scope.selected = [ item.path ];
-				}
+			if( event.metaKey || event.ctrlKey ) {
+				$scope.selected.push( item.path );
+			} else {
+				 $scope.selected = [ item.path ];
 			}
 			
 			ctxmenu.append(new gui.MenuItem({ label: 'Open', click: function(){
