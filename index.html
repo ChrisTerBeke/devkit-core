@@ -97,7 +97,11 @@
 							<span class="expand" ng-click="!isRenaming(item.path) && expand( item.path, !isExpanded(item.path) )" stop-event></span>
 							<span class="icon"></span>
 							<span class="name" ng-show="!isRenaming(item.path)">{{item.name}}</span>
-							<form ng-show="isRenaming(item.path)" ng-submit="rename( item )" style="display: inline-block;">
+							<form
+								ng-show="isRenaming(item.path)"
+								ng-submit="rename( item )"
+								style="display: inline-block;"
+								click-outside="isRenaming(item.path) && rename( item )">
 								<input class="name-renaming" ng-show="isRenaming(item.path)" show-focus="isRenaming(item.path)" type="text" ng-model="item.name" />
 								<input type="submit" style="display: none;" />
 							</form>
