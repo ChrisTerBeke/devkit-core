@@ -6,9 +6,8 @@ angular.module('sdk.project', []).factory('$project', ['$rootScope', function ($
 			return window.localStorage.project_dir;
 		}
 		else {
-			return '';
+			return false;
 		}
-		
 	}
 
 	factory.setPath = function(path) {
@@ -22,7 +21,7 @@ angular.module('sdk.project', []).factory('$project', ['$rootScope', function ($
 			return window.localStorage.files_open.split(',');
 		}
 		else {
-			return [''];
+			return false;
 		}
 	}
 
@@ -31,7 +30,6 @@ angular.module('sdk.project', []).factory('$project', ['$rootScope', function ($
 
 		return true;
 	}
-
 
     return factory;
 }]);

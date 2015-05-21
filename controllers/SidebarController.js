@@ -16,8 +16,11 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	
 	$scope.init = function() {
 		// load previous project, if available
-		if(typeof $project.getPath() == 'string') {
+		if($project.getPath()) {
 			$scope.loadProject($project.getPath());
+		}
+		else {
+			$scope.selectProject();
 		}
 	}
 	

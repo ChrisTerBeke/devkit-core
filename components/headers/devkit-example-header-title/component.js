@@ -4,7 +4,7 @@ var archiver 		= require('archiver');
 var request			= require('request');
 var semver			= require('semver');
 
-var ExampleHeaderController = function($scope, $rootScope, $file) {
+var ExampleHeaderController = function($scope, $rootScope, $file, $project) {
 	
 	$scope.status = "idle";
 	$scope.manifest = "";
@@ -21,18 +21,27 @@ var ExampleHeaderController = function($scope, $rootScope, $file) {
     };
 
 	var hook = Hook('global');
-	
-	var manifest = JSON.parse(fs.readFileSync(window.localStorage.project_dir + '/app.json', 'utf8'));
 
-	$scope.manifest = manifest;
+	if($project.getPath()) {
+		var manifest = JSON.parse(fs.readFileSync($project.getPath() + '/app.json', 'utf8'));
+
+		$scope.manifest = manifest;
+	}
+	
+	$rootScope.$on('service.project.ready', function() {
+		var manifest = JSON.parse(fs.readFileSync($project.getPath() + '/app.json', 'utf8'));
+
+		$scope.manifest = manifest;
+	});
 
 	$scope.openManifest = function() {
-		$file.open(window.localStorage.project_dir + '/app.json');
+
+		$file.open($project.getPath() + '/app.json');
 	}
 
 	hook.register('onManifestSave',
 		function (e) {
-	        fs.readFile(window.localStorage.project_dir + '/app.json', 'utf8', function read(err, data) {
+	        fs.readFile($project.getPath() + '/app.json', 'utf8', function read(err, data) {
 			    if (err) {
 			        throw err;
 			    }
@@ -46,6 +55,6 @@ var ExampleHeaderController = function($scope, $rootScope, $file) {
 	);
 };
 
-ExampleHeaderController.$inject = ['$scope', '$rootScope', '$file'];
+ExampleHeaderController.$inject = ['$scope', '$rootScope', '$file', '$project'];
 
 app.controller("ExampleHeaderController", ExampleHeaderController);
