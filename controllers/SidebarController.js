@@ -369,11 +369,17 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	$rootScope.$on('service.project.create', function() {
 		$scope.createProject();
 	});
+	$rootScope.$on('menu.project-new', function() {
+		$scope.createProject();
+	});
 	
 	/*
 	 * Listen to open new project event
 	 */
 	$rootScope.$on('service.project.open', function() {
+		$scope.selectProject();
+	});
+	$rootScope.$on('menu.project-open', function() {
 		$scope.selectProject();
 	});
 	
@@ -383,11 +389,17 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	$rootScope.$on('service.project.new.file', function() {
 		$scope.newFile();
 	});
+	$rootScope.$on('menu.file-new', function() {
+		$scope.newFile();
+	});
 	
 	/*
 	 * Listen to new folder event
 	 */
 	$rootScope.$on('service.project.new.folder', function() {
+		$scope.newFolder();
+	});
+	$rootScope.$on('menu.folder-new', function() {
 		$scope.newFolder();
 	});
 
