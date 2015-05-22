@@ -133,15 +133,21 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
     {
 	    // determine the view.
 	    var file = path.parse( file_path );
-
+	    file.dir = file.dir.replace( $project.getPath(), '' );
+	    file.dir += '/';
+	    
 	    // default to codemirror
 	    var editor = 'codemirror';
 	    var widgets = [];
 
 	    for (var i in $rootScope.editorConfig) {
 	    	var item = $rootScope.editorConfig[i];
-
-	    	if(file.ext === item.ext || file.dir === item.dir || file.base === item.base) {
+	    	
+	    	if(
+	    		( typeof item.ext == 'undefined'	|| file.ext === item.ext ) &&
+	    		( typeof item.dir == 'undefined'	|| file.dir === item.dir ) &&
+	    		( typeof item.base == 'undefined'	|| file.base === item.base )
+	    	) {
 	    		widgets = item.config.widgets || widgets;
 	    		editor = item.config.editor || editor;
 
