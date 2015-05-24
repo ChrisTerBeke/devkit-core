@@ -134,7 +134,6 @@
 					    <ul
 						    ng-if="item.children"
 							ng-show="isExpanded( item.path )"
-							ng-right-click="showCtxMenu(undefined, $event)"
 							dnd-list="item.children"
 							dnd-external-sources="true"
 							dnd-dragover="dragoverCallback(event, index, external)"
@@ -154,11 +153,13 @@
 					</script>
 
 					<ul 
+						ng-if="projectLoaded"
 						id="filetree" 
 						dnd-list="filetree"
 						dnd-external-sources="true"
 						dnd-dragover="dragoverCallback(event, index, external)"
 						dnd-drop="dropCallback(event, filetree, item, external)"
+						ng-right-click="showCtxMenu(undefined, $event)"
 					>
 						<li
 							ng-repeat="item in filetree"

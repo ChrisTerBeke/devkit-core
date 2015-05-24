@@ -135,6 +135,7 @@ angular.module('sdk.file', []).factory('$file', ['$rootScope', '$http', '$timeou
 	    var file = path.parse( file_path );
 	    file.dir = file.dir.replace( $project.getPath(), '' );
 	    file.dir += '/';
+	    file.dir = file.dir.replace('\\', '/')
 	    
 	    // default to codemirror
 	    var editor = 'codemirror';
