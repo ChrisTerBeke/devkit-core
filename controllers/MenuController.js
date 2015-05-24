@@ -154,7 +154,6 @@ var MenuController = function($rootScope, $scope, $timeout)
 		menu_darwin.items[0].submenu.insert(new gui.MenuItem({
 			label: 'Check for updates...',
 			click: function() {
-				alert('this feature will come soon...');
 				emit('updates');
 			}
 		}), 1);
