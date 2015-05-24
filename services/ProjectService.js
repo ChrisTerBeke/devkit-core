@@ -16,6 +16,12 @@ angular.module('sdk.project', []).factory('$project', ['$rootScope', function ($
 		return true;
 	}
 
+	factory.clearPath = function() {
+		delete window.localStorage.project_dir;
+
+		return true;
+	}
+
 	factory.getOpenFiles = function() {
 		if(window.localStorage.files_open) {
 			return window.localStorage.files_open.split(',');
@@ -27,6 +33,12 @@ angular.module('sdk.project', []).factory('$project', ['$rootScope', function ($
 
 	factory.setOpenFiles = function(files) {
 		window.localStorage.files_open = files.join(',');
+
+		return true;
+	}
+
+	factory.clearOpenFiles = function(files) {
+		delete window.localStorage.files_open;
 
 		return true;
 	}

@@ -86,13 +86,28 @@
 
 				<sidebar
 					ng-controller="SidebarController as sidebar"
-					ng-right-click="showCtxMenu(undefined, $event)"
 					ng-init="init()"
-				>
+				>					
+					
+					<div
+						ng-if="!projectLoaded"
+						class="project-load table"
+					>
+						<div class="tablecell" style="text-align: center;">
+					
+							<button
+								ng-click="selectProject()"
+							>
+								<i class="fa fa-folder-open-o"></i> Open project
+							</button>
+							
+						</div>
+					</div>
+
 					<script type="text/ng-template" id="filetreeTmpl">
 						<span
 							ng-click="!isRenaming(item.path) && select( item.path, $index, $event )"
-							ng-dblclick="!root && !isRenaming(item.path) && open( item.path )"
+							ng-dblclick="!isRenaming(item.path) && open( item.path )"
 							ng-right-click="!root && showCtxMenu(item, $event)"
 							ng-class="{ 'selected': isSelected( item.path ) }"
 							class="label"
@@ -115,9 +130,11 @@
 								<input type="submit" style="display: none;" />
 							</form>
 						</span>
+						
 					    <ul
 						    ng-if="item.children"
 							ng-show="isExpanded( item.path )"
+							ng-right-click="showCtxMenu(undefined, $event)"
 							dnd-list="item.children"
 							dnd-external-sources="true"
 							dnd-dragover="dragoverCallback(event, index, external)"
@@ -217,7 +234,7 @@
 
 		<!-- hidden things -->
 		<util>
-			<input id="directorychooser" type="file" webkitdirectory />
+			<input id="directorychooser" type="file" nwdirectory />
 		</util>
 		
 	</body>

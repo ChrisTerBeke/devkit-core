@@ -8,19 +8,19 @@ var watchTree 	= require("fs-watch-tree").watchTree;
 
 var SidebarController = function($scope, $rootScope, $file, $timeout, $project) {
 	
+	$scope.projectLoaded = false;
 	$scope.selected = [];
 	$scope.renaming = false;
 	$scope.expanded = [];
 	$scope.filetree = {};
 	$scope.selectedIndex = 0;
 	
+	var watch;
+	
 	$scope.init = function() {
 		// load previous project, if available
 		if($project.getPath()) {
 			$scope.loadProject($project.getPath());
-		}
-		else {
-			$scope.selectProject();
 		}
 	}
 	
@@ -43,7 +43,16 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	$scope.selectProject = function() {
         var directorychooser = document.getElementById('directorychooser');
         directorychooser.addEventListener("change", function(evt) {
-            $scope.loadProject(this.value);
+	        	        
+	        var path = this.value;            
+            directorychooser.value = '';
+            
+            if( path == '' ) return;
+	        
+	        $scope.$apply(function(){
+	            $scope.loadProject(path);
+            });
+            
         }, false)
         directorychooser.click();
 	}
@@ -52,23 +61,46 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	 * load a project
 	 */
 	$scope.loadProject = function(rootPath) {
+				
+		$scope.closeProject();
+		
 		$project.setPath(rootPath);
 		
         $scope.$parent.path = rootPath;
         
-        // filetree
-		// watch for changes
-		watchTree($scope.$parent.path, function (event) { // $parent is ApplicationController
+        // filetree, watch for changes
+		watch = watchTree($scope.$parent.path, function (event) { // $parent is ApplicationController
 			$scope.$apply(function() {
 				$scope.update();
 			});
 		});
 
 		$scope.$parent.files = {};
+        $scope.projectLoaded = true;
 	
 		// initial scan
 		$scope.update();
         $rootScope.$emit('service.project.ready');
+	}
+	
+	/*
+	 * close a project
+	 */
+	$scope.closeProject = function(){
+		
+		if( !$scope.projectLoaded ) return;
+		
+		$project.clearPath();
+		$project.clearOpenFiles();
+		$scope.projectLoaded = false;
+		
+        $scope.$parent.path = false;
+		$scope.$parent.files = {};
+		
+		watch.end();
+		
+        $rootScope.$emit('service.project.closed');
+		
 	}
 
 	/*
@@ -381,6 +413,13 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	});
 	$rootScope.$on('menu.project-open', function() {
 		$scope.selectProject();
+	});
+	
+	/*
+	 * Listen to close project event
+	 */
+	$rootScope.$on('menu.project-close', function() {
+		$scope.closeProject();
 	});
 	
 	/*

@@ -9,6 +9,9 @@ var MenuController = function($rootScope, $scope, $timeout)
 	$scope.visibleMenu	= false;
 	
 	$scope.close = function(){
+		
+		if( !$scope.inlineMenu ) return;
+		
 		$scope.$apply(function(){
 			$scope.visibleMenu = false;
 		})
@@ -81,7 +84,6 @@ var MenuController = function($rootScope, $scope, $timeout)
 	
 	if( $scope.os == 'darwin' ) {
 		buildMenuDarwin( $scope.menu );
-		$scope.inlineMenu = true;
 	} else {
 		$scope.inlineMenu = true;
 		

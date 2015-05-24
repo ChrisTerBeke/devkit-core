@@ -1,6 +1,8 @@
 window.ondragover = function(e) { e.preventDefault(); return false };
 window.ondrop = function(e) { e.preventDefault(); return false };
 
+require('events').EventEmitter.defaultMaxListeners = 0;
+
 var app = angular.module('app', ['module.core', 'module.modules']);
 var modules = ['ng'];
 var angularModules = [];
