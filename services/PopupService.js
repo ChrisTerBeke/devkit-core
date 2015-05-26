@@ -7,9 +7,7 @@ angular.module('sdk.popup', []).factory('$popup', ['$rootScope', 'ngDialog', fun
 	
 	factory.open = function(name, scope) {
 	
-		$rootScope.$apply(function(){
-			$rootScope.$emit('service.popup.open', name);
-		});
+		$rootScope.$emit('service.popup.open', name);
 		
 		var dir = '';
 		for (var i=0; i<angularModules.length; i++) {
