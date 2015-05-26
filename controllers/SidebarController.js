@@ -1,10 +1,9 @@
 var gui			= require('nw.gui');
 var path		= require('path'); // auch
-
 var open		= require("open");
 var fs_extra	= require('fs-extra');
 var trash		= require('trash');
-var watchTree 	= require("fs-watch-tree").watchTree;
+var sane		= require('sane');
 
 var SidebarController = function($scope, $rootScope, $file, $timeout, $project) {
 	
@@ -15,7 +14,8 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	$scope.filetree = {};
 	$scope.selectedIndex = 0;
 	
-	var watch;
+	//var watch;
+	var watcher;
 	
 	$scope.init = function() {
 		// load previous project, if available
@@ -67,9 +67,9 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 		$project.setPath(rootPath);
 		
         $scope.$parent.path = rootPath;
-        
-        // filetree, watch for changes
-		watch = watchTree($scope.$parent.path, function (event) { // $parent is ApplicationController
+		
+		watcher = sane($scope.$parent.path, {glob: ['**/*']});
+		watcher.on('all', function(event, filepath) {
 			$scope.$apply(function() {
 				$scope.update();
 			});
@@ -97,7 +97,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
         $scope.$parent.path = false;
 		$scope.$parent.files = {};
 		
-		watch.end();
+		watcher.close();
 		
         $rootScope.$emit('service.project.closed');
 		
