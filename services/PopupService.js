@@ -4,8 +4,13 @@ var beforeSave = {};
 
 angular.module('sdk.popup', []).factory('$popup', ['$rootScope', 'ngDialog', function ($rootScope, ngDialog) {
 	var factory = {};
-
+	
 	factory.open = function(name, scope) {
+	
+		$rootScope.$apply(function(){
+			$rootScope.$emit('service.popup.open', name);
+		});
+		
 		var dir = '';
 		for (var i=0; i<angularModules.length; i++) {
 
@@ -16,11 +21,18 @@ angular.module('sdk.popup', []).factory('$popup', ['$rootScope', 'ngDialog', fun
 
 		var html_path = path.join(dir, 'component.html');
 
-		ngDialog.open({ 
+		ngDialog.open({
+			preCloseCallback: function(){
+				$rootScope.$apply(function(){
+					$rootScope.$emit('service.popup.close', open);
+				});
+			},
 			template: html_path,
 			className: 'popup-' + name,
 			scope: scope
 		});
+		
+		open = name;
 	}
 
 	factory.close = function() {
