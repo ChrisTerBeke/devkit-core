@@ -5,7 +5,7 @@ var fs_extra	= require('fs-extra');
 var trash		= require('trash');
 var sane		= require('sane');
 
-var SidebarController = function($scope, $rootScope, $file, $timeout, $project) {
+var SidebarController = function($scope, $rootScope, $file, $timeout, $project, hotkeys) {
 	
 	$scope.projectLoaded = false;
 	$scope.selected = [];
@@ -13,6 +13,77 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	$scope.expanded = [];
 	$scope.filetree = {};
 	$scope.selectedIndex = 0;
+	
+	// hotkey: right
+	hotkeys.add({
+		combo: 'right',
+		callback: function() {
+			$scope.selected.forEach(function( item ){
+				
+				if( fs_extra.lstatSync(item).isFile() ) {
+					$scope.open(item);
+				}
+				
+				if( fs_extra.lstatSync(item).isDirectory() ) {
+					$scope.expand( item, true );
+				}
+			});
+		}
+	});
+	
+	// hotkey: left
+	hotkeys.add({
+		combo: 'left',
+		callback: function() {			
+			$scope.selected.forEach(function( item ){
+				
+				// if file, select parent directory
+				if( fs_extra.lstatSync(item).isFile() ) {
+					var parentDir = path.join( item, '..' );
+					$scope.selected = [ parentDir ];
+				}
+								
+				// if folder
+				if( fs_extra.lstatSync(item).isDirectory() ) {
+					
+					// if selected, collapse it, else, select parent dir
+					if( $scope.isExpanded( item) ) {
+						$scope.expand( item, false );
+						$scope.selected = [ item ];
+					} else {
+						
+						if( item == $project.getPath() ) return;
+						
+						var parentDir = path.join( item, '..' );
+						$scope.selected = [ parentDir ];						
+					}
+				}
+			});
+		}
+	});
+	
+	// hotkey: up
+	hotkeys.add({
+		combo: 'up',
+		callback: function() {
+			// todo
+		}
+	});
+	
+	// hotkey: down
+	hotkeys.add({
+		combo: 'down',
+		callback: function() {
+			// todo
+		}
+	});
+	
+	hotkeys.add({
+		combo: 'enter',
+		callback: function(){
+			$scope.renaming = $scope.selected[0];
+		}
+	});
 	
 	//var watch;
 	var watcher;
@@ -136,7 +207,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	/*
 	 * expand filePath
 	 */
-	$scope.expand = function(filePath, expanded) {
+	$scope.expand = function(filePath, expanded) {			
 		if( expanded ) {
         	$scope.expanded.push(filePath);	    
 		} 
@@ -450,7 +521,7 @@ var SidebarController = function($scope, $rootScope, $file, $timeout, $project) 
 	});
 }
 
-SidebarController.$inject = ['$scope', '$rootScope', '$file', '$timeout', '$project'];
+SidebarController.$inject = ['$scope', '$rootScope', '$file', '$timeout', '$project', 'hotkeys'];
 
 app.controller("SidebarController", SidebarController);
 
