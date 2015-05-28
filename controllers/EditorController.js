@@ -73,7 +73,6 @@ var EditorController = function($rootScope, $scope, $file, $project, $rootScope,
 
 	$rootScope.$on('menu.file-save', function(){
 		$file.save($scope.active);
-		$scope.update();
 	});
 }
 
