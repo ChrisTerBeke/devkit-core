@@ -37,7 +37,6 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$event
 	try {
 		var userOpts = JSON.parse(window.localStorage.codemirrorOpts);
 		$scope.codemirrorOpts = angular.extend( $scope.codemirrorOpts, userOpts );
-		console.log( $scope.codemirrorOpts );
 	} catch(e){}
 
 	switch( file_ext ) {
