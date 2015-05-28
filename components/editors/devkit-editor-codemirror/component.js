@@ -7,11 +7,9 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$event
 
 	$scope.codemirrorOpts = {
 		lineNumbers: true,
-		indentWithTabs: true,
 		styleActiveLine: true,
 		lineWrapping: true,
         autoCloseTags: true,
-        theme: "solarized dark",
 		onLoad: function( _editor ){
 
 			$scope.editor = _editor;
@@ -34,6 +32,13 @@ app.controller("CodemirrorController", ['$scope', '$rootScope', '$http', '$event
 			});
 		}
 	};
+	
+	// override settings by user
+	try {
+		var userOpts = JSON.parse(window.localStorage.codemirrorOpts);
+		$scope.codemirrorOpts = angular.extend( $scope.codemirrorOpts, userOpts );
+		console.log( $scope.codemirrorOpts );
+	} catch(e){}
 
 	switch( file_ext ) {
 		case '.html':

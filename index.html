@@ -143,6 +143,8 @@
 					        	ng-init="selected = false; item.expanded = false; root = false; parent = item;"
 					        	class="type-{{item.type}} ext-{{item.ext}}"
 					        	
+					        	data-filename="{{item.name}}"
+					        	
 					        	dnd-draggable="item"
 								dnd-effect-allowed="move"
 					        ></li>
