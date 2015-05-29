@@ -129,8 +129,7 @@
 						</span>
 						
 					    <ul
-						    ng-if="item.children"
-							ng-show="isExpanded( item.path )"
+						    ng-if="item.children && isExpanded( item.path )"
 							dnd-list="item.children"
 							dnd-external-sources="true"
 							dnd-dragover="dragoverCallback(event, index, external)"
